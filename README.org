@@ -695,22 +695,35 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
 
 ** Basic editing
 #+begin_src emacs-lisp
-(setq-default
- indent-tabs-mode nil
- tab-width 4)
+  (setq-default
+   indent-tabs-mode nil
+   tab-width 4
+   show-trailing-whitespace t
+   require-final-newline t
+   view-read-only t)
 
-(use-package tab-line
-  :ensure nil
-  :hook (after-init . (lambda()(global-tab-line-mode 1))))
+  (use-package tab-line
+    :ensure nil
+    :hook (after-init . (lambda()(global-tab-line-mode 1))))
 
-(use-package display-fill-column-indicator
-  :ensure nil
-  :hook (prog-mode . (lambda()(display-fill-column-indicator-mode 1))))
+  (use-package display-fill-column-indicator
+    :ensure nil
+    :hook (prog-mode . (lambda()(display-fill-column-indicator-mode 1))))
 
-(setq view-read-only t)
-;; UTF-8 as default encoding
-(set-language-environment "UTF-8")
-(set-default-coding-systems 'utf-8-unix)
+  (use-package ws-butler
+    :hook
+    (prog-mode . ws-butler-mode)
+    (text-mode . ws-butler-mode)
+    :init
+    (setq ws-butler-trim-predicate
+          (lambda (beg end)
+            (not (eq 'font-lock-string-face
+                     (get-text-property end 'face))))))
+
+  (setq view-read-only t)
+  ;; UTF-8 as default encoding
+  (set-language-environment "UTF-8")
+  (set-default-coding-systems 'utf-8-unix)
 
 #+end_src
 ** Org mode
