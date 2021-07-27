@@ -99,7 +99,7 @@ Do not show the default welcome screen.
     :init
     (setq popper-reference-buffers
           '("\\*Messages\\*"
-            "\\*Warning\\*"
+            "\\*Warning"
             "Output\\*$"
             help-mode
             helpful-mode
