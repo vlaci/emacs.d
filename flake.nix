@@ -18,8 +18,9 @@
   };
 
   outputs = { self, nixpkgs, flake-utils, ... }@inputs:
-    {
+    rec {
       overlay = import ./nix/overlay.nix { inherit inputs; };
+      lib.hmModule = import ./nix/hmModule.nix { inherit overlay; };
     } //
     flake-utils.lib.eachDefaultSystem (system:
       let
