@@ -4,7 +4,7 @@
 let
   inherit (lib) mkIf mkOption mkEnableOption;
   emacs = (pkgs.appendOverlays [ overlay ]).emacsVlaci;
-  cfg = config.emacsVlaci; 
+  cfg = config.emacsVlaci;
 in {
   options.emacsVlaci = {
     enable = mkEnableOption {};
@@ -12,11 +12,17 @@ in {
     extraConfig = mkOption { default = ""; };
   };
   config = mkIf cfg.enable {
-    home.packages = [ cfg.package ];
+    fonts.fontconfig.enable = true;
+    home.packages = with pkgs; [
+      cfg.package
+      emacs-all-the-icons-fonts
+      iosevka-bin
+      (iosevka-bin.override { variant = "aile"; })
+    ];
     xdg.configFile."emacs/early-init.el".source = "${cfg.package.emacs_d}/early-init.el";
     xdg.configFile."emacs/init.el".text = ''
-      (load "default")
       ${cfg.extraConfig}
+      (load "default")
     '';
     xdg.desktopEntries."org-protocol" = {
       name = "Org-Protocol";
