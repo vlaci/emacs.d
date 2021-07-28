@@ -1,5 +1,66 @@
 #+TITLE: vlaci's Emacs configuration
 
+This repository is written using literate programming. All code necessary to develop it and run Emacs is generated from this =README=.
+
+* How-to
+
+This repository uses [[https://github.com/direnv/direnv][direnv]] together with [[https://github.com/target/lorri][lorri]] to automatically create a development shell. It is an optional tool, just using =nix develop= works as well. To help running common development tasks, the following [[https://github.com/casey/just][just]] is needed.
+
+You can see what commands are available with their short description by running =just help=:
+#+begin_src sh :tangle no :results output :wrap example :exports results
+  just help
+#+end_src
+
+#+RESULTS:
+#+begin_example
+Available recipes:
+    help   # Print help
+    try
+    tangle
+#+end_example
+
+** Under the hoods
+To set-up =lorri=, we define this =.envrc=:
+
+#+begin_src sh :tangle .envrc
+  if type lorri &>/dev/null; then
+      echo "direnv: using lorri"
+      eval "$(lorri direnv)"
+      IN_LORRI_SHELL= eval "$shellHook"
+  else
+      # fall back to using direnv's builtin nix support
+      # to prevent bootstrapping problems.
+      use nix
+  fi
+#+end_src
+
+You need to tell =direnv= to trust this this code:
+
+#+begin_src sh :tangle no
+ direnv allow
+#+end_src
+
+Now everything is set-up to be able to run the following =justfile=
+
+#+begin_src makefile :tangle justfile
+  # Print help
+  help:
+      just --list --unsorted
+
+  try:
+      #!/bin/sh
+      OUT=$(mktemp -u --suffix .result)
+      trap "rm -f $OUT" EXIT
+      NIXPKGS_ALLOW_UNFREE=1 nix build --impure --out-link $OUT
+      $OUT/bin/emacs
+
+  tangle:
+      #!/usr/bin/env nix-shell
+      #!nix-shell -p emacs -i "emacs --script"
+      (require 'ob-tangle)
+      (org-babel-tangle-file "README.org" nil "just\\|sh")
+#+end_src
+
 * early-init
 :PROPERTIES:
 :header-args: :tangle early-init.el
@@ -763,7 +824,8 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     (org-babel-do-load-languages
      'org-babel-load-languages
      '((emacs-lisp . t)
-       (python . t)))
+       (python . t)
+       (shell . t)))
     (dolist (face '((org-document-title . 2.0)
                     (org-level-1 . 1.6)
                     (org-level-2 . 1.4)
@@ -949,6 +1011,12 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     :mode "\\.mustache\\'"
     :mode "\\.djhtml\\'"
     :hook (web-mode . lsp-deferred))
+#+end_src
+
+*** Just
+
+#+begin_src emacs-lisp
+  (use-package just-mode)
 #+end_src
 
 *** Lua
