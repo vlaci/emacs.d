@@ -18,6 +18,14 @@ in {
       emacs-all-the-icons-fonts
       iosevka-bin
       (iosevka-bin.override { variant = "aile"; })
+
+      direnv
+      lorri
+
+      nodePackages.bash-language-server
+      pyright
+      rnix-lsp
+      rust-analyzer
     ];
     xdg.configFile."emacs/early-init.el".source = "${cfg.package.emacs_d}/early-init.el";
     xdg.configFile."emacs/init.el".text = ''
