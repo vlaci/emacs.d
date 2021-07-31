@@ -2,14 +2,36 @@
 { config, lib, pkgs, ...}:
 
 let
-  inherit (lib) mkIf mkOption mkEnableOption;
+  inherit (lib) concatMapStringsSep generators isAttrs isBool isInt isList mkIf mkOption mkEnableOption types;
   emacs = (pkgs.appendOverlays [ overlay ]).emacsVlaci;
   cfg = config.emacsVlaci;
+
+  toEmacsLisp = value:
+        if isBool value then
+          (if value then "t" else "nil")
+        else if isInt value then
+          value
+        else if isList value then
+          '''(${concatMapStringsSep " " toEmacsLisp value})''
+        else if isAttrs value && value ? elisp then
+          value.elisp
+        else
+          ''"${toString value}"'';
+  toEmacsConfig = generators.toKeyValue {
+    mkKeyValue = key: value:
+      let
+        value' = toEmacsLisp value;
+      in "(setq ${key} ${value'})";
+  };
 in {
   options.emacsVlaci = {
     enable = mkEnableOption {};
     package = mkOption { default = emacs; };
     extraConfig = mkOption { default = ""; };
+    settings = mkOption {
+      type = with types; attrsOf anything;
+      default = { };
+    };
   };
   config = mkIf cfg.enable {
     fonts.fontconfig.enable = true;
@@ -30,6 +52,7 @@ in {
     xdg.configFile."emacs/early-init.el".source = "${cfg.package.emacs_d}/early-init.el";
     xdg.configFile."emacs/init.el".text = ''
       ${cfg.extraConfig}
+      ${toEmacsConfig cfg.settings}
       (load "default")
     '';
     xdg.desktopEntries."org-protocol" = {
