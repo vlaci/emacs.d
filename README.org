@@ -175,6 +175,10 @@ Do not show the default welcome screen.
           '(("\\`\\*.*?\\*\\'" :regexp t :align t :size 0.4))))
 #+end_src
 
+#+begin_src emacs-lisp
+  (use-package hydra)
+#+end_src
+
 *** Modeline
 #+begin_src emacs-lisp
   (use-package doom-modeline
@@ -956,8 +960,6 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     :after lsp-mode
     :hook (lsp-mode . dap-mode)
     :config
-    (use-package hydra
-      :demand t)
     (add-hook 'dap-stopped-hook
               (lambda (arg) (call-interactively #'dap-hydra))))
 #+end_src
