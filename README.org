@@ -1158,7 +1158,6 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
   (use-package langtool)
 
   (use-package corfu
-    :disabled
     :hook (after-init . corfu-global-mode)
     :bind (:map corfu-map
            ("TAB" . corfu-next)
@@ -1166,11 +1165,28 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
            ("S-TAB" . corfu-previous)
            ([backtab] . corfu-previous))
     :init
-    (setq tab-always-indent 'complete))
+    (setq tab-always-indent 'complete)
+    (defvar comint-completion-addsuffix)
+    (autoload 'comint--match-partial-filename "comint")
+
+    (defun file-name-at-point ()
+      "File path completion function."
+      (when (comint--match-partial-filename)
+        (let ((comint-completion-addsuffix))
+          (comint--complete-file-name-data))))
+
+    (defun file-name-at-point-setup ()
+      "Setup file path completion at point in string literals."
+      (let ((global (memq t completion-at-point-functions)))
+        (setq-local completion-at-point-functions
+                    (delete-dups
+                     (append completion-at-point-functions
+                             (list #'file-name-at-point)
+                             (and global (list t)))))))
+
+    (add-hook 'prog-mode-hook #'file-name-at-point-setup))
 
   (use-package company
-    :hook (after-init . global-company-mode))
-
-  (use-package company-box
-    :hook (company-mode . company-box-mode))
+    :init
+    (setq company-idle-delay nil))
 #+end_src

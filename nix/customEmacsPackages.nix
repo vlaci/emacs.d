@@ -2,6 +2,17 @@
 
 final: prev:
 {
+  corfu = prev.corfu.override {
+    elpaBuild = args: prev.melpaBuild (args // {
+      src = inputs.corfu;
+      commit = inputs.corfu.rev;
+      recipe = writeText "recipe" ''
+        (corfu
+        :repo "minad/corfu"
+        :fetcher github)
+      '';
+    });
+  };
   embark = prev.embark.override {
     melpaBuild = args: prev.melpaBuild (args // {
       src = inputs.embark;
