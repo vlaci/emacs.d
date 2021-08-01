@@ -150,6 +150,8 @@ Do not show the default welcome screen.
           use-dialog-box nil))
 #+end_src
 
+For popup management
+
 #+begin_src emacs-lisp
   (use-package popper
     :bind (("C-`"   . popper-toggle-latest)
@@ -157,22 +159,58 @@ Do not show the default welcome screen.
            ("C-M-`" . popper-toggle-type))
     :hook (after-init . popper-mode)
     :config
-    ;t ;(setq popper-group-function #'popper-group-by-project)
+    ;;(setq popper-group-function #'popper-group-by-project)
     :init
+    (setq popper-display-control nil)
     (setq popper-reference-buffers
-          '("\\*Messages\\*"
-            "\\*Warning"
-            "Output\\*$"
+          '("\\*Warning"
+            "Output\\*\\'"
+            "\\*Backtrace\\*"
+            messages-buffer-mode
             help-mode
             helpful-mode
             compilation-mode)))
 
   (use-package shackle
-    :disabled
     :hook (after-init . shackle-mode)
     :init
+    ;; https://mullikine.github.io/posts/making-shackle-split-sensibly/
+    ;; This function is derived from split-window-sensibly
+    (defun vl-shackle-sensible-alignment (&optional window)
+      (interactive)
+      (let ((window (or window (selected-window))))
+        (or (and (window-splittable-p window)
+                 'below)
+            (and (window-splittable-p window t)
+                 'right)
+            (and
+             ;; If WINDOW is the only usable window on its frame (it is
+             ;; the only one or, not being the only one, all the other
+             ;; ones are dedicated) and is not the minibuffer window, try
+             ;; to split it vertically disregarding the value of
+             ;; `split-height-threshold'.
+             (let ((frame (window-frame window)))
+               (or
+                (eq window (frame-root-window frame))
+                (catch 'done
+                  (walk-window-tree (lambda (w)
+                                      (unless (or (eq w window)
+                                                  (window-dedicated-p w))
+                                        (throw 'done nil)))
+                                    frame)
+                  t)))
+             (not (window-minibuffer-p window))
+             (let ((split-height-threshold 0))
+               (when (window-splittable-p window)
+                 'below))))))
+
     (setq shackle-rules
-          '(("\\`\\*.*?\\*\\'" :regexp t :align t :size 0.4))))
+          '(
+            ((help-mode helpful-mode)
+             :noselect t :align right :size 0.5)
+            ("*company-documentation*" :noselect t :align right :size 0.3)
+            ((messages-buffer-mode "\\`\\*Backtrace\\*" "\\`\\*Warnings\\*" "Output\\*\\'")
+             :noselect t :regexp t :align cl-shackle-sensible-alignment :size 0.3))))
 #+end_src
 
 #+begin_src emacs-lisp
