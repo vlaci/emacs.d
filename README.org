@@ -937,9 +937,10 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
 
   (use-package lsp-ui
     :hook (lsp-mode . lsp-ui-mode)
+    :bind ("M-h" . lsp-ui-doc-show)
     :config
     (setq lsp-ui-sideline-ignore-duplicate t
-          lsp-ui-doc-show-with-cursor t
+          lsp-ui-doc-show-with-cursor nil
           lsp-ui-doc-show-with-mouse nil
           lsp-ui-doc-position 'top ;; 'at-point
           lsp-ui-sideline-show-hover nil
