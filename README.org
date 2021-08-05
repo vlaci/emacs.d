@@ -37,7 +37,7 @@ To set-up =lorri=, we define this =.envrc=:
 You need to tell =direnv= to trust this this code:
 
 #+begin_src sh :tangle no
- direnv allow
+  direnv allow
 #+end_src
 
 Now everything is set-up to be able to run the following =justfile=
@@ -95,25 +95,22 @@ to disable UI elements from it. Lifted from ~doom-emacs~
 ** initialization
 #+begin_src emacs-lisp
   (setq ;; don't add that `custom-set-variables' block to my initl!
-        package--init-file-ensured t
-        vc-follow-symlinks nil
-        custom-file (expand-file-name "settings.el" user-emacs-directory))
+   package--init-file-ensured t
+   vc-follow-symlinks nil
+   custom-file (expand-file-name "settings.el" user-emacs-directory))
 
   (defun vl/display-startup-time ()
     (message "⏱ Emacs started in %s seconds with %d garbage collections."
-         (emacs-init-time)
-         gcs-done))
+             (emacs-init-time)
+             gcs-done))
   (add-hook 'emacs-startup-hook #'vl/display-startup-time)
 #+end_src
 *** use-package
 #+begin_src emacs-lisp
   (eval-when-compile
-    (require 'use-package))
+  (require 'use-package))
   (setq use-package-always-defer t
-        ;;use-package-verbose t
-        use-package-expand-minimally t
-        ;;use-package-compute-statistics t
-        )
+        use-package-expand-minimally t)
   (require 'use-package)
 #+end_src
 
@@ -252,7 +249,7 @@ For popup management
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package leuven-theme)
+  (use-package leuven-theme)
 #+end_src
 ** Key binding
 #+begin_src emacs-lisp
