@@ -1172,6 +1172,13 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
   (use-package grip-mode)
   (use-package evil-markdown)
 #+end_src
+*** YAML
+
+#+begin_src emacs-lisp
+  (use-package yaml-mode)
+  (use-package gitlab-ci-mode)
+#+end_src
+
 *** Misc
 #+begin_src emacs-lisp
   (use-package direnv
