@@ -13,8 +13,6 @@
     corfu.flake = false;
     embark.url = "github:oantolin/embark";
     embark.flake = false;
-    org-roam.url = "github:org-roam/org-roam";
-    org-roam.flake = false;
   };
 
   outputs = { self, nixpkgs, flake-utils, ... }@inputs:

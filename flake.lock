@@ -110,22 +110,6 @@
         "type": "github"
       }
     },
-    "org-roam": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1626533671,
-        "narHash": "sha256-68YVPJ4TSEuiVMWRXBAqvNmGTZs345zu2fkkht6iIjY=",
-        "owner": "org-roam",
-        "repo": "org-roam",
-        "rev": "2168490d5ada18629958788771e547d8c86fba20",
-        "type": "github"
-      },
-      "original": {
-        "owner": "org-roam",
-        "repo": "org-roam",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
         "corfu": "corfu",
@@ -135,7 +119,6 @@
         "flake-utils": "flake-utils",
         "ligature": "ligature",
         "nixpkgs": "nixpkgs",
-        "org-roam": "org-roam",
         "vertico": "vertico"
       }
     },
