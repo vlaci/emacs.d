@@ -8,6 +8,6 @@ let
   parse = final.callPackage "${inputs.emacs-overlay}/parse.nix" { };
 in
 eo // {
-  emacsPackagesFor = emacs: (prev.emacsPackagesFor emacs).overrideScope' customEmacsPackages;
+  emacsPackagesFor = emacs: (eo.emacsPackagesFor emacs).overrideScope' customEmacsPackages;
   emacsVlaci = final.callPackage ./emacs.nix { inherit emacs inputs parse; };
 }
