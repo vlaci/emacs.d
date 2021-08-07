@@ -127,6 +127,19 @@ Hook into =use-package= so that package autoloads are loaded without a call to =
          `((load ,(format "%s-autoloads" name) t t))
          body))))
 #+end_src
+
+*** Server
+
+#+begin_src emacs-lisp
+  (use-package server
+    :ensure nil
+    :when (display-graphic-p)
+    :defer 1
+    :config
+    (unless (server-running-p)
+      (server-start)))
+#+end_src
+
 *** No-littering
 #+begin_src emacs-lisp
   (use-package no-littering
