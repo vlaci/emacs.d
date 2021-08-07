@@ -108,24 +108,12 @@ to disable UI elements from it. Lifted from ~doom-emacs~
 *** use-package
 #+begin_src emacs-lisp
   (eval-when-compile
-  (require 'use-package))
-  (setq use-package-always-defer t
+    (require 'use-package))
+  (setq use-package-always-defer nil
+        use-package-verbose nil
+        use-package-compute-statistics nil
         use-package-expand-minimally t)
-  (require 'use-package)
-#+end_src
-
-*** Set-up autoloading
-Hook into =use-package= so that package autoloads are loaded without a call to =(package-initialize)=
-#+begin_src emacs-lisp
-  (with-eval-after-load 'use-package-core
-    (push :autoload use-package-keywords)
-    (push '(:autoload t t) use-package-defaults)
-    (defalias 'use-package-normalize/:autoload 'use-package-normalize-predicate)
-    (defun use-package-handler/:autoload (name keyword arg rest state)
-      (let ((body (use-package-process-keywords name rest state)))
-        (use-package-concat
-         `((load ,(format "%s-autoloads" name) t t))
-         body))))
+  (package-activate-all)
 #+end_src
 
 *** Server
@@ -154,10 +142,14 @@ Hook into =use-package= so that package autoloads are loaded without a call to =
 Do not show the default welcome screen.
 
 #+begin_src emacs-lisp
-  (use-package emacs
-    :init
-    (setq inhibit-startup-screen t
-          use-dialog-box nil))
+  (setq use-dialog-box nil)
+
+  (setq inhibit-startup-message t
+        inhibit-startup-echo-area-message user-login-name
+        inhibit-default-init t
+        inhibit-startup-sceen t
+        initial-major-mode 'fundamental-mode
+        initial-scratch-message nil)
 #+end_src
 
 For popup management
@@ -224,7 +216,8 @@ For popup management
 #+end_src
 
 #+begin_src emacs-lisp
-  (use-package hydra)
+  (use-package hydra
+    :defer t)
 #+end_src
 
 *** Modeline
@@ -268,7 +261,7 @@ For popup management
 #+begin_src emacs-lisp
   (use-package evil
     :hook
-    (after-init . (lambda()(evil-mode 1)))
+    (after-init . evil-mode )
     :init
     (setq evil-want-integration t
           evil-want-keybinding nil
@@ -280,7 +273,6 @@ For popup management
     :config
     (use-package undo-tree
       :init (setq undo-tree-auto-save-history t)
-      :demand t
       :config (global-undo-tree-mode))
 
     (defun vl/set-shift-width ()
@@ -294,16 +286,11 @@ For popup management
 
     (evil-set-initial-state 'messages-buffer-mode 'normal)
 
+    )
     (use-package evil-collection
       :after evil
-      :defer nil
       :config
       (evil-collection-init))
-    )
-
-  (use-package undo-fu
-    :config
-    (setq undo-fu-allow-undo-in-region t))
 
   ;; Make ESC quit prompts
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -435,6 +422,7 @@ In visual mode =S<textobj>=, =gS<textobj>,= in normal mode =ys<textobj>= or =yS<
     :hook (after-init . vertico-mode))
 
   (use-package orderless
+    :defer t
     :init
     (setq completion-styles '(orderless)
           completion-category-defaults nil
@@ -633,7 +621,7 @@ In visual mode =S<textobj>=, =gS<textobj>,= in normal mode =ys<textobj>= or =yS<
 ** Which-key
 #+begin_src emacs-lisp
 (use-package which-key
-  :defer 0
+  :defer 1
   :init
   (setq which-key-idle-delay 1)
   :config
@@ -692,25 +680,20 @@ In visual mode =S<textobj>=, =gS<textobj>,= in normal mode =ys<textobj>= or =yS<
           ("C-x t M-t" . treemacs-find-tag)))
 
   (use-package treemacs-evil
-    :defer nil
     :after (treemacs evil))
 
   (use-package treemacs-projectile
-    :defer nil
     :after (treemacs projectile))
 
   (use-package treemacs-icons-dired
-    :defer nil
     :after (treemacs dired)
     :config (treemacs-icons-dired-mode))
 
   (use-package treemacs-magit
-    :defer nil
     :after (treemacs magit))
-  ;;(use-package treemacs-persp ;;treemacs-persective if you use perspective.el vs. persp-mode
-  ;;  :after treemacs persp-mode ;;or perspective vs. persp-mode
-  ;;  :ensure t
-  ;;  :config (treemacs-set-scope-type 'Perspectives))
+  (use-package treemacs-persp ;;treemacs-persective if you use perspective.el vs. persp-mode
+    :after treemacs persp-mode ;;or perspective vs. persp-mode
+    :config (treemacs-set-scope-type 'Perspectives))
 #+end_src
 ** Misc
 #+begin_src emacs-lisp
@@ -729,9 +712,8 @@ In visual mode =S<textobj>=, =gS<textobj>,= in normal mode =ys<textobj>= or =yS<
 
   (defalias 'yes-or-no-p 'y-or-n-p)
 
-  (use-package vterm)
-  (use-package esup
-    :commands esup)
+  (use-package vterm
+    :defer t)
 
   ;; performance considerations
   (use-package gcmh
@@ -790,6 +772,7 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
 ** Magit
 #+begin_src emacs-lisp
   (use-package magit
+    :defer t
     :init
     (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1
           git-commit-major-mode 'markdown-mode)
@@ -847,6 +830,7 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
 ** Org mode
 #+begin_src emacs-lisp
   (use-package org
+    :defer t
     :hook (org-mode . visual-line-mode)
     :init
     (setq org-ellipsis " ▾"
@@ -926,7 +910,6 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     (setq olivetti-body-width 120))
 
   (use-package org-roam
-    :defer nil
     :general
     (global-leader-prefix
       "n" '(:ignore t :which-key "notes")
@@ -940,7 +923,6 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     :init
     (setq org-roam-v2-ack t)
     :config
-    (use-package emacsql-sqlite)
     (org-roam-setup)
     ;; If using org-roam-protocol
     (require 'org-roam-protocol)
@@ -958,7 +940,8 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     (org-journal-date-format "%Y-%m-%d, %A")
     (org-journal-file-type 'weekly))
 
-  (use-package git-auto-commit-mode)
+  (use-package git-auto-commit-mode
+    :defer t)
 #+end_src
 ** Programming
 #+begin_src emacs-lisp
@@ -1015,6 +998,7 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
 #+begin_src emacs-lisp
   (use-package elisp-mode
     :ensure nil
+    :defer t
     :hook (emacs-lisp-mode
            . (lambda ()
                (setq tab-width 2))))
@@ -1068,7 +1052,8 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
 *** Just
 
 #+begin_src emacs-lisp
-  (use-package just-mode)
+  (use-package just-mode
+    :defer t)
 #+end_src
 
 *** Lua
@@ -1181,23 +1166,26 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     :hook (markdown-mode . lsp-deferred)
     :config
     (add-to-list 'markdown-code-lang-modes '("rust" . rustic-mode)))
-  (use-package edit-indirect)
-  (use-package grip-mode)
-  (use-package evil-markdown)
+  (use-package edit-indirect
+    :defer t)
+  (use-package grip-mode
+    :defer t)
+  (use-package evil-markdown
+    :defer t)
 #+end_src
 *** YAML
 
 #+begin_src emacs-lisp
-  (use-package yaml-mode)
-  (use-package gitlab-ci-mode)
+  (use-package yaml-mode
+    :defer t)
+  (use-package gitlab-ci-mode
+    :defer t)
 #+end_src
 
 *** Misc
 #+begin_src emacs-lisp
   (use-package direnv
-    :defer nil
-    :config
-    (direnv-mode))
+    :hook (after-init . direnv-mode))
 
   (use-package flycheck
     :hook (after-init . global-flycheck-mode))
@@ -1213,7 +1201,8 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     (ispell-set-spellchecker-params)
     (ispell-hunspell-add-multi-dic ispell-dictionary))
 
-  (use-package langtool)
+  (use-package langtool
+    :defer t)
 
   (use-package corfu
     :hook (after-init . corfu-global-mode)
@@ -1245,6 +1234,7 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     (add-hook 'prog-mode-hook #'file-name-at-point-setup))
 
   (use-package company
+    :defer t
     :init
     (setq company-idle-delay nil))
 #+end_src

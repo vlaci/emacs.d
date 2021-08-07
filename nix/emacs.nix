@@ -1,5 +1,5 @@
 { inputs
-, emacsWithPackagesFromUsePackage
+, emacsPackagesGen
 , emacs
 , runCommand
 , writeText
@@ -12,6 +12,7 @@
 , nodejs-slim
 , nodePackages
 , sumneko-lua-language-server
+, parse
 }:
 
 let
@@ -40,46 +41,60 @@ let
        (advice-add 'lsp-css--server-command
                    :override (lambda () (list "${nodePackages.vscode-css-languageserver-bin}/bin/css-languageserver" "--stdio")))
     '';
+
+  packages = parse.parsePackagesFromUsePackage {
+    configText = builtins.readFile ../README.org;
+    isOrgModeFile = true;
+    alwaysTangle = true;
+    alwaysEnsure = true;
+  };
+
+  emacsPackages = emacsPackagesGen emacs;
+  emacsWithPackages = emacsPackages.emacsWithPackages;
+
+  mkEmacs = extraPkgs:
+  emacsWithPackages (epkgs:
+    (map (n: epkgs.${n}) packages)
+    ++ (extraPkgs epkgs)
+  );
+
+  emacsStage1 = mkEmacs (epkgs: [ epkgs.use-package ]);
+
+
   emacs_d = runCommand "mk-emacs.d"
     {
-      buildInputs = [ emacs ];
+      buildInputs = [ emacsStage1 ];
       literateInitFile = ../README.org;
     } ''
     mkdir -p $out
     cp $literateInitFile $out/init.org
     emacs --batch --quick -l ob-tangle --eval '(org-babel-tangle-file "'$out'/init.org")'
     rm $out/init.org
+    emacs --batch --quick -l package --eval '(let ((package-quickstart-file "'$out'/autoloads.el")) (package-quickstart-refresh))'
   '';
 
-in
-emacsWithPackagesFromUsePackage
-  {
-    config = ../README.org;
-    package = emacs;
-    alwaysEnsure = true;
-    alwaysTangle = true;
+  emacsStage2 = mkEmacs (epkgs: let
+        default = epkgs.trivialBuild {
+          pname = "default";
+          packageRequires = [
+            epkgs.use-package
+          ];
+          buildPhase = ":";
+          postInstall = ":";
+          unpackPhase = ''
+            cp ${emacs-nixos-integration} ./nixos-integration.el
+            cp ${emacs_d}/{*.el,*.elc} .
+            cat > default.el <<EOF
+            (load "nixos-integration")
+            (setq package-quickstart-file "$out/share/emacs/site-lisp/autoloads.el")
+            (load "init")
+            EOF
+          '';
+        };
+      in
+      [
+        default
+      ]);
 
-    extraEmacsPackages = epkgs: with epkgs; let
-      default = epkgs.trivialBuild {
-        pname = "default";
-        packageRequires = [
-          use-package
-        ];
-        buildPhase = ":";
-        postInstall = ":";
-        unpackPhase = ''
-          cp ${emacs-nixos-integration} ./nixos-integration.el
-          cp ${emacs_d}/*.el .
-          cat > default.el <<EOF
-          (load "nixos-integration")
-          (load "init")
-          EOF
-        '';
-      };
-    in
-    [
-      default
-    ];
-  } // {
-  inherit emacs_d emacs-nixos-integration;
-}
+  in
+emacsStage2 // { inherit emacs_d emacs-nixos-integration; }
