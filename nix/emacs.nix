@@ -70,31 +70,26 @@ let
     cp $literateInitFile $out/init.org
     emacs --batch --quick -l ob-tangle --eval '(org-babel-tangle-file "'$out'/init.org")'
     rm $out/init.org
-    emacs --batch --quick -l package --eval '(let ((package-quickstart-file "'$out'/autoloads.el")) (package-quickstart-refresh))'
+    emacs --batch --quick -l package --eval '(let ((package-quickstart-file "'$out'/autoloads.el")) (defun byte-compile-file (f)) (package-quickstart-refresh))'
   '';
 
   emacsStage2 = mkEmacs (epkgs: let
-        default = epkgs.trivialBuild {
-          pname = "default";
-          packageRequires = [
-            epkgs.use-package
-          ];
-          buildPhase = ":";
-          postInstall = ":";
-          unpackPhase = ''
-            cp ${emacs-nixos-integration} ./nixos-integration.el
-            cp ${emacs_d}/{*.el,*.elc} .
-            cat > default.el <<EOF
-            (load "nixos-integration")
-            (setq package-quickstart-file "$out/share/emacs/site-lisp/autoloads.el")
-            (load "init")
-            EOF
-          '';
-        };
-      in
-      [
-        default
-      ]);
-
+    default = epkgs.trivialBuild {
+      pname = "default";
+      packageRequires = emacsStage1.deps.explicitRequires;
+      unpackPhase = ''
+        cp ${emacs-nixos-integration} ./nixos-integration.el
+        cp ${emacs_d}/{*.el,*.elc} .
+        cat > default.el <<EOF
+        (load "nixos-integration")
+        (setq package-quickstart-file "$out/share/emacs/site-lisp/autoloads.el")
+        (load "init")
+        EOF
+      '';
+    };
   in
-emacsStage2 // { inherit emacs_d emacs-nixos-integration; }
+  [
+    default
+  ]);
+in
+  emacsStage2 // { inherit emacs_d emacs-nixos-integration; }
