@@ -1171,7 +1171,6 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
 *** Markdown
 #+begin_src emacs-lisp
   (use-package markdown-mode
-    :mode ("\\.md$" . gfm-mode)
     :hook (markdown-mode . lsp-deferred)
     :config
     (add-to-list 'markdown-code-lang-modes '("rust" . rustic-mode)))

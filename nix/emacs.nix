@@ -36,7 +36,8 @@ let
                     lsp-clangd-binary-path "${clang-tools}/bin/clangd"
                     lsp-clients-typescript-tls-path "${nodePackages.typescript-language-server}/bin/typescript-language-server"
                     lsp-clients-lua-language-server-bin "${sumneko-lua-language-server}/bin/lua-language-server"
-                    lsp-clients-lua-language-server-main-location "${sumneko-lua-language-server}/extras/main.lua")
+                    lsp-clients-lua-language-server-main-location "${sumneko-lua-language-server}/extras/main.lua"
+                    lsp-markdown-server-command "${nodePackages.unified-language-server}/bin/unified-language-server")
 
        (advice-add 'lsp-css--server-command
                    :override (lambda () (list "${nodePackages.vscode-css-languageserver-bin}/bin/css-languageserver" "--stdio")))
