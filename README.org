@@ -797,13 +797,15 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
   (setq-default
    indent-tabs-mode nil
    tab-width 4
-   show-trailing-whitespace t
    require-final-newline t
    view-read-only t)
 
   ;; Controls language and format of dates
   (setq system-time-locale "en_US"
         calendar-week-start-day 1)
+
+  (use-package emacs
+    :hook (prog-mode . (lambda () (setq show-trailing-whitespace t))))
 
   (use-package tab-line
     :ensure nil
