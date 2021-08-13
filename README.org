@@ -466,7 +466,7 @@ In visual mode =S<textobj>=, =gS<textobj>,= in normal mode =ys<textobj>= or =yS<
       "f r" '(consult-recent-file :wk "Recent files")
       "h M" '(consult-man :wk "Show a man page")
       "m m" 'consult-bookmark
-      "p s" '(consult-ripgrep :wk "Search in project")
+      "s p" '(consult-ripgrep :wk "Search in project")
       "s i" '(consult-imenu :wk "Go-to item")
       "s o" '(consult-outline :wk "Go-to outline")
       "s s" '(consult-line :wk "Search in current buffer")
