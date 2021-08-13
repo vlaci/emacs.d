@@ -225,6 +225,8 @@ For popup management
 #+begin_src emacs-lisp
   (use-package doom-modeline
     :hook (window-setup . doom-modeline-mode)
+    :hook (doom-modeline-mode . size-indication-mode)
+    :hook (doom-modeline-mode . column-number-mode)
     :init
     (setq doom-modeline-hud t
           doom-modeline-buffer-file-name-style 'truncate-upto-project))
