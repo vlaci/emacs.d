@@ -978,13 +978,16 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     :hook (lsp-mode . lsp-ui-mode)
     :bind ("M-h" . lsp-ui-doc-show)
     :config
-    (setq lsp-ui-sideline-ignore-duplicate t
-          lsp-ui-doc-show-with-cursor nil
+    (setq lsp-ui-doc-show-with-cursor nil
           lsp-ui-doc-show-with-mouse nil
           lsp-ui-doc-position 'top ;; 'at-point
           lsp-ui-sideline-show-hover nil
+          lsp-ui-sideline-ignore-duplicate t
+          lsp-ui-sideline-enable nil
+          lsp-ui-sideline-actions-icon lsp-ui-sideline-actions-icon-default
           lsp-ui-doc-max-width 80
           lsp-ui-doc-max-height 40
+          lsp-headerline-breadcrumb-enable nil
           lsp-lens-enable t
           lsp-file-watch-threshold 1000000))
 
@@ -1193,6 +1196,9 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
 
   (use-package flycheck
     :hook (after-init . global-flycheck-mode))
+
+  (use-package flycheck-posframe
+    :hook (flycheck-mode . flycheck-posframe-mode))
 
   (use-package flyspell
     :ensure nil
