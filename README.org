@@ -727,11 +727,9 @@ In visual mode =S<textobj>=, =gS<textobj>,= in normal mode =ys<textobj>= or =yS<
 #+begin_src emacs-lisp
     (custom-theme-set-faces
      'user
-     '(variable-pitch ((t (:family "Noto Sans" ;;:height 180 :weight thin
+     '(variable-pitch ((t (:family "Iosevka Aile" ;;:height 180 :weight thin
                                    ))))
      '(fixed-pitch ((t ( :family "Iosevka Extended" ;;:height 160
-                         ))))
-     '(fixed-pitch ((t ( :family "Iosevka Aile" ;;:height 160
                          ))))
      '(default ((t ( :family "Iosevka Extended" ;;:height 160
                          ))))
