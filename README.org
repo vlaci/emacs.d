@@ -666,6 +666,9 @@ In visual mode =S<textobj>=, =gS<textobj>,= in normal mode =ys<textobj>= or =yS<
       (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
     :config
     (setq
+     treemacs-follow-after-init t
+     treemacs-is-never-other-window t
+     treemacs-sorting 'alphabetic-case-insensitive-asc
      treemacs-position     'left
      treemacs-width        35)
 
