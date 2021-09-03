@@ -404,15 +404,15 @@ In visual mode =S<textobj>=, =gS<textobj>,= in normal mode =ys<textobj>= or =yS<
        (height . 15))))
 
   (defun vl/minibuffer-backward-kill (arg)
-    "When minibuffer is completing a file name delete up to parent
+  "When minibuffer is completing a file name delete up to parent
   folder, otherwise delete a word"
-    (interactive "p")
-    (if minibuffer-completing-file-name
-        ;; Borrowed from https://github.com/raxod502/selectrum/issues/498#issuecomment-803283608
-        (if (string-match-p "/." (minibuffer-contents))
-            (zap-up-to-char (- arg) ?/)
-          (delete-minibuffer-contents))
-        (backward-kill-word arg)))
+  (interactive "p")
+  (if minibuffer-completing-file-name
+      ;; Borrowed from https://github.com/raxod502/selectrum/issues/498#issuecomment-803283608
+      (if (string-match-p "/." (minibuffer-contents))
+          (zap-up-to-char (- arg) ?/)
+        (delete-minibuffer-contents))
+    (backward-kill-word arg)))
 
   (use-package vertico
     :bind (:map vertico-map
