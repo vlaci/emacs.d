@@ -66,7 +66,7 @@ Now everything is set-up to be able to run the following =justfile=
 :PROPERTIES:
 :header-args: :tangle early-init.el
 :END:
-Early init is loaded before graphics subsistem is initialized so it makes sense
+Early init is loaded before graphics subsystem is initialized so it makes sense
 to disable UI elements from it. Lifted from ~doom-emacs~
 #+begin_src emacs-lisp
 ;; Defer garbage collection further back in the startup process
