@@ -859,11 +859,6 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     ;; Save Org buffers after refiling!
     (advice-add 'org-refile :after 'org-save-all-org-buffers)
 
-    ;; Replace list hyphen with dot
-    (font-lock-add-keywords 'org-mode
-                            '(("^ *\\([-]\\) "
-                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-
     (org-babel-do-load-languages
      'org-babel-load-languages
      '((emacs-lisp . t)
