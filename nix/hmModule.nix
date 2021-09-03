@@ -40,6 +40,7 @@ in {
       emacs-all-the-icons-fonts
       iosevka-bin
       (iosevka-bin.override { variant = "aile"; })
+      etBook
 
       direnv
       lorri

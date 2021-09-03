@@ -758,39 +758,28 @@ In visual mode =S<textobj>=, =gS<textobj>,= in normal mode =ys<textobj>= or =yS<
     :defer t)
 #+end_src
 ** Font
-#+begin_src emacs-lisp
-    (custom-theme-set-faces
-     'user
-     '(variable-pitch ((t (:family "Iosevka Aile" ;;:height 180 :weight thin
-                                   ))))
-     '(fixed-pitch ((t ( :family "Iosevka Extended" ;;:height 160
-                         ))))
-     '(default ((t ( :family "Iosevka Extended" ;;:height 160
-                         ))))
-     )
 
-  ;;  (set-face-attribute 'default nil :font "Fira Code")
-  ;;  (set-face-attribute 'fixed-pitch nil :font "Fira Code")
-  ;;  (set-face-attribute 'variable-pitch nil :font "Noto Sans")
+#+begin_src emacs-lisp
+  (defvar vl-default-font (font-spec :name "Iosevka Extended" :size 14))
+  (defvar vl-sans-font (font-spec :name "Iosevka Aile" :size 14))
+  (defvar vl-serif-font (font-spec :name "ETBembo" :size 14))
+  (set-face-attribute 'variable-pitch nil :font vl-sans-font)
+  (set-face-attribute 'fixed-pitch nil :font vl-default-font)
+  (set-face-attribute 'default nil :font vl-default-font)
+  (add-to-list 'default-frame-alist
+               `(font . ,(font-xlfd-name vl-default-font)))
 #+end_src
+
 Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
 #+begin_src emacs-lisp
   ;; set font for emoji
   (set-fontset-font
    t
    'symbol
-   (cond
-    ((member "noto color emoji" (font-family-list)) "noto color emoji")
-    ((member "noto emoji" (font-family-list)) "noto emoji")
-    ((member "segoe ui emoji" (font-family-list)) "segoe ui emoji")
-    ((member "symbola" (font-family-list)) "symbola")
-    ((member "apple color emoji" (font-family-list)) "apple color emoji"))
-   ;; apple color emoji should be before symbola, but richard stallman disabled it.
-   ;; gnu emacs removes color emoji support on the mac
-   ;; http://ergoemacs.org/misc/emacs_macos_emoji.html
-   ;;
-   )
+    "Noto Color Emoji")
+#+end_src
 
+#+begin_src emacs-lisp
   (use-package ligature
     :demand t
     :config
@@ -802,9 +791,8 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     ;; Enables ligature checks globally in all buffers. You can also do it
     ;; per mode with `ligature-mode'.
     (global-ligature-mode t))
-
-
 #+end_src
+
 ** Magit
 #+begin_src emacs-lisp
   (use-package magit
