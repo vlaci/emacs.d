@@ -3,12 +3,12 @@ help:
     just --list --unsorted
 
 try:
-    #!/bin/sh
+    #!/bin/sh -e
     OUT=$(mktemp -u --suffix .result)
     echo "Building into $OUT..."
     trap "rm -f $OUT" EXIT
     NIXPKGS_ALLOW_UNFREE=1 nix build --impure --out-link $OUT
-    $OUT/bin/emacs
+    $OUT/bin/emacs --debug-init
 
 tangle:
     #!/usr/bin/env nix-shell
