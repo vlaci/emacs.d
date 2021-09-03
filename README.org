@@ -1243,4 +1243,22 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     :defer t
     :init
     (setq company-idle-delay nil))
+
+  (use-package dired
+    :ensure nil
+    :init
+    (setq dired-dwim-target t
+          dired-auto-revert-buffer t
+          dired-kill-when-opening-new-dired-buffer t
+          dired-recursive-copies 'always
+          dired-recursive-deletes 'top
+          dired-listing-switches "-ahlv --group-directories-first"))
+
+  (use-package diredfl
+    :hook (dired-mode . diredfl-mode))
+  (use-package all-the-icons-dired
+    :hook (dired-mode . all-the-icons-dired-mode))
+  (use-package dired-x
+    :disabled
+    :hook (dired-mode . dired-omit-mode))
 #+end_src
