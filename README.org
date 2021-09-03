@@ -789,7 +789,7 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
 #+begin_src emacs-lisp
   (use-package diff-hl
     :hook (after-init . global-diff-hl-mode)
-    :hook (dired . diff-hl-dired-mode)
+    :hook (dired-mode . diff-hl-dired-mode)
     :hook (magit-pre-refresh . diff-hl-magit-pre-refresh)
     :hook (magit-post-refresh-hook . diff-hl-magit-post-refresh))
 #+end_src
