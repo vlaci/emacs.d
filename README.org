@@ -310,7 +310,8 @@ For popup management
           evil-want-C-i-jump nil
           evil-undo-system 'undo-tree
           evil-want-fine-undo t
-          evil-search-module 'isearch)
+          evil-search-module 'isearch
+          evil-symbol-word-search t)
     :config
     (use-package undo-tree
       :init (setq undo-tree-auto-save-history t)
