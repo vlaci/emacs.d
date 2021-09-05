@@ -257,6 +257,12 @@ For popup management
     :defer t)
 #+end_src
 
+#+begin_src emacs-lisp
+  (use-package winner
+    :ensure nil
+    :hook (window-setup . winner-mode))
+#+end_src
+
 *** Modeline
 #+begin_src emacs-lisp
   (use-package doom-modeline
