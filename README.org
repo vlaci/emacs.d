@@ -886,16 +886,17 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
      '((emacs-lisp . t)
        (python . t)
        (shell . t)))
-    (dolist (face '((org-document-title . 2.0)
-                    (org-level-1 . 1.6)
-                    (org-level-2 . 1.4)
-                    (org-level-3 . 1.3)
-                    (org-level-4 . 1.3)
-                    (org-level-5 . 1.2)
+    (dolist (face '((org-document-title . 3.0)
+                    (org-level-1 . 2.5)
+                    (org-level-2 . 2.0)
+                    (org-level-3 . 1.6)
+                    (org-level-4 . 1.4)
+                    (org-level-5 . 1.3)
                     (org-level-6 . 1.2)
                     (org-level-7 . 1.1)
-                    (org-level-8 . 1.1)))
-      (set-face-attribute (car face) nil :font "Iosevka Aile" :weight 'medium :height (cdr face)))
+                    (org-level-8 . 1.0)))
+      (set-face-attribute (car face) nil :weight 'medium :height (cdr face)))
+    (set-face-attribute 'org-ellipsis nil :underline nil)
 
     (use-package org-habit
       :ensure nil
@@ -923,9 +924,9 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     :hook (org-mode . org-superstar-mode)
     :custom
     (org-superstar-remove-leading-stars t)
-    ;; U+E3D0-2, 4-9
-    ;; #x25c9 #x25cb #x2738 #x273f ◉○✸✿
-    (org-superstar-headline-bullets-list '("" "" "" "" "" "" "" "" "")))
+    (org-superstar-headline-bullets-list '("›"))
+    (org-superstar-special-todo-items t)
+    )
 
   (use-package olivetti
     :hook (org-mode . olivetti-mode)
