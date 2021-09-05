@@ -812,11 +812,27 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
 #+end_src
 
 #+begin_src emacs-lisp
+  (use-package git-gutter-fringe
+    :defer 5
+    :init
+    ;; places the git gutter outside the margins.
+    (setq-default fringes-outside-margins t)
+    :config
+    (fringe-mode '4)
+    ;; thin fringe bitmaps
+    (define-fringe-bitmap 'git-gutter-fr:added [224]
+      nil nil '(center repeated))
+    (define-fringe-bitmap 'git-gutter-fr:modified [224]
+      nil nil '(center repeated))
+    (define-fringe-bitmap 'git-gutter-fr:deleted [128 192 224 240]
+      nil nil 'bottom)
+    (global-git-gutter-mode))
+
   (use-package diff-hl
-    :hook (after-init . global-diff-hl-mode)
-    :hook (dired-mode . diff-hl-dired-mode)
-    :hook (magit-pre-refresh . diff-hl-magit-pre-refresh)
-    :hook (magit-post-refresh-hook . diff-hl-magit-post-refresh))
+    :hook (dired-mode . diff-hl-dired-mode-unless-remote)
+    :hook (magit-post-refresh . diff-hl-magit-post-refresh)
+    :config
+    (fringe-mode '4))
 #+end_src
 
 ** Basic editing
