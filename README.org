@@ -1059,6 +1059,18 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
   (use-package sass-mode
     :hook (sass-mode .lsp-deferred))
 #+end_src
+
+*** Docker
+
+#+begin_src emacs-lisp
+  (use-package docker
+    :defer t)
+  (use-package docker-tramp
+    :defer t)
+  (use-package dockerfile-mode
+    :mode "\\Dockerfile\\'")
+#+end_src
+
 *** HTML & Templating
 
 #+begin_src emacs-lisp
