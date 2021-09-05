@@ -626,6 +626,12 @@ In visual mode =S<textobj>=, =gS<textobj>,= in normal mode =ys<textobj>= or =yS<
     ;; (setq consult-project-root-function (lambda () (locate-dominating-file "." ".git")))
     )
 
+  (use-package consult-dir
+    :bind (("C-x C-d" . consult-dir)
+           :map vertico-map
+           ("C-x C-d" . consult-dir)
+           ("C-x C-j" . consult-dir-jump-file)))
+
   (use-package embark
     :bind (("C-S-a" . embark-act)
            :map minibuffer-local-map
