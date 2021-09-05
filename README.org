@@ -265,7 +265,9 @@ For popup management
     :hook (doom-modeline-mode . column-number-mode)
     :init
     (setq doom-modeline-hud t
-          doom-modeline-buffer-file-name-style 'truncate-upto-project))
+          doom-modeline-buffer-file-name-style 'truncate-upto-project
+          doom-modeline-buffer-encoding 'nondefault
+          doom-modeline-default-eol-type 0))
 #+end_src
 *** Themes
 #+begin_src emacs-lisp
