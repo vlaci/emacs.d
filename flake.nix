@@ -7,12 +7,6 @@
     ligature.flake = false;
     evil-markdown.url = "github:Somelauw/evil-markdown";
     evil-markdown.flake = false;
-    vertico.url = "github:minad/vertico";
-    vertico.flake = false;
-    corfu.url = "github:minad/corfu";
-    corfu.flake = false;
-    embark.url = "github:oantolin/embark";
-    embark.flake = false;
   };
 
   outputs = { self, nixpkgs, flake-utils, ... }@inputs:

@@ -1,21 +1,5 @@
 {
   "nodes": {
-    "corfu": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1628818193,
-        "narHash": "sha256-EZXWef145XssP7g2G46+z+z80oaIty1fAnTFqxzX6GY=",
-        "owner": "minad",
-        "repo": "corfu",
-        "rev": "3a6c3ed8a310d3da0899d2d391b3174abf1f6ecb",
-        "type": "github"
-      },
-      "original": {
-        "owner": "minad",
-        "repo": "corfu",
-        "type": "github"
-      }
-    },
     "emacs-overlay": {
       "locked": {
         "lastModified": 1630689308,
@@ -28,22 +12,6 @@
       "original": {
         "owner": "nix-community",
         "repo": "emacs-overlay",
-        "type": "github"
-      }
-    },
-    "embark": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1630507863,
-        "narHash": "sha256-ChHUpKko0XMYpVJU4+VPhBE9LdS5Nl0m0p9erQeBoyc=",
-        "owner": "oantolin",
-        "repo": "embark",
-        "rev": "d4bd8b989373c1c08923421a5748f90621e60fa1",
-        "type": "github"
-      },
-      "original": {
-        "owner": "oantolin",
-        "repo": "embark",
         "type": "github"
       }
     },
@@ -112,30 +80,11 @@
     },
     "root": {
       "inputs": {
-        "corfu": "corfu",
         "emacs-overlay": "emacs-overlay",
-        "embark": "embark",
         "evil-markdown": "evil-markdown",
         "flake-utils": "flake-utils",
         "ligature": "ligature",
-        "nixpkgs": "nixpkgs",
-        "vertico": "vertico"
-      }
-    },
-    "vertico": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1629639612,
-        "narHash": "sha256-jkhbaxFoOHkiwnm6hh3rrRjHTbJykwzXA9to7ysnx6A=",
-        "owner": "minad",
-        "repo": "vertico",
-        "rev": "81a4b35f8d11dfad56de1727ee9bdd3b4461d07c",
-        "type": "github"
-      },
-      "original": {
-        "owner": "minad",
-        "repo": "vertico",
-        "type": "github"
+        "nixpkgs": "nixpkgs"
       }
     }
   },
