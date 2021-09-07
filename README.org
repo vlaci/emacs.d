@@ -880,9 +880,26 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
 #+end_src
 ** Org mode
 #+begin_src emacs-lisp
+  (defun vl/org-toggle-markup ()
+    (interactive)
+    (let* ((current-value org-hide-emphasis-markers)
+           (toggled (not current-value))
+           (status (concat "Markup is " (if toggled "hidden" "visible"))))
+      (if toggled
+          (add-to-invisibility-spec '(org-link))
+        (remove-from-invisibility-spec '(org-link)))
+      (setq-local org-hide-emphasis-markers toggled)
+      (font-lock-flush)
+      (font-lock-ensure)
+      (message "%s" status)))
+
   (use-package org
     :defer t
     :hook (org-mode . visual-line-mode)
+    :general
+    (local-leader-prefix
+      :keymaps 'org-mode-map
+      "m" '(vl/org-toggle-markup :wk "toggle-markup"))
     :init
     (setq org-ellipsis " ▾"
           org-hide-emphasis-markers t
