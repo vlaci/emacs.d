@@ -26,8 +26,9 @@ let
 in {
   options.emacsVlaci = {
     enable = mkEnableOption {};
-    package = mkOption { default = emacs; };
+    package = mkOption { default = emacs.override { inherit (cfg) extraPackages; }; };
     extraConfig = mkOption { default = ""; };
+    extraPackages = mkOption { default = _: []; };
     settings = mkOption {
       type = with types; attrsOf anything;
       default = { };
@@ -51,6 +52,9 @@ in {
       rnix-lsp
       rust-analyzer
     ];
+    emacsVlaci.settings."mu4e-maildir" = config.accounts.email.maildirBasePath;
+    emacsVlaci.extraPackages = with pkgs; (_: [ mu ]);
+
     xdg.configFile."emacs/early-init.el".source = "${cfg.package.emacs_d}/early-init.el";
     xdg.configFile."emacs/init.el".text = ''
       ${cfg.extraConfig}

@@ -9,6 +9,8 @@
     evil-markdown.flake = false;
     org.url = "github:bzg/org-mode";
     org.flake = false;
+    mu4e-thread-folding.url = "github:rougier/mu4e-thread-folding";
+    mu4e-thread-folding.flake = false;
   };
 
   outputs = { self, nixpkgs, flake-utils, ... }@inputs:

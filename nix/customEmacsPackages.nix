@@ -1,4 +1,4 @@
-{ writeText, inputs }:
+{ mu, writeText, inputs }:
 
 final: prev:
 let
@@ -33,6 +33,19 @@ in {
       mkdir .git
       # this will create the necessary auxulary files like org-version.el
       make autoloads
+    '';
+  };
+  mu4e-thread-folding = prev.melpaBuild {
+    pname = "mu4e-thread-folding";
+    version = "1";
+    src = inputs.mu4e-thread-folding;
+    commit = inputs.mu4e-thread-folding.rev;
+    packageRequires = [ mu ];
+    recipe = writeText "recipe" ''
+      (mu4e-thread-folding
+        :repo "rougier/mu4e-thread-folding"
+        :fetcher github
+        :files ("mu4e-thread-folding.el"))
     '';
   };
 }
