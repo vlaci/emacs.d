@@ -1248,7 +1248,9 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
 *** Misc
 #+begin_src emacs-lisp
   (use-package direnv
-    :hook (after-init . direnv-mode))
+    :hook (after-init . direnv-mode)
+    :init
+    (setq direnv-always-show-summary nil))
 
   (use-package flycheck
     :hook (after-init . global-flycheck-mode))
