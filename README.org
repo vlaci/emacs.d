@@ -982,9 +982,9 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     :ensure nil
     :hook (prog-mode . show-paren-mode))
 
-  (use-package linum
+  (use-package display-line-numbers
     :ensure nil
-    :hook (prog-mode . linum-mode))
+    :hook (prog-mode . display-line-numbers-mode))
 
   (use-package smart-newline
     :hook (prog-mode . smart-newline-mode))
