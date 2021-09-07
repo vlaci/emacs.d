@@ -45,17 +45,8 @@ in {
       make autoloads
     '';
   };
-  mu4e-thread-folding = prev.melpaBuild {
+  mu4e-thread-folding = build {
     pname = "mu4e-thread-folding";
-    version = "1";
-    src = inputs.mu4e-thread-folding;
-    commit = inputs.mu4e-thread-folding.rev;
-    packageRequires = [ mu ];
-    recipe = writeText "recipe" ''
-      (mu4e-thread-folding
-        :repo "rougier/mu4e-thread-folding"
-        :fetcher github
-        :files ("mu4e-thread-folding.el"))
-    '';
+    files = ''("mu4e-thread-folding.el")'';
   };
 }
