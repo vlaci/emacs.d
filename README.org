@@ -1156,6 +1156,7 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
           js2-idle-timer-delay 0.15))
 
   (use-package typescript-mode
+    :mode "\\.tsx?\\'"
     :hook (typescript-mode . lsp-deferred))
 #+end_src
 *** Nix
