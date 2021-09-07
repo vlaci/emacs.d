@@ -819,8 +819,13 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     :hook (dired-mode . diff-hl-dired-mode)
     :hook (dired-mode . diff-hl-dired-mode-unless-remote)
     :hook (magit-post-refresh . diff-hl-magit-post-refresh)
+    :general
+    (global-leader-prefix
+      "g r" 'diff-hl-revert-hunk
+      "g d" 'diff-hl-show-hunk)
     :config
-    (fringe-mode '4))
+    (setq diff-hl-show-hunk-function #'diff-hl-show-hunk-posframe)
+    (fringe-mode '8))
 #+end_src
 
 ** Basic editing
