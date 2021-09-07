@@ -428,14 +428,7 @@ In visual mode =S<textobj>=, =gS<textobj>,= in normal mode =ys<textobj>= or =yS<
       "f f" 'find-file
       "g" '(:ignore t :which-key "git")
       "g g" 'magit-status
-      "h" '(:ignore t :which-key "help")
-      "h f" 'describe-function
-      "h k" 'describe-key
-      "h m" 'describe-function
-      "h s" 'describe-symbol
-      "h h" 'describe-at-point
-      "h v" 'describe-variable
-      "h x" 'describe-command
+      "h" '(:keymap help-map t :which-key "help")
       "m" '(:ignore t :which-key "<localleader>")
       "w" '(:ignore t :which-key "windows")
       "w d" 'delete-window
