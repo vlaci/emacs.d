@@ -413,9 +413,15 @@ In visual mode =S<textobj>=, =gS<textobj>,= in normal mode =ys<textobj>= or =yS<
         :states '(emacs normal visual motion insert)
         :keymaps 'override
         :prefix "SPC"
-        :non-normal-prefix "M-SPC"))
+        :non-normal-prefix "M-SPC")
+      (general-create-definer local-leader-prefix
+        :states '(normal visual motion insert emacs)
+        :major-modes t
+        :prefix "SPC m"
+        :non-normal-prefix "M-SPC m"
+        :global-prefix "M-m"))
     (global-leader-prefix
-      "" '(nil :which-key "my lieutenant general prefix")
+      "" '(nil :which-key "<leader>")
       "b" '(:ignore t :which-key "buffers")
       "b d" '+kill-this-buffer
       "f" '(:ignore t :which-key "files")
@@ -430,13 +436,11 @@ In visual mode =S<textobj>=, =gS<textobj>,= in normal mode =ys<textobj>= or =yS<
       "h h" 'describe-at-point
       "h v" 'describe-variable
       "h x" 'describe-command
-      "m" '(:ignore t :which-key "bookmarks")
+      "m" '(:ignore t :which-key "<localleader>")
       "w" '(:ignore t :which-key "windows")
       "w d" 'delete-window
       "p" '(:ignore t :which-key "projects")
       "s" '(:ignore t :which-key "search"))
-    (general-create-definer local-leader-prefix
-      :prefix "SPC m")
     )
 #+end_src
 ** Completion framework
@@ -523,7 +527,7 @@ In visual mode =S<textobj>=, =gS<textobj>,= in normal mode =ys<textobj>= or =yS<
       "b n w" '(consult-buffer-other-window :wk "New window")
       "f r" '(consult-recent-file :wk "Recent files")
       "h M" '(consult-man :wk "Show a man page")
-      "m m" 'consult-bookmark
+      "b m" 'consult-bookmark
       "s p" '(consult-ripgrep :wk "Search in project")
       "s i" '(consult-imenu :wk "Go-to item")
       "s o" '(consult-outline :wk "Go-to outline")
