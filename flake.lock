@@ -62,6 +62,22 @@
         "type": "github"
       }
     },
+    "mu4e-thread-folding": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1627717910,
+        "narHash": "sha256-ZF6i/32iFXfeXTPCT/LPFpXmboZ3tpdB+GDs6T9IwfA=",
+        "owner": "rougier",
+        "repo": "mu4e-thread-folding",
+        "rev": "b95cd5f4587d458e9578708cf1101be5c2e3c8f8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "rougier",
+        "repo": "mu4e-thread-folding",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1631381596,
@@ -100,6 +116,7 @@
         "evil-markdown": "evil-markdown",
         "flake-utils": "flake-utils",
         "ligature": "ligature",
+        "mu4e-thread-folding": "mu4e-thread-folding",
         "nixpkgs": "nixpkgs",
         "org": "org"
       }
