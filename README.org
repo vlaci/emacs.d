@@ -143,6 +143,7 @@ to disable UI elements from it. Lifted from ~doom-emacs~
   (add-hook 'emacs-startup-hook #'vl-display-startup-time)
 #+end_src
 *** use-package
+
 #+begin_src emacs-lisp
   (eval-and-compile
     (require 'bind-key)
@@ -152,6 +153,130 @@ to disable UI elements from it. Lifted from ~doom-emacs~
         use-package-compute-statistics nil
         use-package-expand-minimally t)
   (package-activate-all)
+#+end_src
+
+**** Extensions
+The following code is ported from =doom-emacs=
+#+begin_src emacs-lisp
+  (defvar vl-incremental-packages '(t))
+  (defvar vl-incremental-idle-timer 0.75)
+  (defvar vl-incremental-first-idle-timer 2.0)
+  (defvar vl-incremental-load-immediately (daemonp))
+
+  (defvar vl--deferred-packages-alist '(t))
+
+  (defun vl-load-packages-incrementally (packages &optional now)
+    "Registers PACKAGES to be loaded incrementally.
+
+  If NOW is non-nil, load PACKAGES incrementally, in `vl-incremental-idle-timer'
+  intervals."
+    (if (not now)
+        (setq vl-incremental-packages (append vl-incremental-packages packages))
+      (while packages
+        (let* ((gc-cons-threshold most-positive-fixnum)
+               (req (pop packages)))
+          (unless (featurep req)
+            (message "Incrementally loading %s" req)
+            (condition-case-unless-debug e
+                (or (while-no-input
+                      (let ((inhibit-message t)
+                            file-name-handler-alist)
+                        (require req nil t))
+                      t)
+                    (push req packages))
+              (error
+               (message "Failed to load %S package incrementally, because: %s"
+                        req e)))
+            (if (not packages)
+                (message "Finished incremental loading")
+              (run-with-idle-timer vl-incremental-idle-timer
+                                   nil #'vl-load-packages-incrementally
+                                   packages t)
+              (setq packages nil)))))))
+
+  (defun vl-load-packages-incrementally-h ()
+    "Begin incrementally loading packages in `doom-incremental-packages'.
+
+  If this is a daemon session, load them all immediately instead."
+    (if vl-incremental-load-immediately
+        (mapc #'require (cdr vl-incremental-packages))
+      (when (numberp vl-incremental-first-idle-timer)
+        (run-with-idle-timer vl-incremental-first-idle-timer
+                             nil #'vl-load-packages-incrementally
+                             (cdr vl-incremental-packages) t))))
+
+  (add-hook 'emacs-startup-hook #'vl-load-packages-incrementally-h)
+
+  (with-eval-after-load 'use-package-core
+    (eval-and-compile
+      ;; `use-package' adds syntax highlighting for the `use-package' macro, but
+      ;; Emacs 26+ already highlights macros, so it's redundant.
+      (font-lock-remove-keywords 'emacs-lisp-mode use-package-font-lock-keywords)
+
+      ;; We define :minor and :magic-minor from the `auto-minor-mode' package here
+      ;; so we don't have to load `auto-minor-mode' so early.
+      (dolist (keyword '(:minor :magic-minor))
+        (setq use-package-keywords
+              (use-package-list-insert keyword use-package-keywords :commands)))
+
+      (defalias 'use-package-normalize/:minor #'use-package-normalize-mode)
+      (defun use-package-handler/:minor (name _ arg rest state)
+        (use-package-handle-mode name 'auto-minor-mode-alist arg rest state))
+
+      (defalias 'use-package-normalize/:magic-minor #'use-package-normalize-mode)
+      (defun use-package-handler/:magic-minor (name _ arg rest state)
+        (use-package-handle-mode name 'auto-minor-mode-magic-alist arg rest state))
+
+      ;; Adds two keywords to `use-package' to expand its lazy-loading capabilities:
+      ;;
+      ;;   :after-call SYMBOL|LIST
+      ;;   :defer-incrementally SYMBOL|LIST|t
+      ;;
+      ;; Check out `use-package!'s documentation for more about these two.
+      (dolist (keyword '(:defer-incrementally :after-call))
+        (push keyword use-package-deferring-keywords)
+        (setq use-package-keywords
+              (use-package-list-insert keyword use-package-keywords :after)))
+
+      (defalias 'use-package-normalize/:defer-incrementally #'use-package-normalize-symlist)
+      (defun use-package-handler/:defer-incrementally (name _keyword targets rest state)
+        (use-package-concat
+         `((vl-load-packages-incrementally
+            ',(if (equal targets '(t))
+                  (list name)
+                (append targets (list name)))))
+         (use-package-process-keywords name rest state)))
+
+      (defalias 'use-package-normalize/:after-call #'use-package-normalize-symlist)
+      (defun use-package-handler/:after-call (name _keyword hooks rest state)
+        (if (plist-get state :demand)
+            (use-package-process-keywords name rest state)
+          (let ((fn (make-symbol (format "vl--after-call-%s-h" name))))
+            (use-package-concat
+             `((fset ',fn
+                     (lambda (&rest _)
+                       (message "Loading deferred package %s from %s" ',name ',fn)
+                       (condition-case e
+                           (require ',name)
+                         ((debug error)
+                          (message "Failed to load deferred package %s: %s" ',name e)))
+                       (when-let (deferral-list (assq ',name vl--deferred-packages-alist))
+                         (dolist (hook (cdr deferral-list))
+                           (advice-remove hook #',fn)
+                           (remove-hook hook #',fn))
+                         (setq vl--deferred-packages-alist (delq deferral-list vl--deferred-packages-alist))
+                         (unintern ',fn nil)))))
+             (let (forms)
+               (dolist (hook hooks forms)
+                 (push (if (string-match-p "-\\(?:functions\\|hook\\)$" (symbol-name hook))
+                           `(add-hook ',hook #',fn)
+                         `(advice-add #',hook :before #',fn))
+                       forms)))
+             `((unless (assq ',name vl--deferred-packages-alist)
+                 (push '(,name) vl--deferred-packages-alist))
+               (nconc (assq ',name vl--deferred-packages-alist)
+                      '(,@hooks)))
+             (use-package-process-keywords name rest state)))))))
 #+end_src
 
 *** Server
