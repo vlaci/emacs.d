@@ -177,15 +177,29 @@ to disable UI elements from it. Lifted from ~doom-emacs~
 #+end_src
 
 *** Startup
+
 #+begin_src emacs-lisp
   ;; performance considerations
   (use-package gcmh
     :hook (after-init . gcmh-mode)
     :init
-    (setq gcmh-idle-delay 0.5
+    (setq gcmh-idle-delay 5
           gcmh-high-cons-threshold (* 16 1024 1024)))
 #+end_src
 
+Idea of a =vl-first-input-hook= is borrowed from =doom-emacs=
+
+#+begin_src emacs-lisp
+  (defvar vl-first-input-hook nil
+    "Run FUNCTION exactly once at first `pre-command-hook' execution time.")
+  (put 'vl-first-input-hook 'permanent-local t)
+
+  (defun vl--run-at-first-input ()
+    (run-hooks 'vl-first-input-hook)
+    (remove-hook 'pre-command-hook #'vl--run-at-first-input))
+
+  (add-hook 'pre-command-hook #'vl--run-at-first-input)
+#+end_src
 
 ** UI setup
 
@@ -379,18 +393,16 @@ For popup management
 In visual mode =S<textobj>=, =gS<textobj>,= in normal mode =ys<textobj>= or =yS<textobj>=. =cs<textobj><textobj>= and =ds<textobj>= are also DWIM.
 #+begin_src emacs-lisp
   (use-package evil-surround
-    :after evil
-    :config
-    (global-evil-surround-mode +1))
+    :hook
+    (vl-first-input-hook . global-evil-surround-mode))
 #+end_src
 
 
 #+begin_src emacs-lisp
   (use-package evil-snipe
-    :after evil
-    :config
-    (evil-snipe-mode +1)
-    (evil-snipe-override-mode +1))
+    :hook
+    (vl-first-input-hook . evil-snipe-mode)
+    (vl-first-input-hook . evil-snipe-override-mode))
 
   (use-package evil-easymotion
     :after evil
