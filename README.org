@@ -210,46 +210,41 @@ For popup management
             helpful-mode
             compilation-mode)))
 
-  (use-package shackle
-    :hook (after-init . shackle-mode)
-    :init
-    ;; https://mullikine.github.io/posts/making-shackle-split-sensibly/
-    ;; This function is derived from split-window-sensibly
-    (defun vl-shackle-sensible-alignment (&optional window)
-      (interactive)
-      (let ((window (or window (selected-window))))
-        (or (and (window-splittable-p window)
-                 'below)
-            (and (window-splittable-p window t)
-                 'right)
-            (and
-             ;; If WINDOW is the only usable window on its frame (it is
-             ;; the only one or, not being the only one, all the other
-             ;; ones are dedicated) and is not the minibuffer window, try
-             ;; to split it vertically disregarding the value of
-             ;; `split-height-threshold'.
-             (let ((frame (window-frame window)))
-               (or
-                (eq window (frame-root-window frame))
-                (catch 'done
-                  (walk-window-tree (lambda (w)
-                                      (unless (or (eq w window)
-                                                  (window-dedicated-p w))
-                                        (throw 'done nil)))
-                                    frame)
-                  t)))
-             (not (window-minibuffer-p window))
-             (let ((split-height-threshold 0))
-               (when (window-splittable-p window)
-                 'below))))))
-
-    (setq shackle-rules
-          '(
-            ((help-mode helpful-mode)
-             :noselect t :align right :size 0.5)
-            ("*company-documentation*" :noselect t :align right :size 0.3)
-            ((messages-buffer-mode "\\`\\*Backtrace\\*" "\\`\\*Warnings\\*" "Output\\*\\'")
-             :noselect t :regexp t :align cl-shackle-sensible-alignment :size 0.3))))
+  (use-package window
+    :ensure nil
+    :custom
+    ;; Kill a frame when quitting its only window
+    (frame-auto-hide-function 'delete-frame)
+    ;; Maximum number of side-windows to create on (left top right bottom)
+    (window-sides-slots '(1 1 1 1))
+    ;; Default rules
+    (display-buffer-alist
+     `(;; Display *Help* buffer at the right
+       ("\\*\\(Help\\|company-documentation\\)"
+        (display-buffer-reuse-window display-buffer-in-previous-window display-buffer-in-side-window)
+        (side . right)
+        (slot . 0)
+        (window-width . 0.33)
+        (reusable-frames . visible))
+       ("\\*\\(Messages\\|Backtrace\\|Warnings\\|Output\\)"
+        (display-buffer-reuse-window display-buffer-in-previous-window display-buffer-in-side-window)
+        (side . bottom)
+        (slot . 0)
+        (window-height . 16)
+        (reusable-frames . visible))
+       ("^\\*info"
+        (display-buffer-reuse-window display-buffer-in-previous-window display-buffer-pop-up-frame)
+        (pop-up-frame-parameters
+         (minibuffer . nil)
+         (tab-line-mode . nil)
+         (width . 80)
+         (left . 1.0)
+         (fullscreen . fullheight)))
+       ;; Split shells at the bottom
+       ("^\\*e?shell"
+        (display-buffer-reuse-window display-buffer-in-previous-window display-buffer-below-selected)
+        (window-min-height . 20)
+        (reusable-frames . visible)))))
 #+end_src
 
 #+begin_src emacs-lisp
