@@ -250,7 +250,17 @@ For popup management
        ("^\\*e?shell"
         (display-buffer-reuse-window display-buffer-in-previous-window display-buffer-below-selected)
         (window-min-height . 20)
-        (reusable-frames . visible)))))
+        (reusable-frames . visible))))
+    :commands vl-display-buffer-bottom-side
+    :config
+    (defun vl-display-buffer-bottom-side (buffer)
+      (let ((window (display-buffer-in-side-window
+                     buffer `((side . bottom)
+                              (slot . 0)
+                              (window-height . 0.25)
+                              (window-parameters . ((no-other-window . t)
+                                                    (no-delete-other-windows . t)))))))
+        (select-window window))))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -762,7 +772,17 @@ In visual mode =S<textobj>=, =gS<textobj>,= in normal mode =ys<textobj>= or =yS<
   (defalias 'yes-or-no-p 'y-or-n-p)
 
   (use-package vterm
-    :defer t)
+    :commands vterm-mode vl-vterm-popup
+    :after window
+    :config
+    (defun vl-vterm-popup (&optional arg)
+      (interactive "P")
+      (let* ((project-root (or (projectile-project-root) default-directory))
+             (default-directory (if arg default-directory project-root)))
+        (vterm--internal #'vl-display-buffer-bottom-side)))
+    :general
+    (global-leader-prefix
+      "o t" '(vl-vterm-popup :wk "vterm popup")))
 #+end_src
 ** Font
 
