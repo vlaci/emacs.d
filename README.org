@@ -1132,14 +1132,15 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
   (use-package org-roam
     :general
     (global-leader-prefix
-      "n" '(:ignore t :which-key "notes")
-      "n l" 'org-roam-buffer-toggle
-      "n f" 'org-roam-node-find
-      "n g" 'org-roam-graph
-      "n i" 'org-roam-node-insert
-      "n c" 'org-roam-capture
+      :infix "r"
+      "" '(:ignore t :which-key "roam")
+      "l" 'org-roam-buffer-toggle
+      "f" 'org-roam-node-find
+      "g" 'org-roam-graph
+      "i" 'org-roam-node-insert
+      "c" 'org-roam-capture
       ;; Dailies
-      "n d" '(:keymap org-roam-dailies-map :which-key "org-roam-dailies"))
+      "d" '(:keymap org-roam-dailies-map :which-key "org-roam-dailies"))
     :init
     (setq org-roam-v2-ack t)
     :config
