@@ -1199,7 +1199,7 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
           lsp-file-watch-threshold 1000000))
 
   (use-package lsp-treemacs
-    :after lsp-mode)
+    :after (treemacs lsp-mode))
 
   (use-package dap-mode
     :after lsp-mode
