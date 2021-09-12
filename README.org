@@ -1249,7 +1249,9 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     (setq direnv-always-show-summary nil))
 
   (use-package flycheck
-    :hook (after-init . global-flycheck-mode))
+    :defer 1
+    :config
+    (global-flycheck-mode 1))
 
   (use-package flycheck-posframe
     :hook (flycheck-mode . flycheck-posframe-mode))
