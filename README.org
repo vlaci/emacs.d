@@ -1397,7 +1397,7 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
   (use-package grip-mode
     :defer t)
   (use-package evil-markdown
-    :defer t)
+    :hook (markdown-mode . evil-markdown-mode))
 #+end_src
 *** YAML
 
