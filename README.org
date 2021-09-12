@@ -1154,6 +1154,38 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
   (use-package git-auto-commit-mode
     :defer t)
 #+end_src
+
+** Dired
+
+#+begin_src emacs-lisp
+  (use-package dired
+    :ensure nil
+    :defer t
+    :init
+    (setq dired-dwim-target t
+          dired-auto-revert-buffer t
+          dired-kill-when-opening-new-dired-buffer t
+          dired-recursive-copies 'always
+          dired-recursive-deletes 'top
+          dired-listing-switches "-ahlv --group-directories-first")
+    :config
+    (use-package dired-avfs)
+    (use-package dired-collapse)
+    (use-package dired-narrow)
+    (use-package dired-open)
+    (use-package dired-rainbow)
+    (use-package dired-ranger)
+    (use-package dired-subtree))
+
+  (use-package diredfl
+    :hook (dired-mode . diredfl-mode))
+  (use-package all-the-icons-dired
+    :hook (dired-mode . all-the-icons-dired-mode))
+  (use-package dired-x
+    :ensure nil
+    :hook (dired-mode . dired-omit-mode))
+#+end_src
+
 ** Programming
 #+begin_src emacs-lisp
   (use-package paren
@@ -1470,22 +1502,4 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     :defer t
     :init
     (setq company-idle-delay nil))
-
-  (use-package dired
-    :ensure nil
-    :init
-    (setq dired-dwim-target t
-          dired-auto-revert-buffer t
-          dired-kill-when-opening-new-dired-buffer t
-          dired-recursive-copies 'always
-          dired-recursive-deletes 'top
-          dired-listing-switches "-ahlv --group-directories-first"))
-
-  (use-package diredfl
-    :hook (dired-mode . diredfl-mode))
-  (use-package all-the-icons-dired
-    :hook (dired-mode . all-the-icons-dired-mode))
-  (use-package dired-x
-    :disabled
-    :hook (dired-mode . dired-omit-mode))
 #+end_src
