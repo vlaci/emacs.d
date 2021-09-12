@@ -671,6 +671,7 @@ In visual mode =S<textobj>=, =gS<textobj>,= in normal mode =ys<textobj>= or =yS<
 ** Helpful
 #+begin_src emacs-lisp
   (use-package helpful
+    :hook (helpful-mode . visual-line-mode)
     :bind
     ([remap describe-command] . helpful-command)
     ([remap describe-function] . helpful-callable)
