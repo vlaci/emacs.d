@@ -336,7 +336,7 @@ For popup management
 #+begin_src emacs-lisp
   (use-package evil
     :hook
-    (after-init . evil-mode )
+    (after-init . evil-mode)
     :init
     (setq evil-want-integration t
           evil-want-keybinding nil
