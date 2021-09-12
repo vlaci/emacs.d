@@ -349,6 +349,9 @@ For popup management
 
   (use-package window
     :ensure nil
+    :general
+    (global-leader-prefix
+      "w t" '(window-toggle-side-windows :wk "toggle side windows"))
     :custom
     ;; Kill a frame when quitting its only window
     (frame-auto-hide-function 'delete-frame)
