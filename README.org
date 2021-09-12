@@ -597,6 +597,15 @@ For popup management
     (modus-themes-load-operandi))
 #+end_src
 
+*** Which-key
+#+begin_src emacs-lisp
+(use-package which-key
+  :defer 1
+  :init
+  (setq which-key-idle-delay 1)
+  :config
+  (which-key-mode))
+#+end_src
 ** Completion framework
 #+begin_src emacs-lisp
   (use-package mini-frame
@@ -826,15 +835,6 @@ For popup management
     :after (embark consult)
     :hook
     (embark-collect-mode . embark-consult-preview-minor-mode))
-#+end_src
-** Which-key
-#+begin_src emacs-lisp
-(use-package which-key
-  :defer 1
-  :init
-  (setq which-key-idle-delay 1)
-  :config
-  (which-key-mode))
 #+end_src
 ** Helpful
 #+begin_src emacs-lisp
