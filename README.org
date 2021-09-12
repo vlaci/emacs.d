@@ -599,13 +599,12 @@ For popup management
 
 *** Which-key
 #+begin_src emacs-lisp
-(use-package which-key
-  :defer 1
-  :init
-  (setq which-key-idle-delay 1)
-  :config
-  (which-key-mode))
+  (use-package which-key
+    :hook (vl-first-input . which-key-mode)
+    :init
+    (setq which-key-idle-delay 1))
 #+end_src
+
 ** Completion framework
 #+begin_src emacs-lisp
   (use-package mini-frame
