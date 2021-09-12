@@ -982,13 +982,12 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
       "g" 'magit-status
       "b" 'magit-blame-addition
       "l" 'magit-log-head)
-    :init
-    (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1
-          git-commit-major-mode 'markdown-mode)
-    :config
-    (use-package transient-posframe
-      :demand t
-      :config (transient-posframe-mode)))
+    :custom
+    (magit-display-buffer-function #'magit-display-buffer-fullcolumn-most-v1)
+    (magit-save-repository-buffers nil))
+
+  (use-package transient-posframe
+    :hook (vl-first-input . transient-posframe-mode))
 #+end_src
 
 #+begin_src emacs-lisp
