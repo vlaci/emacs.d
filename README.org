@@ -216,7 +216,7 @@ For popup management
     ;; Kill a frame when quitting its only window
     (frame-auto-hide-function 'delete-frame)
     ;; Maximum number of side-windows to create on (left top right bottom)
-    (window-sides-slots '(1 1 1 1))
+    (window-sides-slots '(1 1 3 3))
     ;; Default rules
     (display-buffer-alist
      `(;; Display *Help* buffer at the right
@@ -226,7 +226,13 @@ For popup management
         (slot . 0)
         (window-width . 0.33)
         (reusable-frames . visible))
-       ("\\*\\(Messages\\|Backtrace\\|Warnings\\|Output\\)"
+       ("\\(magit: \\|COMMIT_EDITMSG\\)"
+        (display-buffer-reuse-window display-buffer-in-previous-window display-buffer-in-side-window)
+        (side . right)
+        (slot . -1)
+        (window-width . 0.4)
+        (reusable-frames . visible))
+       ("\\*\\(Messages\\|Backtrace\\|Warnings\\|Output\\|Flycheck\\)"
         (display-buffer-reuse-window display-buffer-in-previous-window display-buffer-in-side-window)
         (side . bottom)
         (slot . 0)
