@@ -78,6 +78,7 @@ let
     default = epkgs.trivialBuild {
       pname = "default";
       packageRequires = emacsStage1.deps.explicitRequires;
+      buildPhase = ":";
       unpackPhase = ''
         cp ${emacs-nixos-integration} ./nixos-integration.el
         cp ${emacs_d}/{*.el,*.elc} .
