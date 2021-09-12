@@ -684,17 +684,16 @@ In visual mode =S<textobj>=, =gS<textobj>,= in normal mode =ys<textobj>= or =yS<
 ** Projectile
 #+begin_src emacs-lisp
   (use-package projectile
+    :hook (after-init . projectile-mode)
     :general
     (global-leader-prefix
       "SPC" '(projectile-find-file :wk "Open file from project")
       "," '(projectile-switch-to-buffer :wk "Switch to project buffer")
       "p b" '(projectile-switch-to-buffer :wk "Switch to project buffer")
       "p f" '(projectile-find-file :wk "Open file from project")
-      "p p" '(projectile-switch-project :wk "Open project")
-      )
-    :config
-    (projectile-mode 1))
+      "p p" '(projectile-switch-project :wk "Open project")))
 #+end_src
+
 ** Tree
 #+begin_src emacs-lisp
   (use-package treemacs
