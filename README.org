@@ -114,13 +114,13 @@ to disable UI elements from it. Lifted from ~doom-emacs~
       (setq-default file-name-handler-alist nil)
       ;; ...but restore `file-name-handler-alist' later, because it is needed for
       ;; handling encrypted or compressed files, among other things.
-      (defun vl/reset-file-handler-alist ()
+      (defun vl-reset-file-handler-alist ()
         (setq file-name-handler-alist
               ;; Merge instead of overwrite because there may have bene changes to
               ;; `file-name-handler-alist' since startup we want to preserve.
               (delete-dups (append file-name-handler-alist
                                    old-file-name-handler-alist))))
-      (add-hook 'emacs-startup-hook #'vl/reset-file-handler-alist 101)))
+      (add-hook 'emacs-startup-hook #'vl-reset-file-handler-alist 101)))
 
 #+end_src
 
@@ -136,11 +136,11 @@ to disable UI elements from it. Lifted from ~doom-emacs~
    vc-follow-symlinks nil
    custom-file (expand-file-name "settings.el" user-emacs-directory))
 
-  (defun vl/display-startup-time ()
+  (defun vl-display-startup-time ()
     (message "⏱ Emacs started in %s seconds with %d garbage collections."
              (emacs-init-time)
              gcs-done))
-  (add-hook 'emacs-startup-hook #'vl/display-startup-time)
+  (add-hook 'emacs-startup-hook #'vl-display-startup-time)
 #+end_src
 *** use-package
 #+begin_src emacs-lisp
@@ -325,9 +325,9 @@ For popup management
       :init (setq undo-tree-auto-save-history t)
       :config (global-undo-tree-mode))
 
-    (defun vl/set-shift-width ()
+    (defun vl-set-shift-width ()
       (setq evil-shift-width tab-width))
-    (add-hook 'after-change-major-mode-hook #'vl/set-shift-width)
+    (add-hook 'after-change-major-mode-hook #'vl-set-shift-width)
     (dolist (mode '(custom-mode
                     eshell-mode
                     git-rebase-mode
@@ -446,7 +446,7 @@ In visual mode =S<textobj>=, =gS<textobj>,= in normal mode =ys<textobj>= or =yS<
        (left . 0.5)
        (height . 15))))
 
-  (defun vl/minibuffer-backward-kill (arg)
+  (defun vl-minibuffer-backward-kill (arg)
   "When minibuffer is completing a file name delete up to parent
   folder, otherwise delete a word"
   (interactive "p")
@@ -463,7 +463,7 @@ In visual mode =S<textobj>=, =gS<textobj>,= in normal mode =ys<textobj>= or =yS<
          ("C-k" . vertico-previous)
          ("C-f" . vertico-exit)
          :map minibuffer-local-map
-         ("M-h" . vl/minibuffer-backward-kill))
+         ("M-h" . vl-minibuffer-backward-kill))
     :custom
     (vertico-cycle t)
     :hook (after-init . vertico-mode))
@@ -870,7 +870,7 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
 #+end_src
 ** Org mode
 #+begin_src emacs-lisp
-  (defun vl/org-toggle-markup ()
+  (defun vl-org-toggle-markup ()
     (interactive)
     (let* ((current-value org-hide-emphasis-markers)
            (toggled (not current-value))
@@ -889,7 +889,7 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     :general
     (local-leader-prefix
       :keymaps 'org-mode-map
-      "m" '(vl/org-toggle-markup :wk "toggle-markup"))
+      "m" '(vl-org-toggle-markup :wk "toggle-markup"))
     :init
     (setq org-ellipsis " ▾"
           org-hide-emphasis-markers t
@@ -1196,12 +1196,12 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
 #+begin_src emacs-lisp
   (use-package lsp-mode
     :init
-    (defun vl/lsp-extend-semantic-tokens ()
+    (defun vl-lsp-extend-semantic-tokens ()
                (require 'lsp-semantic-tokens)
                (add-to-list 'lsp-semantic-token-modifier-faces
                             '("mutable" . underline))
-               (remove-hook 'lsp-before-initialize-hook 'vl/lsp-extend-semantic-tokens))
-    :hook (lsp-before-initialize . vl/lsp-extend-semantic-tokens))
+               (remove-hook 'lsp-before-initialize-hook 'vl-lsp-extend-semantic-tokens))
+    :hook (lsp-before-initialize . vl-lsp-extend-semantic-tokens))
 
   (use-package rustic
     :defer t
