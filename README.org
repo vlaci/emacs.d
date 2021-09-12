@@ -275,6 +275,7 @@ For popup management
 #+end_src
 
 *** Modeline
+
 #+begin_src emacs-lisp
   (use-package doom-modeline
     :hook (window-setup . doom-modeline-mode)
@@ -285,7 +286,16 @@ For popup management
           doom-modeline-buffer-file-name-style 'truncate-upto-project
           doom-modeline-buffer-encoding 'nondefault
           doom-modeline-default-eol-type 0))
+
+  (use-package minions
+    :hook
+    (after-init . minions-mode))
+
+  (use-package anzu
+    :hook
+    (after-init . global-anzu-mode))
 #+end_src
+
 *** Themes
 #+begin_src emacs-lisp
   (use-package doom-themes
