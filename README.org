@@ -1067,6 +1067,15 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     org-capture org-habit org-inlinetask org-tempo
     :hook (org-mode . visual-line-mode)
     :general
+    (global-leader-prefix
+      "c" 'org-capture
+      "a" 'org-agenda)
+    (global-leader-prefix
+      :infix "n"
+      "" '(:ignore t :which-key "notes")
+      "n" 'org-capture
+      "N" 'org-capture-goto-target
+      "t" 'org-todo-list)
     (local-leader-prefix
       :keymaps 'org-mode-map
       "m" '(vl-org-toggle-markup :wk "toggle-markup"))
