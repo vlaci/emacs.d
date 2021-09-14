@@ -467,6 +467,7 @@ For popup management
           '("\\*Warning"
             "Output\\*\\'"
             "\\*Backtrace\\*"
+            flycheck-error-list-mode
             messages-buffer-mode
             help-mode
             helpful-mode
