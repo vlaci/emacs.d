@@ -46,6 +46,7 @@ in {
       lorri
 
       nodePackages.bash-language-server
+      nodePackages.typescript # https://github.com/emacs-lsp/lsp-mode/pull/2633
       pyright
       rnix-lsp
       rust-analyzer
