@@ -568,7 +568,6 @@ For popup management
 #+end_src
 
 #+begin_src emacs-lisp
-  (use-package leuven-theme)
   (use-package modus-themes
     :bind ("<f10>" . modus-themes-toggle)
     :custom
