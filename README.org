@@ -1202,8 +1202,7 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     :hook (org-mode . org-superstar-mode)
     :custom
     (org-superstar-remove-leading-stars t)
-    (org-superstar-headline-bullets-list '("›"))
-    )
+    (org-superstar-headline-bullets-list '("›")))
 
   (use-package olivetti
     :hook (org-mode . olivetti-mode)
