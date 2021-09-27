@@ -1195,6 +1195,9 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
   (use-package org-variable-pitch
     :hook (org-mode . org-variable-pitch-minor-mode))
 
+  (use-package org-appear
+    :hook (org-mode . org-appear-mode))
+
   (use-package org-superstar
     :hook (org-mode . org-superstar-mode)
     :custom
