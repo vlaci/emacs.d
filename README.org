@@ -1291,6 +1291,13 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
   (use-package smart-newline
     :hook (prog-mode . smart-newline-mode))
 
+  (use-package dtrt-indent
+    :hook (change-major-mide-after-body . dtrt-indent-global-mode)
+    :init
+    (setq dtrt-indent-run-after-smie t)
+    :config
+    (push '(t tab-width) dtrt-indent-hook-generic-mapping-list))
+
   (use-package yasnippet
     :after-call vl-first-input-hook)
 
