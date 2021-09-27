@@ -7,6 +7,8 @@
     ligature.flake = false;
     evil-markdown.url = "github:Somelauw/evil-markdown";
     evil-markdown.flake = false;
+    org.url = "github:bzg/org-mode";
+    org.flake = false;
   };
 
   outputs = { self, nixpkgs, flake-utils, ... }@inputs:
