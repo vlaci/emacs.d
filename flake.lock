@@ -78,13 +78,30 @@
         "type": "github"
       }
     },
+    "org": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1631943681,
+        "narHash": "sha256-ERQ2Ub5zVoup4+5MJyag9FTON+JycklPMJVkF0OAj8A=",
+        "owner": "bzg",
+        "repo": "org-mode",
+        "rev": "b02f1eae19049dfb3e7e3815fae98844aa008421",
+        "type": "github"
+      },
+      "original": {
+        "owner": "bzg",
+        "repo": "org-mode",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "emacs-overlay": "emacs-overlay",
         "evil-markdown": "evil-markdown",
         "flake-utils": "flake-utils",
         "ligature": "ligature",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "org": "org"
       }
     }
   },
