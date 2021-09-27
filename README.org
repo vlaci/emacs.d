@@ -1203,7 +1203,6 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     :custom
     (org-superstar-remove-leading-stars t)
     (org-superstar-headline-bullets-list '("›"))
-    (org-superstar-special-todo-items t)
     )
 
   (use-package olivetti
