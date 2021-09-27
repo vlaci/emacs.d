@@ -1484,11 +1484,12 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
 #+end_src
 *** Python
 #+begin_src emacs-lisp
-(use-package lsp-pyright
-  :defer t
-  :hook (python-mode . (lambda ()
-                          (require 'lsp-pyright)
-                          (lsp-deferred))))
+  (use-package lsp-pyright
+    :defer t
+    :hook (python-mode . (lambda ()
+                           (smart-newline-mode -1)
+                           (require 'lsp-pyright)
+                           (lsp-deferred))))
 #+end_src
 *** Rust
 #+begin_src emacs-lisp
