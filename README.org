@@ -571,27 +571,27 @@ For popup management
   (use-package leuven-theme)
   (use-package modus-themes
     :bind ("<f10>" . modus-themes-toggle)
+    :custom
+    (modus-themes-italic-constructs t)
+    (modus-themes-bold-constructs t)
+    (modus-themes-mode-line 'borderless)
+    (modus-themes-region '(bg-only no-extend))
+    (modus-themes-org-blocks 'gray-background)
+    (modus-themes-syntax 'faint)
+    (modus-themes-lang-checkers 'straight-underline)
+    (modus-themes-headings '((1 . (rainbow background overline))
+                             (2 . (background overline))
+                             (3 . (background overline))
+                             (4 . (background overline))
+                             (5 . (overline))
+                             (t . (no-bold))))
+    (modus-themes-scale-headings t)
+    (modus-themes-scale-1 1.2)
+    (modus-themes-scale-2 1.3)
+    (modus-themes-scale-3 1.4)
+    (modus-themes-scale-4 1.5)
+    (modus-themes-scale-title 2.0)
     :init
-    (setq modus-themes-italic-constructs t
-          modus-themes-bold-constructs t
-          modus-themes-mode-line 'borderless
-          modus-themes-region '(bg-only no-extend)
-          modus-themes-org-blocks 'gray-background
-          modus-themes-syntax 'faint
-          modus-themes-lang-checkers 'straight-underline
-          modus-themes-headings '((1 . (rainbow background overline))
-                                  (2 . (background overline))
-                                  (3 . (background overline))
-                                  (4 . (background overline))
-                                  (5 . (overline))
-                                  (t . (no-bold)))
-          modus-themes-scale-headings t
-          modus-themes-scale-1 1.2
-          modus-themes-scale-2 1.3
-          modus-themes-scale-3 1.4
-          modus-themes-scale-4 1.5
-          modus-themes-scale-title 2.0)
-
     (modus-themes-load-themes)
     (modus-themes-load-operandi))
 #+end_src
