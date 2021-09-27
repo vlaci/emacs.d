@@ -1058,12 +1058,38 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
       (font-lock-ensure)
       (message "%s" status)))
 
+  (defun vl--setup-org ()
+    (custom-declare-face 'vl-org-next    '((t (:inherit (underline org-todo)))) "")
+    (custom-declare-face 'vl-org-active  '((t (:inherit (bold org-scheduled org-todo)))) "")
+    (custom-declare-face 'vl-org-project '((t (:inherit (bold font-lock-doc-face org-todo)))) "")
+    (custom-declare-face 'vl-org-onhold  '((t (:inherit (bold warning org-todo) :inverse-video t))) "")
+    (custom-declare-face 'vl-org-someday '((t (:inherit (shadow org-todo)))) "")
+    (custom-declare-face 'vl-org-cancel  '((t (:inherit (org-archived org-todo)))) "")
+
+    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+    (add-to-list 'org-structure-template-alist '("nix" . "src nix"))
+    (add-to-list 'org-structure-template-alist '("py" . "src python"))
+    (add-to-list 'org-structure-template-alist '("sh" . "src sh"))
+
+    ;; Save Org buffers after refiling!
+    (advice-add 'org-refile :after 'org-save-all-org-buffers)
+
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((emacs-lisp . t)
+       (python . t)
+       (shell . t))))
+
+  (use-package visual-line-mode
+    :ensure nil
+    :hook org-mode)
+
   (use-package org
     :defer-incrementally
     calendar find-func format-spec org-macs org-compat org-faces org-entities
     org-list org-pcomplete org-src org-footnote org-macro ob org org-agenda
     org-capture org-habit org-inlinetask org-tempo
-    :hook (org-mode . visual-line-mode)
+    :hook (org-load . vl--setup-org)
     :general
     (global-leader-prefix
       "c" 'org-capture
@@ -1078,49 +1104,90 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
       :keymaps 'org-mode-map
       "m" '(vl-org-toggle-markup :wk "toggle-markup"))
     :init
-    (setq org-ellipsis " ▾"
-          org-hide-emphasis-markers t
-          org-src-fontify-natively t
-          org-fontify-quote-and-verse-blocks t
-          org-src-tab-acts-natively t
-          org-edit-src-content-indentation 2 ;; 0
-          org-hide-block-startup nil
-          org-src-preserve-indentation nil
-          org-startup-folded 'content
-          org-startup-indented t
-          org-list-indent-offset 4
-          org-cycle-separator-lines 2)
-
-    (setq org-agenda-start-with-log-mode t)
-    (setq org-log-done 'time)
-    (setq org-log-into-drawer t)
-    (setq org-habit-graph-column 60)
-    :config
-    ;; Save Org buffers after refiling!
-    (advice-add 'org-refile :after 'org-save-all-org-buffers)
-
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((emacs-lisp . t)
-       (python . t)
-       (shell . t)))
-    (set-face-attribute 'org-ellipsis nil :underline nil)
-
-    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-    (add-to-list 'org-structure-template-alist '("nix" . "src nix"))
-    (add-to-list 'org-structure-template-alist '("py" . "src python"))
-    (add-to-list 'org-structure-template-alist '("sh" . "src sh"))
-
-    (when-let ((agenda-dir (car org-agenda-files)))
-      (setq org-capture-templates
-            `(("i" "inbox" entry (file ,(expand-file-name "inbox.org" agenda-dir))
-               "* TODO %?")
-              ("e" "email" entry (file+headline ,(expand-file-name "emails.org" agenda-dir) "Emails")
-               "* TODO [#A] Reply: %a :@home:@school:" :immediate-finish t)
-              ("l" "link" entry (file ,(expand-file-name "inbox.org" agenda-dir))
-               "* TODO %(org-cliplink-capture)" :immediate-finish t)
-              ("c" "org-protocol-capture" entry (file ,(expand-file-name "inbox.org" agenda-dir))
-               "* TODO [[%:link][%:description]]\n\n %i" :immediate-finish t)))))
+    (setq vl-org-agenda-dir (expand-file-name "agenda" org-directory))
+    (setq org-agenda-start-day "-3d")
+    :custom
+    (org-modules
+     '(;; ol-w3m
+       ;; ol-bbdb
+       ol-bibtex
+       ;; ol-docview
+       ;; ol-gnus
+       ;; ol-info
+       ;; ol-irc
+       ;; ol-mhe
+       ;; ol-rmail
+       ;; ol-eww
+       ))
+    (org-ellipsis " ▾")
+    (org-hide-emphasis-markers t)
+    (org-src-fontify-natively t)
+    (org-fontify-quote-and-verse-blocks t)
+    (org-src-tab-acts-natively t)
+    (org-edit-src-content-indentation 2) ;; 0
+    (org-hide-block-startup nil)
+    (org-src-preserve-indentation nil)
+    (org-startup-folded 'content)
+    (org-startup-indented t)
+    (org-startup-with-inline-images t)
+    (org-image-actual-width '(300))
+    (org-list-indent-offset 4)
+    (org-cycle-separator-lines 2)
+    (org-agenda-start-with-log-mode t)
+    (org-log-done 'time)
+    (org-log-into-drawer t)
+    (org-habit-graph-column 60)
+    (org-agenda-span 10)
+    (org-agenda-start-on-weekday nil)  ;; start relative to today
+    (org-refile-targets '((nil :maxlevel . 3)
+                          (org-agenda-files :maxlevel . 3)))
+    ;; include file name in refile completion
+    (org-refile-use-outline-path 'file)
+    ;; display the full path in the completion buffer immediately
+    (org-outline-path-complete-in-steps nil)
+    (org-todo-keywords
+     ;; KEYWORD[([<hotkey>][<enter action>/<exit action>|<action>])
+     ;; @: record note and timestamp
+     ;; !: record timestamp
+     '((sequence
+        "TODO(t)"
+        "NEXT(n)"
+        "TODAY(T)"
+        "PROJECT(p)"
+        "IN-PROGRESS(i)"
+        "WAITING(w@/!)"
+        "HOLD(h)"
+        "SOMEDAY(s)"
+        "|"
+        "DONE(d!)"
+        "CANCELED(c@)")
+       (sequence "|" "YES" "NO")))
+    (org-todo-keyword-faces
+     '(("NEXT" . vl-org-next)
+       ("TODAY" . vl-org-next)
+       ("IN-PROGRESS" . vl-org-active)
+       ("WAITING" . vl-org-onhold)
+       ("HOLD" . vl-org-onhold)
+       ("PROJECT" . vl-org-project)
+       ("SOMEDAY" . vl-org-someday)
+       ("CANCELLED" . vl-org-cancel)
+       ("NO"   . vl-org-cancel)))
+    (org-default-notes-file (expand-file-name "notes.org" org-directory))
+    (org-agenda-files `(,vl-org-agenda-dir))
+    (org-capture-templates
+     (let ((todo-file (expand-file-name "todo.org" vl-org-agenda-dir)))
+       `(("t" "Todo" entry
+          (file+headline ,todo-file "Inbox")
+          "* TODO %?\n%i\n%a")
+         ("n" "Note" entry
+          (file+headline ,todo-file "Inbox")
+          "* %u %?\n%i\n%a")
+         ("l" "link" entry
+          (file+headline ,todo-file "Inbox")
+          "* %u %(org-cliplink-capture)" :immediate-finish t)
+         ("c" "org-protocol-capture" entry
+          (file+headline ,todo-file "Inbox")
+          "* %u [[%:link][%:description]]\n%i" :immediate-finish t)))))
 
   (use-package org-cliplink
     :after org)
@@ -1155,6 +1222,8 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
       "d" '(:keymap org-roam-dailies-map :which-key "org-roam-dailies"))
     :init
     (setq org-roam-v2-ack t)
+    :custom
+    (org-roam-directory (expand-file-name "roam" org-directory))
     :config
     (org-roam-setup)
     ;; If using org-roam-protocol
@@ -1168,6 +1237,7 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     (global-leader-prefix
       "n j" 'org-journal-new-entry)
     :custom
+    (org-journal-dir (expand-file-name "journal" org-directory))
     (org-journal-agenda-integration t)
     (org-journal-file-format "%Y-%m-%d--%W.org")
     (org-journal-date-format "%Y-%m-%d, %A")
