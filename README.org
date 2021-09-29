@@ -1105,7 +1105,6 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
       "m" '(vl-org-toggle-markup :wk "toggle-markup"))
     :init
     (setq vl-org-agenda-dir (expand-file-name "agenda" org-directory))
-    (setq org-agenda-start-day "-3d")
     :custom
     (org-modules
      '(;; ol-w3m
@@ -1187,10 +1186,21 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
           "* %u %(org-cliplink-capture)" :immediate-finish t)
          ("c" "org-protocol-capture" entry
           (file+headline ,todo-file "Inbox")
-          "* %u [[%:link][%:description]]\n%i" :immediate-finish t)))))
+          "* %u [[%:link][%:description]]\n%i" :immediate-finish t))))
+    (org-agenda-custom-commands
+     `(("n" "Agenda and all TODOs"
+        ((agenda "")
+         (alltodo "")))
+       ("d" "Daily schedule"
+        ((agenda ""
+                 ((org-agenda-span 'day)
+                  (org-agenda-use-time-grid nil)
+                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline))))))
+
+       )))
 
   (use-package org-cliplink
-    :after org)
+    :after org-capture)
 
   (use-package org-variable-pitch
     :hook (org-mode . org-variable-pitch-minor-mode))
@@ -1209,6 +1219,23 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     :init
     (setq olivetti-body-width 120))
 
+  (defun vl--get-daily-agenda (&optional date)
+    "Return the agenda for the DATE as a string."
+    (interactive)
+    (let ((file (make-temp-file "daily-agenda" nil ".txt")))
+      (org-agenda nil "d" nil)
+      (when date (org-agenda-goto-date date))
+      (org-agenda-write file nil nil "*Org Agenda(d)*")
+      (kill-buffer)
+      (with-temp-buffer
+        (insert-file-contents file)
+        (goto-char (point-min))
+        (kill-line 2)
+        (while (re-search-forward "^  " nil t)
+          (replace-match "- " nil nil))
+        (buffer-string))))
+
+
   (use-package org-roam
     :general
     (global-leader-prefix
@@ -1225,6 +1252,24 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     (setq org-roam-v2-ack t)
     :custom
     (org-roam-directory (expand-file-name "roam" org-directory))
+    (org-roam-dailies-capture-templates
+     (let ((head
+            (concat "#+title: %<%Y-%m-%d (%A)>\n#+startup: showall\n* Daily Overview\n"
+                    "#+begin_src emacs-lisp :results value raw\n"
+                    "(vl--get-daily-agenda \"%<%Y-%m-%d>\")\n"
+                    "#+end_src\n"
+                    "* [/] Do Today\n* [/] Maybe Do Today\n* Journal\n")))
+       `(("j" "journal" entry
+          "* %<%H:%M> %?"
+          :if-new (file+head+olp "%<%Y-%m-%d>.org" ,head ("Journal")))
+         ("t" "do today" item
+          "[ ] %a"
+          :if-new (file+head+olp "%<%Y-%m-%d>.org" ,head ("Do Today"))
+          :immediate-finish t)
+         ("m" "maybe do today" item
+          "[ ] %a"
+          :if-new (file+head+olp "%<%Y-%m-%d>.org" ,head ("Maybe Do Today"))
+          :immediate-finish t))))
     :config
     (org-roam-setup)
     ;; If using org-roam-protocol
