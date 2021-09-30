@@ -1491,6 +1491,8 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
                            (smart-newline-mode -1)
                            (require 'lsp-pyright)
                            (lsp-deferred))))
+  (use-package pyvenv
+    :hook (python-mode . pyvenv-tracking-mode))
 #+end_src
 *** Rust
 #+begin_src emacs-lisp
