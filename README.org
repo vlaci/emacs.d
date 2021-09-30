@@ -1220,7 +1220,7 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
       "i" 'org-roam-node-insert
       "c" 'org-roam-capture
       ;; Dailies
-      "d" '(:keymap org-roam-dailies-map :which-key "org-roam-dailies"))
+      "d" '(:keymap org-roam-dailies-map :package org-roam-dailies :which-key "dailies"))
     :init
     (setq org-roam-v2-ack t)
     :custom
