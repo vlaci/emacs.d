@@ -1233,17 +1233,6 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
           '(("r" "ref" plain "%?" :if-new (file+head "web/${slug}.org" "#+title: ${title}\n\n#+begin_quote\n${body}\n#+end_quote")
              :unnarrowed t))))
 
-  (use-package org-journal
-    :general
-    (global-leader-prefix
-      "n j" 'org-journal-new-entry)
-    :custom
-    (org-journal-dir (expand-file-name "journal" org-directory))
-    (org-journal-agenda-integration t)
-    (org-journal-file-format "%Y-%m-%d--%W.org")
-    (org-journal-date-format "%Y-%m-%d, %A")
-    (org-journal-file-type 'weekly))
-
   (use-package git-auto-commit-mode
     :defer t)
 #+end_src
