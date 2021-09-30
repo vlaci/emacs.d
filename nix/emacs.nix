@@ -56,10 +56,10 @@ let
   emacsWithPackages = emacsPackages.emacsWithPackages;
 
   mkEmacs = extraPkgs:
-  emacsWithPackages (epkgs:
-    (map (n: epkgs.${n}) packages)
-    ++ (extraPkgs epkgs)
-  );
+    emacsWithPackages (epkgs:
+      (map (n: epkgs.${n}) packages)
+      ++ (extraPkgs epkgs)
+    );
 
   emacsStage1 = mkEmacs (epkgs: [ epkgs.use-package ]);
 
@@ -76,24 +76,25 @@ let
     emacs --batch --quick -l package --eval '(let ((package-quickstart-file "'$out'/autoloads.el")) (defun byte-compile-file (f)) (package-quickstart-refresh))'
   '';
 
-  emacsStage2 = mkEmacs (epkgs: let
-    default = epkgs.trivialBuild {
-      pname = "default";
-      packageRequires = emacsStage1.deps.explicitRequires;
-      buildPhase = ":";
-      unpackPhase = ''
-        cp ${emacs-nixos-integration} ./nixos-integration.el
-        cp ${emacs_d}/{*.el,*.elc} .
-        cat > default.el <<EOF
-        (load "nixos-integration")
-        (setq package-quickstart-file "$out/share/emacs/site-lisp/autoloads.el")
-        (load "init")
-        EOF
-      '';
-    };
-  in
-  [
-    default
-  ]);
+  emacsStage2 = mkEmacs (epkgs:
+    let
+      default = epkgs.trivialBuild {
+        pname = "default";
+        packageRequires = emacsStage1.deps.explicitRequires;
+        buildPhase = ":";
+        unpackPhase = ''
+          cp ${emacs-nixos-integration} ./nixos-integration.el
+          cp ${emacs_d}/{*.el,*.elc} .
+          cat > default.el <<EOF
+          (load "nixos-integration")
+          (setq package-quickstart-file "$out/share/emacs/site-lisp/autoloads.el")
+          (load "init")
+          EOF
+        '';
+      };
+    in
+    [
+      default
+    ]);
 in
-  emacsStage2 // { inherit emacs_d emacs-nixos-integration; }
+emacsStage2 // { inherit emacs_d emacs-nixos-integration; }
