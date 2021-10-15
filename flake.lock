@@ -110,6 +110,22 @@
         "type": "github"
       }
     },
+    "org-roam-ui": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1634298460,
+        "narHash": "sha256-eZGVldVKJJWNomYqIfIjoqo7m9iMiD0FtHWSnTCeSRU=",
+        "owner": "org-roam",
+        "repo": "org-roam-ui",
+        "rev": "eb794cc2183595a4f42be393db6b52478053000c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "org-roam",
+        "repo": "org-roam-ui",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "emacs-overlay": "emacs-overlay",
@@ -118,7 +134,8 @@
         "ligature": "ligature",
         "mu4e-thread-folding": "mu4e-thread-folding",
         "nixpkgs": "nixpkgs",
-        "org": "org"
+        "org": "org",
+        "org-roam-ui": "org-roam-ui"
       }
     }
   },

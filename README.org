@@ -1278,6 +1278,20 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
           '(("r" "ref" plain "%?" :if-new (file+head "web/${slug}.org" "#+title: ${title}\n\n#+begin_quote\n${body}\n#+end_quote")
              :unnarrowed t))))
 
+  (use-package websocket
+    :defer t)
+
+  (use-package simple-httpd
+    :defer t)
+
+  (use-package org-roam-ui
+        :after org-roam ;; or :after org
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+
   (use-package git-auto-commit-mode
     :defer t)
 #+end_src

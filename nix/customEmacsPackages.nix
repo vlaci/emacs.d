@@ -48,6 +48,10 @@ in {
       make autoloads
     '';
   };
+  org-roam-ui = build {
+    pname = "org-roam-ui";
+    files = ["*.el" "out"];
+  };
   mu4e-thread-folding = build {
     pname = "mu4e-thread-folding";
     files = ["mu4e-thread-folding.el"];
