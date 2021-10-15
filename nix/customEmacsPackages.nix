@@ -1,4 +1,4 @@
-{ mu, writeText, inputs }:
+{ lib, mu, writeText, inputs }:
 
 final: prev:
 let
@@ -21,6 +21,9 @@ let
   build = { pname, files, ... }@args:
     let
       input = inputs.${pname};
+      files' = let
+        list = lib.concatStringsSep " " (map (f: ''"${lib.escape [''"''] f}"'') files);
+      in "(${list})";
     in final.melpaBuild ({
       src = input;
       commit = input.rev;
@@ -29,15 +32,15 @@ let
         (${pname}
         :repo ""
         :fetcher github
-        :files ${files})
+        :files ${files'})
       '';
     } // removeAttrs args [ "files" ]);
 in {
-  ligature = build { pname = "ligature"; files = ''("ligature.el")''; };
-  evil-markdown = build { pname = "evil-markdown"; files = ''("evil-markdown.el")''; };
+  ligature = build { pname = "ligature"; files = ["ligature.el"]; };
+  evil-markdown = build { pname = "evil-markdown"; files = ["evil-markdown.el"]; };
   org = build {
     pname = "org";
-    files = ''("lisp/*.el")'';
+    files = ["lisp/*.el"];
     preBuild = ''
       # dummy .git direcotry to force org into proper version detection
       mkdir .git
@@ -47,6 +50,6 @@ in {
   };
   mu4e-thread-folding = build {
     pname = "mu4e-thread-folding";
-    files = ''("mu4e-thread-folding.el")'';
+    files = ["mu4e-thread-folding.el"];
   };
 }
