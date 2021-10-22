@@ -21,10 +21,13 @@ let
   build = { pname, files, ... }@args:
     let
       input = inputs.${pname};
-      files' = let
-        list = lib.concatStringsSep " " (map (f: ''"${lib.escape [''"''] f}"'') files);
-      in "(${list})";
-    in final.melpaBuild ({
+      files' =
+        let
+          list = lib.concatStringsSep " " (map (f: ''"${lib.escape [''"''] f}"'') files);
+        in
+        "(${list})";
+    in
+    final.melpaBuild ({
       src = input;
       commit = input.rev;
       version = getVersion input;
@@ -35,12 +38,13 @@ let
         :files ${files'})
       '';
     } // removeAttrs args [ "files" ]);
-in {
-  ligature = build { pname = "ligature"; files = ["ligature.el"]; };
-  evil-markdown = build { pname = "evil-markdown"; files = ["evil-markdown.el"]; };
+in
+{
+  ligature = build { pname = "ligature"; files = [ "ligature.el" ]; };
+  evil-markdown = build { pname = "evil-markdown"; files = [ "evil-markdown.el" ]; };
   org = build {
     pname = "org";
-    files = ["lisp/*.el"];
+    files = [ "lisp/*.el" ];
     preBuild = ''
       # dummy .git direcotry to force org into proper version detection
       mkdir .git
@@ -50,10 +54,10 @@ in {
   };
   org-roam-ui = build {
     pname = "org-roam-ui";
-    files = ["*.el" "out"];
+    files = [ "*.el" "out" ];
   };
   mu4e-thread-folding = build {
     pname = "mu4e-thread-folding";
-    files = ["mu4e-thread-folding.el"];
+    files = [ "mu4e-thread-folding.el" ];
   };
 }
