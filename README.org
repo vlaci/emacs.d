@@ -990,8 +990,8 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
 
 #+begin_src emacs-lisp
   (use-package diff-hl
-    :defer 2
-    :hook (dired-mode . diff-hl-dired-mode)
+    :hook (text-mode . diff-hl-mode)
+    :hook (prog-mode . diff-hl-mode)
     :hook (dired-mode . diff-hl-dired-mode-unless-remote)
     :hook (magit-post-refresh . diff-hl-magit-post-refresh)
     :general
@@ -1000,8 +1000,7 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
       "g d" 'diff-hl-show-hunk)
     :config
     (setq diff-hl-show-hunk-function #'diff-hl-show-hunk-posframe)
-    (fringe-mode '8)
-    (global-diff-hl-mode 1))
+    (fringe-mode '8))
 #+end_src
 
 ** Basic editing
