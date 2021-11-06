@@ -1289,6 +1289,9 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
 ** Dired
 
 #+begin_src emacs-lisp
+  (defun vl-unless-remote (fn)
+    (unless (file-remote-p default-directory)
+      (apply fn)))
   (use-package dired
     :ensure nil
     :defer t
@@ -1309,9 +1312,9 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     (use-package dired-subtree))
 
   (use-package diredfl
-    :hook (dired-mode . diredfl-mode))
+    :hook (dired-mode . (lambda () (vl-unless-remote diredfl-mode))))
   (use-package all-the-icons-dired
-    :hook (dired-mode . all-the-icons-dired-mode))
+    :hook (dired-mode . (lambda () (vl-unless-remote all-the-icons-dired-mode))))
   (use-package dired-x
     :ensure nil
     :hook (dired-mode . dired-omit-mode))
