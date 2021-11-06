@@ -605,21 +605,6 @@ For popup management
 
 ** Completion framework
 #+begin_src emacs-lisp
-  (use-package mini-frame
-    :hook (after-init . mini-frame-mode)
-    :custom-face
-    :custom
-    (mini-frame-internal-border-color (face-attribute 'window-divider-first-pixel :foreground nil t))
-    (mini-frame-color-shift-step 4)
-    (mini-frame-detach-on-hide nil)
-    (mini-frame-resize t)
-    (mini-frame-show-parameters
-     '((child-frame-border-width . 1)
-       (top . 0.05)
-       (width . 0.72)
-       (left . 0.5)
-       (height . 15))))
-
   (defun vl-minibuffer-backward-kill (arg)
   "When minibuffer is completing a file name delete up to parent
   folder, otherwise delete a word"
@@ -641,6 +626,12 @@ For popup management
     :custom
     (vertico-cycle t)
     :hook (after-init . vertico-mode))
+
+  (use-package vertico-posframe
+    :defer-incrementally posframe vertico
+    :custom
+    (vertico-posframe-poshandler #'posframe-poshandler-frame-top-center)
+    :hook (vertico-mode . vertico-posframe-mode))
 
   (use-package orderless
     :defer t
