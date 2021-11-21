@@ -48,6 +48,9 @@ in {
 
       nodePackages.bash-language-server
       nodePackages.typescript # https://github.com/emacs-lsp/lsp-mode/pull/2633
+      nodePackages.vscode-css-languageserver-bin
+      nodePackages.vscode-html-languageserver-bin
+      nodePackages.vscode-json-languageserver
       pyright
       rnix-lsp
       rust-analyzer
