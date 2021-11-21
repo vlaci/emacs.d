@@ -902,6 +902,8 @@ For popup management
 
   (use-package recentf
     :ensure nil
+    :custom
+    (recentf-max-saved-items 1000)
     :hook (after-init . (lambda()
               (recentf-mode 1)
               (add-to-list 'recentf-exclude no-littering-var-directory)
