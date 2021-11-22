@@ -1564,7 +1564,7 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     :mode ("\\.rs$" . rustic-mode)
     :commands rustic-run-cargo-command rustic-cargo-outdated
     :init
-    (setq rustic-indent-method-chain t
+    (setq rust-indent-method-chain t
           lsp-rust-analyzer-highlighting-strings t
           lsp-enable-semantic-highlighting t
           lsp-semantic-tokens-apply-modifiers t)
