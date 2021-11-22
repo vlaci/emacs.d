@@ -1522,12 +1522,21 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     :mode "\\.jl\\'")
   (use-package julia-repl
     :hook (julia-mode . julia-repl-mode))
+
   (use-package lsp-julia
     :defer t
     :hook (julia-mode . (lambda ()
                           (require 'lsp-julia)
                           (lsp-deferred)))
     :config
+    (defun lsp-julia--get-root ()
+      "Get the (Julia) project root directory of the current file."
+      (concat "\""
+              (expand-file-name
+               (or (locate-dominating-file buffer-file-name "Project.toml")
+                   lsp-julia-default-environment))
+              "\""))
+
     (let ((lsp-orig-path (expand-file-name "Project.toml" (expand-file-name "languageserver" lsp-julia--self-path))))
       (unless (file-exists-p lsp-julia-package-dir)
         (make-directory lsp-julia-package-dir))
