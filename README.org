@@ -1517,19 +1517,24 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
 #+end_src
 *** Julia
 #+begin_src emacs-lisp
-(use-package julia-mode
-  :interpreter "julia"
-  :mode "\\.jl\\'")
-(use-package julia-repl
-  :hook (julia-mode . julia-repl-mode))
-(use-package lsp-julia
-  :defer t
-  :hook (julia-mode . (lambda ()
-                        (require 'lsp-julia)
-                        (lsp-deferred)))
-  ;;:ensure nil ;;(lsp-julia :host github :repo "non-jedi/lsp-julia")
-  :config
-  (setq lsp-julia-default-environment "~/.julia/environments/v1.5"))
+  (use-package julia-mode
+    :interpreter "julia"
+    :mode "\\.jl\\'")
+  (use-package julia-repl
+    :hook (julia-mode . julia-repl-mode))
+  (use-package lsp-julia
+    :defer t
+    :hook (julia-mode . (lambda ()
+                          (require 'lsp-julia)
+                          (lsp-deferred)))
+    :config
+    (let ((lsp-orig-path (expand-file-name "Project.toml" (expand-file-name "languageserver" lsp-julia--self-path))))
+      (unless (file-exists-p lsp-julia-package-dir)
+        (make-directory lsp-julia-package-dir))
+      (f-write (f-read lsp-orig-path) 'utf-8 (expand-file-name "Project.toml" lsp-julia-package-dir)))
+    :custom
+    (lsp-julia-package-dir (expand-file-name "lsp-julia" no-littering-var-directory))
+    (lsp-julia-default-environment "~/.julia/environments/v1.6"))
 #+end_src
 *** Python
 #+begin_src emacs-lisp
