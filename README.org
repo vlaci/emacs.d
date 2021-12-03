@@ -1574,7 +1574,9 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     :commands rustic-run-cargo-command rustic-cargo-outdated
     :init
     (setq rust-indent-method-chain t
+          lsp-rust-analyzer-cargo-watch-command "clippy"
           lsp-rust-analyzer-highlighting-strings t
+          lsp-rust-analyzer-server-display-inlay-hints t
           lsp-enable-semantic-highlighting t
           lsp-semantic-tokens-apply-modifiers t)
     :config
