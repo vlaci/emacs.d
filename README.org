@@ -1343,6 +1343,7 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     (push '(t tab-width) dtrt-indent-hook-generic-mapping-list))
 
   (use-package yasnippet
+    :hook ((prog-mode text-mode) . yas-minor-mode)
     :after-call vl-first-input-hook)
 
   (use-package yasnippet-snippets
