@@ -1588,11 +1588,25 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     :after (lsp-mode flycheck)
     :mode ("\\.rs$" . rustic-mode)
     :commands rustic-run-cargo-command rustic-cargo-outdated
+    :general
+    (local-leader-prefix
+      :keymaps 'rustic-mode-map
+      "i" '(lsp-rust-analyzer-inlay-hints-mode :wk "toggle-inlay-hints")
+      "R" '(lsp-rust-analyzer-reload-workspace :wk "reload-workspace")
+      "t" '(lsp-rust-analyzer-related-tests :wk "related-tests")
+      "T" '(rustic-cargo-test :wk "cargo-test")
+      )
+    (:keymaps 'rustic-mode-map
+              "M-<up>" 'lsp-rust-analyzer-move-item-up
+              "M-<down>" 'lsp-rust-analyzer-move-item-down)
     :init
     (setq rust-indent-method-chain t
           lsp-rust-analyzer-cargo-watch-command "clippy"
           lsp-rust-analyzer-highlighting-strings t
           lsp-rust-analyzer-server-display-inlay-hints t
+          lsp-rust-analyzer-display-chaining-hints t
+          lsp-rust-analyzer-display-parameter-hints t
+          lsp-rust-analyzer-diagnostics-disabled ["unresolved-macro-call" "unresolved-proc-macro"]
           lsp-enable-semantic-highlighting t
           lsp-semantic-tokens-apply-modifiers t)
     :config
