@@ -811,8 +811,8 @@ For popup management
     (global-leader-prefix
       "." '(embark-act :wk "Contextual Actions")
       ";" '(embark-dwim :wk "Contextual Actions DWIM"))
-    (:keymaps 'minibuffer-local-map
-              "C-d" 'embark-act)
+    ("C-;" 'embark-act)
+    ("C-:" 'embark-dwim)
     :init
     (setq embark-indicators
           '(embark-minimal-indicator
