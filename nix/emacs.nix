@@ -1,7 +1,12 @@
 { inputs
+, autoPatchelfHook
 , emacsPackagesGen
 , emacs
 , runCommand
+, stdenv
+, libkrb5
+, zlib
+, lttng-ust
 , writeText
 , graphviz
 , vscode-extensions
@@ -23,19 +28,29 @@ let
   emacs-nixos-integration =
     let
       hunspell = hunspellWithDicts (with hunspellDicts; [ hu-hu en-us ]);
-      cpptools = runCommand "cpptools"
-        {
-          cpptools = vscode-extensions.ms-vscode.cpptools;
-        } ''
-        mkdir -p $out
-        ln -snf $cpptools/share/vscode/extensions/ms-vscode.cpptools $out/extension
-      '';
+      cpptools = stdenv.mkDerivation {
+          name ="cpptools";
+          src = vscode-extensions.ms-vscode.cpptools;
+          nativeBuildInputs = [ autoPatchelfHook ];
+          buildInputs = [ stdenv.cc.cc.lib libkrb5 zlib lttng-ust ];
+          installPhase = ''
+            mkdir -p $out
+            cp -a ./share/vscode/extensions/ms-vscode.cpptools/* $out
+            ls -la $out
+            chmod -R u+wX $out/debugAdapters/bin
+            ls -la $out/debugAdapters/bin
+            rm -f $out/debugAdapters/bin/OpenDebugAD7
+            mv $out/debugAdapters/bin/OpenDebugAD7{_orig,}
+            chmod u+rx,g+rx,o+rx $out/debugAdapters/bin/OpenDebugAD7
+            patchelf --replace-needed liblttng-ust.so.0 liblttng-ust.so.1 $out/debugAdapters/bin/libcoreclrtraceptprovider.so
+          '';
+      };
     in
     writeText "nixos-integration.el" ''
       (setq-default ispell-program-name "${hunspell}/bin/hunspell")
       (setq-default langtool-java-bin "${jre}/bin/java"
                     langtool-language-tool-jar "${languagetool}/share/languagetool-commandline.jar")
-      (setq-default dap-cpptools-debug-path "${cpptools}"
+      (setq-default dap-cpptools-debug-program (list "${cpptools}/debugAdapters/bin/OpenDebugAD7")
                     lsp-eslint-server-command (list "${nodejs-slim}/bin/node" "${vscode-extensions.dbaeumer.vscode-eslint}/share/vscode/extensions/dbaeumer.vscode-eslint/server/out/eslintServer.js" "--stdio")
                     lsp-clangd-binary-path "${clang-tools}/bin/clangd"
                     lsp-clients-typescript-tls-path "${nodePackages.typescript-language-server}/bin/typescript-language-server"
