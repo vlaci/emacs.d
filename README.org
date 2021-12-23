@@ -618,20 +618,19 @@ For popup management
 
   (use-package vertico
     :bind (:map vertico-map
-         ("C-j" . vertico-next)
-         ("C-k" . vertico-previous)
-         ("C-f" . vertico-exit)
-         :map minibuffer-local-map
-         ("M-h" . vl-minibuffer-backward-kill))
+                ("C-j" . vertico-next)
+                ("C-k" . vertico-previous)
+                ("C-f" . vertico-exit)
+                :map minibuffer-local-map
+                ("M-h" . vl-minibuffer-backward-kill))
     :custom
     (vertico-cycle t)
-    :hook (after-init . vertico-mode))
-
-  (use-package vertico-posframe
-    :defer-incrementally posframe vertico
-    :custom
-    (vertico-posframe-poshandler #'posframe-poshandler-frame-top-center)
-    :hook (vertico-mode . vertico-posframe-mode))
+    (vertico-buffer-display-action
+     `(display-buffer-at-bottom
+       (window-height . ,(+ 3 vertico-count))))
+    :hook (after-init . vertico-mode)
+    :config
+    (vertico-buffer-mode))
 
   (use-package orderless
     :defer t
