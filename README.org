@@ -1644,6 +1644,11 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     :defer t)
 #+end_src
 
+*** Zig
+#+begin_src emacs-lisp
+  (use-package zig-mode
+    :hook (zig-mode . lsp-deferred))
+#+end_src
 *** Misc
 #+begin_src emacs-lisp
   (use-package direnv
