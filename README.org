@@ -1645,9 +1645,7 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     (setq direnv-always-show-summary nil))
 
   (use-package flycheck
-    :defer 1
-    :config
-    (global-flycheck-mode 1))
+    :hook (vl-first-input . global-flycheck-mode))
 
   (use-package flycheck-posframe
     :hook (flycheck-mode . flycheck-posframe-mode))
