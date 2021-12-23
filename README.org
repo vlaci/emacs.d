@@ -1452,6 +1452,13 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     :mode "\\Dockerfile\\'")
 #+end_src
 
+*** F#
+
+#+begin_src emacs-lisp
+  (use-package fsharp-mode
+    :hook (fsharp-mode . lsp-deferred))
+#+end_src
+
 *** Graphql
 #+begin_src emacs-lisp
   (use-package graphql-mode
