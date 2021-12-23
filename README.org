@@ -1136,6 +1136,7 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     (org-refile-use-outline-path 'file)
     ;; display the full path in the completion buffer immediately
     (org-outline-path-complete-in-steps nil)
+    (org-treat-insert-todo-heading-as-state-change t)
     (org-todo-keywords
      ;; KEYWORD[([<hotkey>][<enter action>/<exit action>|<action>])
      ;; @: record note and timestamp
@@ -1166,7 +1167,8 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     (org-default-notes-file (expand-file-name "notes.org" org-directory))
     (org-agenda-files `(,vl-org-agenda-dir))
     (org-capture-templates
-     (let ((todo-file (expand-file-name "todo.org" vl-org-agenda-dir)))
+     (let ((todo-file (expand-file-name "todo.org" vl-org-agenda-dir))
+           (personal-file (expand-file-name "personal.org" vl-org-agenda-dir)))
        `(("t" "Todo" entry
           (file+headline ,todo-file "Inbox")
           "* TODO %?\n%i\n%a")
@@ -1178,7 +1180,10 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
           "* %u %(org-cliplink-capture)" :immediate-finish t)
          ("c" "org-protocol-capture" entry
           (file+headline ,todo-file "Inbox")
-          "* %u [[%:link][%:description]]\n%i" :immediate-finish t))))
+          "* %u [[%:link][%:description]]\n%i" :immediate-finish t)
+         ("b" "Book" entry
+          (file+olp ,personal-file "Hobbies" "Reading")
+          "* TODO \n:PROPERTIES:\n:ADDED: %<[%Y-%02m-%02d]>\n:END%^{AUTHOR}p"))))
     (org-agenda-custom-commands
      `(("n" "Agenda and all TODOs"
         ((agenda "")
