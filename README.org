@@ -539,6 +539,50 @@ For popup management
     :hook (window-setup . winner-mode))
 #+end_src
 
+#+begin_src emacs-lisp
+  (setq hscroll-margin 2
+        hscroll-step 1
+        ;; Emacs spends too much effort recentering the screen if you scroll the
+        ;; cursor more than N lines past window edges (where N is the settings of
+        ;; `scroll-conservatively'). This is especially slow in larger files
+        ;; during large-scale scrolling commands. If kept over 100, the window is
+        ;; never automatically recentered.
+        scroll-conservatively 101
+        scroll-margin 0
+        scroll-preserve-screen-position t
+        ;; Reduce cursor lag by a tiny bit by not auto-adjusting `window-vscroll'
+        ;; for tall lines.
+        auto-window-vscroll nil
+        ;; mouse
+        mouse-wheel-scroll-amount '(2 ((shift) . hscroll))
+        mouse-wheel-scroll-amount-horizontal 2)
+
+  ;; Focus window with mouse cursor hover
+  (setq mouse-autoselect-window t)
+
+  ;; middle-click paste at point, not at click
+  (setq mouse-yank-at-point t)
+
+  ;; Don't stretch the cursor to fit wide characters, it is disorienting,
+  ;; especially for tabs.
+  (setq x-stretch-cursor nil)
+
+  ;; Don't resize the frames in steps; it looks weird, especially in tiling window
+  ;; managers, where it can leave unseemly gaps.
+  (setq frame-resize-pixelwise t)
+
+  ;; But do not resize windows pixelwise, this can cause crashes in some cases
+  ;; when resizing too many windows at once or rapidly.
+  (setq window-resize-pixelwise nil)
+
+  ;; The native border "consumes" a pixel of the fringe on righter-most splits,
+  ;; `window-divider' does not. Available since Emacs 25.1.
+  (setq window-divider-default-places t
+        window-divider-default-bottom-width 1
+        window-divider-default-right-width 1)
+  (add-hook 'after-init-hook #'window-divider-mode)
+#+end_src
+
 *** Modeline
 
 #+begin_src emacs-lisp
