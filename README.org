@@ -294,7 +294,8 @@ The following code is ported from =doom-emacs=
     :demand t
     :config
     ;; if something wouldn't have been native compiled at build time
-    (add-to-list 'native-comp-eln-load-path (expand-file-name "eln-cache" no-littering-var-directory))
+    (when (boundp 'native-comp-eln-load-path)
+      (add-to-list 'native-comp-eln-load-path (expand-file-name "eln-cache" no-littering-var-directory)))
     (setq custom-file (expand-file-name "settings.el" no-littering-etc-directory))
     (load custom-file 'noerror))
 #+end_src
