@@ -884,10 +884,6 @@ For popup management
   (use-package treemacs-projectile
     :after (treemacs projectile))
 
-  (use-package treemacs-icons-dired
-    :after (treemacs dired)
-    :config (treemacs-icons-dired-mode))
-
   (use-package treemacs-magit
     :after (treemacs magit))
   (use-package treemacs-persp ;;treemacs-persective if you use perspective.el vs. persp-mode
@@ -1308,15 +1304,16 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
           dired-kill-when-opening-new-dired-buffer t
           dired-recursive-copies 'always
           dired-recursive-deletes 'top
-          dired-listing-switches "-ahlv --group-directories-first")
-    :config
-    (use-package dired-avfs)
-    (use-package dired-collapse)
-    (use-package dired-narrow)
-    (use-package dired-open)
-    (use-package dired-rainbow)
-    (use-package dired-ranger)
-    (use-package dired-subtree))
+          dired-listing-switches "-ahlv --group-directories-first"))
+
+  (use-package dired-collapse)
+  (use-package dired-narrow)
+  (use-package dired-open)
+  (use-package dired-rainbow)
+  (use-package dired-ranger)
+  (use-package dired-subtree
+    :bind (:map dired-mode-map
+                ("TAB". dired-subtree-cycle)))
 
   (use-package diredfl
     :hook (dired-mode . (lambda () (vl-unless-remote #'diredfl-mode))))
