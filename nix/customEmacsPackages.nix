@@ -40,6 +40,12 @@ let
     } // removeAttrs args [ "files" ]);
 in
 {
+  lsp-mode = prev.lsp-mode.overrideAttrs (super: {
+    postPatch = ''
+      substituteInPlace lsp-protocol.el \
+        --replace '(getenv "LSP_USE_PLISTS")' 't'
+    '';
+  });
   ligature = build { pname = "ligature"; files = [ "ligature.el" ]; };
   evil-markdown = build { pname = "evil-markdown"; files = [ "evil-markdown.el" ]; };
   org = build {
