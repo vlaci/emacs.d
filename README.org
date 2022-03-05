@@ -327,39 +327,104 @@ Idea of a =vl-first-input-hook= is borrowed from =doom-emacs=
 
 ** Key binding
 #+begin_src emacs-lisp
-  (use-package evil
-    :hook
-    (after-init . evil-mode)
-    :init
-    (setq evil-want-integration t
-          evil-want-keybinding nil
-          evil-want-C-u-scroll nil ;; C-b scrolls symilarly
-          evil-want-C-i-jump nil
-          evil-undo-system 'undo-tree
-          evil-want-fine-undo t
-          evil-search-module 'isearch
-          evil-symbol-word-search t)
+  (use-package meow
+    ;;:after-call vl-first-input-hook
+    :after general
     :config
-    (use-package undo-tree
-      :init (setq undo-tree-auto-save-history t)
-      :config (global-undo-tree-mode))
+    (defun meow-setup ()
+      (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty
+            meow-keypad-leader-dispatch vl--leader-keymap
+            meow-expand-hint-remove-delay 3
+            meow-use-clipboard t)
+      (meow-motion-overwrite-define-key
+       '("j" . meow-next)
+       '("k" . meow-prev)
+       '("<escape>" . ignore))
+      (meow-leader-define-key
+       ;; SPC j/k will run the original command in MOTION state.
+       '("j" . "H-j")
+       '("k" . "H-k")
+       ;; Use SPC (0-9) for digit arguments.
+       '("1" . meow-digit-argument)
+       '("2" . meow-digit-argument)
+       '("3" . meow-digit-argument)
+       '("4" . meow-digit-argument)
+       '("5" . meow-digit-argument)
+       '("6" . meow-digit-argument)
+       '("7" . meow-digit-argument)
+       '("8" . meow-digit-argument)
+       '("9" . meow-digit-argument)
+       '("0" . meow-digit-argument)
+       '("/" . meow-keypad-describe-key)
+       '("?" . meow-cheatsheet))
+      (meow-normal-define-key
+       '("0" . meow-expand-0)
+       '("9" . meow-expand-9)
+       '("8" . meow-expand-8)
+       '("7" . meow-expand-7)
+       '("6" . meow-expand-6)
+       '("5" . meow-expand-5)
+       '("4" . meow-expand-4)
+       '("3" . meow-expand-3)
+       '("2" . meow-expand-2)
+       '("1" . meow-expand-1)
+       '("-" . negative-argument)
+       '(";" . meow-reverse)
+       '("," . meow-inner-of-thing)
+       '("." . meow-bounds-of-thing)
+       '("[" . meow-beginning-of-thing)
+       '("]" . meow-end-of-thing)
+       '("a" . meow-append)
+       '("A" . meow-open-below)
+       '("b" . meow-back-word)
+       '("B" . meow-back-symbol)
+       '("c" . meow-change)
+       '("d" . meow-delete)
+       '("D" . meow-backward-delete)
+       '("e" . meow-next-word)
+       '("E" . meow-next-symbol)
+       '("f" . meow-find)
+       '("g" . meow-cancel-selection)
+       '("G" . meow-grab)
+       '("h" . meow-left)
+       '("H" . meow-left-expand)
+       '("i" . meow-insert)
+       '("I" . meow-open-above)
+       '("j" . meow-next)
+       '("J" . meow-next-expand)
+       '("k" . meow-prev)
+       '("K" . meow-prev-expand)
+       '("l" . meow-right)
+       '("L" . meow-right-expand)
+       '("m" . meow-join)
+       '("n" . meow-search)
+       '("o" . meow-block)
+       '("O" . meow-to-block)
+       '("p" . meow-yank)
+       '("q" . meow-quit)
+       '("Q" . meow-goto-line)
+       '("r" . meow-replace)
+       '("R" . meow-swap-grab)
+       '("s" . meow-kill)
+       '("t" . meow-till)
+       '("u" . meow-undo)
+       '("U" . meow-undo-in-selection)
+       '("v" . meow-visit)
+       '("w" . meow-mark-word)
+       '("W" . meow-mark-symbol)
+       '("x" . meow-line)
+       '("X" . meow-goto-line)
+       '("y" . meow-save)
+       '("Y" . meow-sync-grab)
+       '("z" . meow-pop-selection)
+       '("'" . repeat)
+       '("<escape>" . ignore)))
+    (meow-setup)
+    (meow-global-mode))
 
-    (defun vl-set-shift-width ()
-      (setq evil-shift-width tab-width))
-    (add-hook 'after-change-major-mode-hook #'vl-set-shift-width)
-    (dolist (mode '(custom-mode
-                    eshell-mode
-                    git-rebase-mode
-                    term-mode))
-      (add-to-list 'evil-emacs-state-modes mode))
-
-    (evil-set-initial-state 'messages-buffer-mode 'normal)
-
-    )
-    (use-package evil-collection
-      :after evil
-      :config
-      (evil-collection-init))
+  (use-package undo-tree
+    :init (setq undo-tree-auto-save-history t)
+    :hook (vl-first-input . global-undo-tree-mode))
 
   ;; Make ESC quit prompts
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -369,69 +434,33 @@ Idea of a =vl-first-input-hook= is borrowed from =doom-emacs=
 
 #+end_src
 
-In visual mode =S<textobj>=, =gS<textobj>,= in normal mode =ys<textobj>= or =yS<textobj>=. =cs<textobj><textobj>= and =ds<textobj>= are also DWIM.
-#+begin_src emacs-lisp
-  (use-package evil-surround
-    :hook
-    (vl-first-input . global-evil-surround-mode))
-#+end_src
-
-
-#+begin_src emacs-lisp
-  (use-package evil-snipe
-    :hook
-    (vl-first-input . evil-snipe-mode)
-    (vl-first-input . evil-snipe-override-mode))
-
-  (use-package evil-easymotion
-    :after-call vl-first-input-hook
-    :commands evilem-create evilem-default-keybindings
-    :config
-    (evilem-default-keybindings "g s")
-    ;; Use evil-search backend, instead of isearch
-    (evilem-make-motion evilem-motion-search-next #'evil-ex-search-next
-                        :bind ((evil-ex-search-highlight-all nil)))
-    (evilem-make-motion evilem-motion-search-previous #'evil-ex-search-previous
-                        :bind ((evil-ex-search-highlight-all nil)))
-    (evilem-make-motion evilem-motion-search-word-forward #'evil-ex-search-word-forward
-                        :bind ((evil-ex-search-highlight-all nil)))
-    (evilem-make-motion evilem-motion-search-word-backward #'evil-ex-search-word-backward
-                        :bind ((evil-ex-search-highlight-all nil)))
-
-    ;; Rebind scope of w/W/e/E/ge/gE evil-easymotion motions to the visible
-    ;; buffer, rather than just the current line.
-    (put 'visible 'bounds-of-thing-at-point (lambda () (cons (window-start) (window-end))))
-    (evilem-make-motion evilem-motion-forward-word-begin #'evil-forward-word-begin :scope 'visible)
-    (evilem-make-motion evilem-motion-forward-WORD-begin #'evil-forward-WORD-begin :scope 'visible)
-    (evilem-make-motion evilem-motion-forward-word-end #'evil-forward-word-end :scope 'visible)
-    (evilem-make-motion evilem-motion-forward-WORD-end #'evil-forward-WORD-end :scope 'visible)
-    (evilem-make-motion evilem-motion-backward-word-begin #'evil-backward-word-begin :scope 'visible)
-    (evilem-make-motion evilem-motion-backward-WORD-begin #'evil-backward-WORD-begin :scope 'visible)
-    (evilem-make-motion evilem-motion-backward-word-end #'evil-backward-word-end :scope 'visible)
-    (evilem-make-motion evilem-motion-backward-WORD-end #'evil-backward-WORD-end :scope 'visible))
-#+end_src
-
 
 #+begin_src emacs-lisp
   (use-package general
     :demand t
+    :init
+    (setq vl--leader-keymap (make-sparse-keymap))
     :config
     (defun +kill-this-buffer ()
       (interactive)
       (let ((buffer-modified-p nil))
         (kill-buffer (current-buffer))))
     (eval-and-compile
-      (general-create-definer global-leader-prefix
-        :states '(emacs normal visual motion insert)
-        :keymaps 'override
-        :prefix "SPC"
-        :non-normal-prefix "M-SPC")
-      (general-create-definer local-leader-prefix
-        :states '(normal visual motion insert emacs)
+      (general-create-definer
+        global-leader-prefix
+        ;;:states '(emacs normal visual motion insert)
+        :keymaps 'vl--leader-keymap
+        ;;:prefix "SPC"
+        :non-normal-prefix "M-SPC"
+        )
+      (general-create-definer
+        local-leader-prefix
+        ;;:states '(normal visual motion insert emacs)
         :major-modes t
-        :prefix "SPC m"
-        :non-normal-prefix "M-SPC m"
-        :global-prefix "M-m"))
+        :prefix "M-SPC"
+        ;;:non-normal-prefix "M-SPC m"
+        :global-prefix "M-m"
+        ))
     (global-leader-prefix
       "" '(nil :which-key "<leader>")
       "b" '(:ignore t :which-key "buffers")
@@ -444,8 +473,7 @@ In visual mode =S<textobj>=, =gS<textobj>,= in normal mode =ys<textobj>= or =yS<
       "w" '(:ignore t :which-key "windows")
       "w d" 'delete-window
       "p" '(:ignore t :which-key "projects")
-      "s" '(:ignore t :which-key "search"))
-    )
+      "s" '(:ignore t :which-key "search")))
 #+end_src
 
 ** UI setup
@@ -621,8 +649,8 @@ For popup management
     (modus-themes-mode-line '(borderless))
     (modus-themes-region '(bg-only no-extend))
     (modus-themes-org-blocks 'gray-background)
-    (modus-themes-syntax 'faint)
-    (modus-themes-lang-checkers 'straight-underline)
+    (modus-themes-syntax '(faint))
+    (modus-themes-lang-checkers '(straight-underline))
     (modus-themes-headings '((1 . (rainbow background overline))
                              (2 . (background overline))
                              (3 . (background overline))
@@ -651,15 +679,15 @@ For popup management
 ** Completion framework
 #+begin_src emacs-lisp
   (defun vl-minibuffer-backward-kill (arg)
-  "When minibuffer is completing a file name delete up to parent
+    "When minibuffer is completing a file name delete up to parent
   folder, otherwise delete a word"
-  (interactive "p")
-  (if minibuffer-completing-file-name
-      ;; Borrowed from https://github.com/raxod502/selectrum/issues/498#issuecomment-803283608
-      (if (string-match-p "/." (minibuffer-contents))
-          (zap-up-to-char (- arg) ?/)
-        (delete-minibuffer-contents))
-    (backward-kill-word arg)))
+    (interactive "p")
+    (if minibuffer-completing-file-name
+        ;; Borrowed from https://github.com/raxod502/selectrum/issues/498#issuecomment-803283608
+        (if (string-match-p "/." (minibuffer-contents))
+            (zap-up-to-char (- arg) ?/)
+          (delete-minibuffer-contents))
+      (backward-kill-word arg)))
 
   (use-package vertico
     :bind (:map vertico-map
@@ -670,12 +698,7 @@ For popup management
                 ("M-h" . vl-minibuffer-backward-kill))
     :custom
     (vertico-cycle t)
-    (vertico-buffer-display-action
-     `(display-buffer-at-bottom
-       (window-height . ,(+ 3 vertico-count))))
-    :hook (after-init . vertico-mode)
-    :config
-    (vertico-buffer-mode))
+    :hook (after-init . vertico-mode))
 
   (use-package orderless
     :defer t
@@ -812,7 +835,8 @@ For popup management
      :preview-key '(:debounce 0.2 any)
      consult-ripgrep consult-git-grep consult-grep
      consult-bookmark consult-recent-file consult-xref
-     consult--source-file consult--source-project-file consult--source-bookmark
+     consult--source-bookmark consult--source-recent-file
+     consult--source-project-recent-file
      :preview-key (kbd "M-."))
 
     ;; Optionally configure the narrowing key.
@@ -855,8 +879,8 @@ For popup management
     (global-leader-prefix
       "." '(embark-act :wk "Contextual Actions")
       ";" '(embark-dwim :wk "Contextual Actions DWIM"))
-    ("C-;" 'embark-act)
-    ("C-:" 'embark-dwim)
+    ("C-." 'embark-act)
+    ("C-;" 'embark-dwim)
     :init
     (setq embark-indicators
           '(embark-minimal-indicator
@@ -921,9 +945,6 @@ For popup management
           ("C-x t B"   . treemacs-bookmark)
           ("C-x t C-t" . treemacs-find-file)
           ("C-x t M-t" . treemacs-find-tag)))
-
-  (use-package treemacs-evil
-    :after (treemacs evil))
 
   (use-package treemacs-projectile
     :after (treemacs projectile))
@@ -1009,7 +1030,7 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     :defer-incrementally dash f s with-editor git-commit package eieio transient
     :general
     (global-leader-prefix
-      :infix "g"
+      :infix "G"
       "g" 'magit-status
       "b" 'magit-blame-addition
       "l" 'magit-log-head)
@@ -1029,9 +1050,9 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     :hook (magit-post-refresh . diff-hl-magit-post-refresh)
     :general
     (global-leader-prefix
-      "g r" 'diff-hl-revert-hunk
-      "g d" 'diff-hl-show-hunk)
-    :config
+      "G r" 'diff-hl-revert-hunk
+      "G d" 'diff-hl-show-hunk)
+    :init
     (setq diff-hl-show-hunk-function #'diff-hl-show-hunk-posframe)
     (fringe-mode '8))
 #+end_src
@@ -1124,7 +1145,7 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     :hook (org-load . vl--setup-org)
     :general
     (global-leader-prefix
-      "c" 'org-capture
+      "C" 'org-capture
       "a" 'org-agenda)
     (global-leader-prefix
       :infix "n"
@@ -1414,7 +1435,7 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
       (and (eq index 0) 'orderless-flex))
     (add-hook 'orderless-style-dispatchers #'vl--orderless-dispatch-flex-first nil 'local)
 
-    (setq-local completion-at-point-functions (list (cape-capf-buster #'lsp-completion-at-point))))
+    (setq-local completion-at-point-functions (list (cape-capf-buster #'lsp-completion-at-point #'cape-file #'cape-dabbrev #'cape-keyword))))
 
   (use-package lsp-ui
     :hook (lsp-mode . lsp-ui-mode)
@@ -1723,17 +1744,18 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     :defer t)
 
   (use-package cape
-    :after-call vl-first-input-hook
-    :config
-    (add-to-list 'completion-at-point-functions #'cape-file))
+    :init
+    (add-to-list 'completion-at-point-functions #'cape-file)
+    (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+    (add-to-list 'completion-at-point-functions #'cape-keyword))
 
   (use-package corfu
     :hook (vl-first-input . corfu-global-mode)
     :bind (:map corfu-map
-           ("TAB" . corfu-next)
-           ([tab] . corfu-next)
-           ("S-TAB" . corfu-previous)
-           ([backtab] . corfu-previous))
+                ("TAB" . corfu-next)
+                ([tab] . corfu-next)
+                ("S-TAB" . corfu-previous)
+                ([backtab] . corfu-previous))
     :init
     (setq tab-always-indent 'complete))
 #+end_src

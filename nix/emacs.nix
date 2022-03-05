@@ -1,6 +1,6 @@
 { inputs
 , autoPatchelfHook
-, emacsPackagesGen
+, emacsPackagesFor
 , emacs
 , runCommand
 , stdenv
@@ -71,7 +71,7 @@ let
     alwaysEnsure = true;
   };
 
-  emacsPackages = emacsPackagesGen emacs;
+  emacsPackages = emacsPackagesFor emacs;
   emacsWithPackages = emacsPackages.emacsWithPackages;
 
   mkEmacs = extraPkgs:
