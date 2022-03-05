@@ -329,10 +329,11 @@ Idea of a =vl-first-input-hook= is borrowed from =doom-emacs=
 #+begin_src emacs-lisp
   (use-package meow
     ;;:after-call vl-first-input-hook
-    :demand
+    :after general
     :config
     (defun meow-setup ()
       (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty
+            meow-keypad-leader-dispatch vl--leader-keymap
             meow-expand-hint-remove-delay 3
             meow-use-clipboard t)
       (meow-motion-overwrite-define-key
@@ -437,6 +438,8 @@ Idea of a =vl-first-input-hook= is borrowed from =doom-emacs=
 #+begin_src emacs-lisp
   (use-package general
     :demand t
+    :init
+    (setq vl--leader-keymap (make-sparse-keymap))
     :config
     (defun +kill-this-buffer ()
       (interactive)
@@ -444,33 +447,33 @@ Idea of a =vl-first-input-hook= is borrowed from =doom-emacs=
         (kill-buffer (current-buffer))))
     (eval-and-compile
       (general-create-definer
-       global-leader-prefix
-       ;;:states '(emacs normal visual motion insert)
-       :keymaps 'meow-leader-keymap
-       ;;:prefix "SPC"
-       :non-normal-prefix "M-SPC"
-       )
+        global-leader-prefix
+        ;;:states '(emacs normal visual motion insert)
+        :keymaps 'vl--leader-keymap
+        ;;:prefix "SPC"
+        :non-normal-prefix "M-SPC"
+        )
       (general-create-definer
-       local-leader-prefix
-       ;;:states '(normal visual motion insert emacs)
-       :major-modes t
-       :prefix "M-SPC"
-       ;;:non-normal-prefix "M-SPC m"
-       :global-prefix "M-m"
-       ))
+        local-leader-prefix
+        ;;:states '(normal visual motion insert emacs)
+        :major-modes t
+        :prefix "M-SPC"
+        ;;:non-normal-prefix "M-SPC m"
+        :global-prefix "M-m"
+        ))
     (global-leader-prefix
-     "" '(nil :which-key "<leader>")
-     "b" '(:ignore t :which-key "buffers")
-     "b d" '+kill-this-buffer
-     "f" '(:ignore t :which-key "files")
-     "f f" 'find-file
-     "g" '(:ignore t :which-key "git")
-     "h" '(:keymap help-map t :which-key "help")
-     "m" '(:ignore t :which-key "<localleader>")
-     "w" '(:ignore t :which-key "windows")
-     "w d" 'delete-window
-     "p" '(:ignore t :which-key "projects")
-     "s" '(:ignore t :which-key "search")))
+      "" '(nil :which-key "<leader>")
+      "b" '(:ignore t :which-key "buffers")
+      "b d" '+kill-this-buffer
+      "f" '(:ignore t :which-key "files")
+      "f f" 'find-file
+      "g" '(:ignore t :which-key "git")
+      "h" '(:keymap help-map t :which-key "help")
+      "m" '(:ignore t :which-key "<localleader>")
+      "w" '(:ignore t :which-key "windows")
+      "w d" 'delete-window
+      "p" '(:ignore t :which-key "projects")
+      "s" '(:ignore t :which-key "search")))
 #+end_src
 
 ** UI setup
