@@ -1432,7 +1432,7 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
       (and (eq index 0) 'orderless-flex))
     (add-hook 'orderless-style-dispatchers #'vl--orderless-dispatch-flex-first nil 'local)
 
-    (setq-local completion-at-point-functions (list (cape-capf-buster #'lsp-completion-at-point))))
+    (setq-local completion-at-point-functions (list (cape-capf-buster #'lsp-completion-at-point #'cape-file #'cape-dabbrev #'cape-keyword))))
 
   (use-package lsp-ui
     :hook (lsp-mode . lsp-ui-mode)
@@ -1741,17 +1741,18 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     :defer t)
 
   (use-package cape
-    :after-call vl-first-input-hook
-    :config
-    (add-to-list 'completion-at-point-functions #'cape-file))
+    :init
+    (add-to-list 'completion-at-point-functions #'cape-file)
+    (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+    (add-to-list 'completion-at-point-functions #'cape-keyword))
 
   (use-package corfu
     :hook (vl-first-input . corfu-global-mode)
     :bind (:map corfu-map
-           ("TAB" . corfu-next)
-           ([tab] . corfu-next)
-           ("S-TAB" . corfu-previous)
-           ([backtab] . corfu-previous))
+                ("TAB" . corfu-next)
+                ([tab] . corfu-next)
+                ("S-TAB" . corfu-previous)
+                ([backtab] . corfu-previous))
     :init
     (setq tab-always-indent 'complete))
 #+end_src
