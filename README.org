@@ -695,12 +695,7 @@ For popup management
                 ("M-h" . vl-minibuffer-backward-kill))
     :custom
     (vertico-cycle t)
-    (vertico-buffer-display-action
-     `(display-buffer-at-bottom
-       (window-height . ,(+ 3 vertico-count))))
-    :hook (after-init . vertico-mode)
-    :config
-    (vertico-buffer-mode))
+    :hook (after-init . vertico-mode))
 
   (use-package orderless
     :defer t
