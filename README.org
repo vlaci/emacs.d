@@ -880,8 +880,8 @@ For popup management
     (global-leader-prefix
       "." '(embark-act :wk "Contextual Actions")
       ";" '(embark-dwim :wk "Contextual Actions DWIM"))
-    ("C-;" 'embark-act)
-    ("C-:" 'embark-dwim)
+    ("C-." 'embark-act)
+    ("C-;" 'embark-dwim)
     :init
     (setq embark-indicators
           '(embark-minimal-indicator
