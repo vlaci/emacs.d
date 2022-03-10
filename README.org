@@ -1111,6 +1111,18 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
       (font-lock-ensure)
       (message "%s" status)))
 
+  (defun vl-org-todo-with-date (&optional arg)
+    (interactive "P")
+    (cl-letf* ((org-read-date-prefer-future nil)
+               (my-current-time (org-read-date t t nil "when:" nil nil nil))
+               ((symbol-function #'org-current-effective-time)
+                #'(lambda () my-current-time)))
+      (org-todo arg)))
+
+  (defun vl-org-done-with-date (&optional arg)
+    (interactive "P")
+    (vl-org-todo-with-date "DONE"))
+
   (defun vl--setup-org ()
     (custom-declare-face 'vl-org-next    '((t (:inherit (underline org-todo)))) "")
     (custom-declare-face 'vl-org-active  '((t (:inherit (bold org-scheduled org-todo)))) "")
@@ -1155,7 +1167,9 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
       "t" 'org-todo-list)
     (local-leader-prefix
       :keymaps 'org-mode-map
-      "m" '(vl-org-toggle-markup :wk "toggle-markup"))
+      "m" '(vl-org-toggle-markup :wk "toggle-markup")
+      "t" '(vl-org-todo-with-date :wk "toggle-todo")
+      "d" '(vl-org-done-with-date :wk "mark-done"))
     :init
     (setq vl-org-agenda-dir (expand-file-name "agenda" org-directory))
     :custom
@@ -1342,7 +1356,7 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
     :defer t)
 
   (use-package org-roam-ui
-        :after org-roam ;; or :after org
+    :after org-roam ;; or :after org
     :config
     (setq org-roam-ui-sync-theme t
           org-roam-ui-follow t
