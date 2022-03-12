@@ -521,7 +521,7 @@ For popup management
         (display-buffer-reuse-window display-buffer-in-previous-window display-buffer-in-side-window)
         (side . right)
         (slot . -1)
-        (window-width . 0.2)
+        (window-width . 0.33)
         (reusable-frames . visible))
        ("\\*\\(Messages\\|Backtrace\\|Warnings\\|Output\\|Flycheck\\)"
         (display-buffer-reuse-window display-buffer-in-previous-window display-buffer-in-side-window)
