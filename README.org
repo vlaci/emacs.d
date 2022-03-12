@@ -916,43 +916,6 @@ For popup management
       "p p" '(projectile-switch-project :wk "Open project")))
 #+end_src
 
-** Tree
-#+begin_src emacs-lisp
-  (use-package treemacs
-    :defer t
-    :init
-    (with-eval-after-load 'winum
-      (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
-    :config
-    (setq
-     treemacs-follow-after-init t
-     treemacs-is-never-other-window t
-     treemacs-sorting 'alphabetic-case-insensitive-asc
-     treemacs-position     'left
-     treemacs-width        35)
-
-    (treemacs-tag-follow-mode t)
-    (treemacs-filewatch-mode t)
-    (treemacs-fringe-indicator-mode t)
-    (treemacs-git-mode 'deferred)
-    :bind
-    (:map global-map
-          ("M-0"       . treemacs-select-window)
-          ("C-x t 1"   . treemacs-delete-other-windows)
-          ("C-x t t"   . treemacs)
-          ("C-x t B"   . treemacs-bookmark)
-          ("C-x t C-t" . treemacs-find-file)
-          ("C-x t M-t" . treemacs-find-tag)))
-
-  (use-package treemacs-projectile
-    :after (treemacs projectile))
-
-  (use-package treemacs-magit
-    :after (treemacs magit))
-  (use-package treemacs-persp ;;treemacs-persective if you use perspective.el vs. persp-mode
-    :after treemacs persp-mode ;;or perspective vs. persp-mode
-    :config (treemacs-set-scope-type 'Perspectives))
-#+end_src
 ** Misc
 #+begin_src emacs-lisp
   (use-package savehist
@@ -1368,25 +1331,63 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
 ** Dired
 
 #+begin_src emacs-lisp
+  (defun vl--project-root ()
+    (when-let (project (project-current))
+      (car (project-roots project))))
+
+  (defun vl--dired-side-window-current-project ()
+    (interactive)
+    (let* ((root (or (vl--project-root) default-directory))
+           (dir  (dired-noselect root)))
+      (with-current-buffer dir
+        (rename-buffer "*Dired-Side*")
+        (dired-hide-details-mode +1)
+        (setq-local window-size-fixed 'width))
+      (display-buffer-in-side-window
+       dir `((side . left)
+             (slot . 0)
+             (window-width . 0.16)
+             (window-parameters . ((no-other-window . t)
+                                   (no-delete-other-windows . t)
+                                   (mode-line-format . (" "
+                                                        mode-line-buffer-identification)))))))
+    (with-eval-after-load 'ace-window
+      (when (boundp 'aw-ignored-buffers)
+        (add-to-list 'aw-ignored-buffers "*Dired-Side*"))))
+
   (defun vl-unless-remote (fn)
     (unless (file-remote-p default-directory)
       (funcall fn)))
+
   (use-package dired
     :ensure nil
     :defer t
+    :general
+    (global-leader-prefix
+      "p d" '(vl--dired-side-window-current-project :wk "show project sidetree"))
     :init
     (setq dired-dwim-target t
           dired-auto-revert-buffer t
           dired-kill-when-opening-new-dired-buffer t
           dired-recursive-copies 'always
           dired-recursive-deletes 'top
-          dired-listing-switches "-ahlv --group-directories-first"))
+          dired-isearch-filenames 'dwim
+          dired-create-destination-dirs 'ask
+          dired-vc-rename-file t
+          dired-do-revert-buffer (lambda (dir) (not (file-remote-p dir)))
+          dired-listing-switches "-AGFhlv --group-directories-first --time-style=long-iso"))
+
+  (use-package wdired
+    :ensure nil
+    :init
+    (setq wdired-allow-to-change-permissions t
+          wdired-create-parent-directories t))
 
   (use-package dired-collapse)
   (use-package dired-narrow)
   (use-package dired-open)
   (use-package dired-rainbow)
-  (use-package dired-ranger)
+
   (use-package dired-subtree
     :bind (:map dired-mode-map
                 ("TAB". dired-subtree-cycle)))
@@ -1466,9 +1467,6 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
           lsp-headerline-breadcrumb-enable nil
           lsp-lens-enable t
           lsp-file-watch-threshold 1000000))
-
-  (use-package lsp-treemacs
-    :after (treemacs lsp-mode))
 
   (use-package dap-mode
     :after lsp-mode
