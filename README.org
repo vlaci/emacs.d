@@ -1767,6 +1767,8 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
                 ([backtab] . corfu-previous))
     :init
     (setq tab-always-indent 'complete))
+
+  (use-package cov)
 #+end_src
 
 ** Email
