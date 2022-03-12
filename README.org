@@ -854,7 +854,7 @@ For popup management
     ;;          (car (project-roots project)))))
     ;; 2. projectile.el (projectile-project-root)
     (autoload 'projectile-project-root "projectile")
-    (setq consult-project-root-function #'projectile-project-root)
+    (setq consult-project-function #'projectile-project-root)
     ;;;; 3. vc.el (vc-root-dir)
     ;; (setq consult-project-root-function #'vc-root-dir)
     ;;;; 4. locate-dominating-file
@@ -888,7 +888,7 @@ For popup management
   (use-package embark-consult
     :after (embark consult)
     :hook
-    (embark-collect-mode . embark-consult-preview-minor-mode))
+    (embark-collect-mode . consult-preview-at-point-mode))
 #+end_src
 ** Helpful
 #+begin_src emacs-lisp
