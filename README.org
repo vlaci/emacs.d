@@ -451,16 +451,14 @@ Idea of a =vl-first-input-hook= is borrowed from =doom-emacs=
         ;;:states '(emacs normal visual motion insert)
         :keymaps 'vl--leader-keymap
         ;;:prefix "SPC"
-        :non-normal-prefix "M-SPC"
-        )
+        :non-normal-prefix "M-SPC")
       (general-create-definer
         local-leader-prefix
         ;;:states '(normal visual motion insert emacs)
         :major-modes t
         :prefix "M-SPC"
         ;;:non-normal-prefix "M-SPC m"
-        :global-prefix "M-m"
-        ))
+        :global-prefix "M-m"))
     (global-leader-prefix
       "" '(nil :which-key "<leader>")
       "b" '(:ignore t :which-key "buffers")
