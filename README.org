@@ -632,11 +632,6 @@ For popup management
 #+end_src
 
 *** Themes
-#+begin_src emacs-lisp
-  (use-package doom-themes
-    :init
-    (doom-themes-treemacs-config))
-#+end_src
 
 #+begin_src emacs-lisp
   (use-package modus-themes
