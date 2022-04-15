@@ -957,15 +957,6 @@ For popup management
                `(font . ,(font-xlfd-name vl-default-font)))
 #+end_src
 
-Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
-#+begin_src emacs-lisp
-  ;; set font for emoji
-  (set-fontset-font
-   t
-   'symbol
-    "Noto Color Emoji")
-#+end_src
-
 #+begin_src emacs-lisp
   (use-package ligature
     :demand t
