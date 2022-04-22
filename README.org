@@ -1240,7 +1240,7 @@ Emoji support: http://ergoemacs.org/emacs/emacs_list_and_set_font.html
   (use-package org-modern
     :hook (org-mode . org-modern-mode)
     :custom
-    (org-modern-star '("›")))
+    (org-modern-star ["›"]))
 
   (use-package olivetti
     :hook (org-mode . olivetti-mode)
