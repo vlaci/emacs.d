@@ -2,6 +2,7 @@
 , autoPatchelfHook
 , emacsPackagesFor
 , emacs
+, fetchFromGitHub
 , runCommand
 , stdenv
 , libkrb5
@@ -45,6 +46,16 @@ let
             patchelf --replace-needed liblttng-ust.so.0 liblttng-ust.so.1 $out/debugAdapters/bin/libcoreclrtraceptprovider.so
           '';
       };
+      lua-language-server = sumneko-lua-language-server.overrideAttrs (super: rec {
+          version = "3.2.1";
+          src = fetchFromGitHub {
+            owner = "sumneko";
+            repo = "lua-language-server";
+            rev = version;
+            sha256 = "sha256-rxferVxTWmclviDshHhBmbCezOI+FvcfUW3gAkBQNHQ=";
+            fetchSubmodules = true;
+          };
+      });
     in
     writeText "nixos-integration.el" ''
       (setq-default ispell-program-name "${hunspell}/bin/hunspell")
@@ -54,8 +65,8 @@ let
                     lsp-eslint-server-command (list "${nodejs-slim}/bin/node" "${vscode-extensions.dbaeumer.vscode-eslint}/share/vscode/extensions/dbaeumer.vscode-eslint/server/out/eslintServer.js" "--stdio")
                     lsp-clangd-binary-path "${clang-tools}/bin/clangd"
                     lsp-clients-typescript-tls-path "${nodePackages.typescript-language-server}/bin/typescript-language-server"
-                    lsp-clients-lua-language-server-bin "${sumneko-lua-language-server}/bin/lua-language-server"
-                    lsp-clients-lua-language-server-main-location "${sumneko-lua-language-server}/extras/main.lua"
+                    lsp-clients-lua-language-server-bin "${lua-language-server}/bin/lua-language-server"
+                    lsp-clients-lua-language-server-main-location "${lua-language-server}/extras/main.lua"
                     lsp-markdown-server-command "${nodePackages.unified-language-server}/bin/unified-language-server"
                     mu4e-binary "${mu}/bin/mu"
                     sendmail-program "${msmtp}/bin/msmtp")
