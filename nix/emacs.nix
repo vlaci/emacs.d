@@ -66,7 +66,7 @@ let
                     lsp-clangd-binary-path "${clang-tools}/bin/clangd"
                     lsp-clients-typescript-tls-path "${nodePackages.typescript-language-server}/bin/typescript-language-server"
                     lsp-clients-lua-language-server-bin "${lua-language-server}/bin/lua-language-server"
-                    lsp-clients-lua-language-server-main-location "${lua-language-server}/extras/main.lua"
+                    lsp-clients-lua-language-server-main-location "${lua-language-server}/share/lua-language-server/main.lua"
                     lsp-markdown-server-command "${nodePackages.unified-language-server}/bin/unified-language-server"
                     mu4e-binary "${mu}/bin/mu"
                     sendmail-program "${msmtp}/bin/msmtp")
