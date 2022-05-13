@@ -2,8 +2,12 @@
   "nodes": {
     "emacs-overlay": {
       "inputs": {
-        "flake-utils": "flake-utils",
-        "nixpkgs": "nixpkgs"
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
       },
       "locked": {
         "lastModified": 1652416036,
@@ -36,21 +40,6 @@
       }
     },
     "flake-utils": {
-      "locked": {
-        "lastModified": 1652372896,
-        "narHash": "sha256-lURGussfF3mGrFPQT3zgW7+RC0pBhbHzco0C7I+ilow=",
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "rev": "0d347c56f6f41de822a4f4c7ff5072f3382db121",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "type": "github"
-      }
-    },
-    "flake-utils_2": {
       "locked": {
         "lastModified": 1652372896,
         "narHash": "sha256-lURGussfF3mGrFPQT3zgW7+RC0pBhbHzco0C7I+ilow=",
@@ -98,18 +87,6 @@
       }
     },
     "nixpkgs": {
-      "locked": {
-        "lastModified": 0,
-        "narHash": "sha256-tjRf6DxckFI9TDHn7JQ6H48ico+OMfI/oZdHbdmVG8E=",
-        "path": "/nix/store/495dc5qjw4lnfhwxm7w5f7ajmh2c1xhi-source",
-        "type": "path"
-      },
-      "original": {
-        "id": "nixpkgs",
-        "type": "indirect"
-      }
-    },
-    "nixpkgs_2": {
       "locked": {
         "lastModified": 1652231724,
         "narHash": "sha256-MjalcXFZgcgchp4QqnF05JTkFBBGad5hbksA1EKoP98=",
@@ -161,10 +138,10 @@
       "inputs": {
         "emacs-overlay": "emacs-overlay",
         "evil-markdown": "evil-markdown",
-        "flake-utils": "flake-utils_2",
+        "flake-utils": "flake-utils",
         "ligature": "ligature",
         "mu4e-thread-folding": "mu4e-thread-folding",
-        "nixpkgs": "nixpkgs_2",
+        "nixpkgs": "nixpkgs",
         "org": "org",
         "org-roam-ui": "org-roam-ui"
       }
