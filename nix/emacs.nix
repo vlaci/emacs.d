@@ -119,6 +119,7 @@ let
         (load "init")
         EOF
       '';
+      postBuild = "rm autoloads.elc";
     };
     extra = extraPackages epkgs;
   in
