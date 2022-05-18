@@ -1742,7 +1742,7 @@ For popup management
     (add-to-list 'completion-at-point-functions #'cape-keyword))
 
   (use-package corfu
-    :hook (vl-first-input . corfu-global-mode)
+    :hook (vl-first-input . global-corfu-mode)
     :bind (:map corfu-map
                 ("TAB" . corfu-next)
                 ([tab] . corfu-next)
