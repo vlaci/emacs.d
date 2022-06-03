@@ -887,17 +887,16 @@ For popup management
     ([remap describe-symbol] . helpful-symbol)
     ([remap describe-variable] . helpful-variable))
 #+end_src
-** Projectile
+** Project
 #+begin_src emacs-lisp
-  (use-package projectile
-    :hook (after-init . projectile-mode)
+  (use-package project
     :general
     (global-leader-prefix
-      "SPC" '(projectile-find-file :wk "Open file from project")
-      "," '(projectile-switch-to-buffer :wk "Switch to project buffer")
-      "p b" '(projectile-switch-to-buffer :wk "Switch to project buffer")
-      "p f" '(projectile-find-file :wk "Open file from project")
-      "p p" '(projectile-switch-project :wk "Open project")))
+      "SPC" '(project-find-file :wk "Open file from project")
+      "," '(consult-project-buffer :wk "Switch to project buffer")
+      "p d" '(project-find-dir :wk "Open dir from project")
+      "p f" '(project-find-file :wk "Open file from project")
+      "p p" '(project-switch-project :wk "Open project")))
 #+end_src
 
 ** Misc
@@ -925,8 +924,8 @@ For popup management
     :config
     (defun vl-vterm-popup (&optional arg)
       (interactive "P")
-      (let* ((project-root (or (projectile-project-root) default-directory))
-             (default-directory (if arg default-directory project-root)))
+      (let* ((project-root (or (project-root (project-current)) default-directory)
+             (default-directory (if arg default-directory project-root))))
         (vterm--internal #'vl-display-buffer-bottom-side)))
     :general
     (global-leader-prefix
