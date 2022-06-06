@@ -802,6 +802,10 @@ For popup management
     (setq xref-show-xrefs-function #'consult-xref
           xref-show-definitions-function #'consult-xref)
 
+    (with-eval-after-load 'project
+      (define-key project-prefix-map "r" #'consult-ripgrep)
+      (add-to-list 'project-switch-commands '(consult-ripgrep "rg") t))
+
     ;; Configure other variables and modes in the :config section,
     ;; after lazily loading the package.
     :config
@@ -972,6 +976,12 @@ For popup management
     :bind (:map magit-mode-map
                 ("q" . vl--magit-quit)
                 ("Q" . vl--magit-quit-all))
+
+    :init
+    (with-eval-after-load 'project
+      (define-key project-prefix-map "m" #'magit-project-status)
+      (add-to-list 'project-switch-commands '(magit-project-status "Magit") t))
+
     :custom
     ;;(magit-display-buffer-function #'magit-display-buffer-fullcolumn-most-v1)
     (magit-save-repository-buffers nil)
