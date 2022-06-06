@@ -921,6 +921,9 @@ For popup management
               (run-at-time nil (* 5 60) 'recentf-save-list))))
 
   (defalias 'yes-or-no-p 'y-or-n-p)
+  (setq use-short-answers t
+        kill-buffer-delete-auto-save-files t
+        next-error-message-highlight t)
 
   (use-package vterm
     :commands vterm-mode vl-vterm-popup
