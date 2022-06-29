@@ -1344,7 +1344,9 @@ For popup management
     :hook (org-mode . org-appear-mode))
 
   (use-package org-modern
-    :hook (org-mode . org-modern-mode)
+    :hook
+    (org-mode . org-modern-mode)
+    (org-agenda-finalize . org-modern-agenda)
     :custom
     (org-modern-star ["›"]))
 
