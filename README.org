@@ -1576,6 +1576,29 @@ For popup management
     :config
     (add-hook 'dap-stopped-hook
               (lambda (arg) (call-interactively #'dap-hydra))))
+
+  (use-package tree-sitter
+    :hook
+    (after-init . global-tree-sitter-mode)
+    (tree-sitter-after-on . tree-sitter-hl-mode))
+
+  (use-package tree-sitter-langs
+    :after tree-sitter)
+
+  ;; auto-format different source code files extremely intelligently
+  ;; https://github.com/radian-software/apheleia
+  (use-package apheleia
+    :hook
+    (after-init . apheleia-global-mode))
+
+  (use-package tree-sitter-langs
+    :after tree-sitter)
+
+  ;; auto-format different source code files extremely intelligently
+  ;; https://github.com/radian-software/apheleia
+  (use-package apheleia
+    :hook
+    (after-init . apheleia-global-mode))
 #+end_src
 *** ELISP
 #+begin_src emacs-lisp
@@ -1706,7 +1729,17 @@ For popup management
 
   (use-package typescript-mode
     :mode "\\.tsx?\\'"
-    :hook (typescript-mode . lsp-deferred))
+    :hook (typescript-mode . lsp-deferred)
+    :init
+    (define-derived-mode typescriptreact-mode typescript-mode
+      "TypeScript TSX")
+
+    ;; use our derived mode for tsx files
+    (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescriptreact-mode))
+    ;; by default, typescript-mode is mapped to the treesitter typescript parser
+    ;; use our derived mode to map both .tsx AND .ts -> typescriptreact-mode -> treesitter tsx
+    (with-eval-after-load 'tree-sitter
+      (add-to-list 'tree-sitter-major-mode-language-alist '(typescriptreact-mode . tsx))))
 #+end_src
 *** Nix
 #+begin_src emacs-lisp
