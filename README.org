@@ -1901,6 +1901,14 @@ For popup management
     :init
     (setq tab-always-indent 'complete))
 
+  (use-package corfu-doc
+    :hook (corfu-mode . corfu-doc-mode)
+    :bind (:map corfu-map
+                ("M-p" . corfu-doc-scroll-down)
+                ("M-n" . corfu-doc-scroll-up)
+                ("M-d" . corfu-doc-toggle)))
+
+  ;; coverage
   (use-package cov)
 #+end_src
 
