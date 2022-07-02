@@ -1350,6 +1350,10 @@ For popup management
     :custom
     (org-modern-star ["›"]))
 
+  (use-package org-modern-indent
+    :hook
+    (org-indent-mode . org-modern-indent-mode))
+
   (use-package olivetti
     :hook (org-mode . olivetti-mode)
     :init

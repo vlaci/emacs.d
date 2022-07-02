@@ -58,6 +58,10 @@ in
       make autoloads
     '';
   };
+  org-modern-indent = build {
+    pname = "org-modern-indent";
+    files = [ "*.el" ];
+  };
   org-roam-ui = build {
     pname = "org-roam-ui";
     files = [ "*.el" "out" ];

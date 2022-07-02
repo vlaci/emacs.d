@@ -15,6 +15,8 @@
     evil-markdown.flake = false;
     org.url = "github:bzg/org-mode";
     org.flake = false;
+    org-modern-indent.url = "github:jdtsmith/org-modern-indent";
+    org-modern-indent.flake = false;
     org-roam-ui.url = "github:org-roam/org-roam-ui";
     org-roam-ui.flake = false;
     mu4e-thread-folding.url = "github:rougier/mu4e-thread-folding";
