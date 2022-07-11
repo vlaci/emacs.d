@@ -1101,6 +1101,9 @@ For popup management
                 (kill-process process)
                 (kill-buffer buf))))))))
 
+  (use-package magit-todos
+    :hook (magit-mode . magit-todos-mode))
+
   (use-package transient-posframe
     :hook (vl-first-input . transient-posframe-mode))
 #+end_src
@@ -1152,6 +1155,9 @@ For popup management
           (lambda (beg end)
             (not (eq 'font-lock-string-face
                      (get-text-property end 'face))))))
+
+  (use-package hl-todo
+    :hook (vl-first-input . global-hl-todo-mode))
 
   (setq view-read-only t)
   ;; UTF-8 as default encoding
