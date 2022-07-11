@@ -29,44 +29,17 @@ let
   emacs-nixos-integration =
     let
       hunspell = hunspellWithDicts (with hunspellDicts; [ hu-hu en-us ]);
-      cpptools = stdenv.mkDerivation {
-          name ="cpptools";
-          src = vscode-extensions.ms-vscode.cpptools;
-          nativeBuildInputs = [ autoPatchelfHook ];
-          buildInputs = [ stdenv.cc.cc.lib libkrb5 zlib lttng-ust ];
-          installPhase = ''
-            mkdir -p $out
-            cp -a ./share/vscode/extensions/ms-vscode.cpptools/* $out
-            ls -la $out
-            chmod -R u+wX $out/debugAdapters/bin
-            ls -la $out/debugAdapters/bin
-            rm -f $out/debugAdapters/bin/OpenDebugAD7
-            mv $out/debugAdapters/bin/OpenDebugAD7{_orig,}
-            chmod u+rx,g+rx,o+rx $out/debugAdapters/bin/OpenDebugAD7
-            patchelf --replace-needed liblttng-ust.so.0 liblttng-ust.so.1 $out/debugAdapters/bin/libcoreclrtraceptprovider.so
-          '';
-      };
-      lua-language-server = sumneko-lua-language-server.overrideAttrs (super: rec {
-          version = "3.2.1";
-          src = fetchFromGitHub {
-            owner = "sumneko";
-            repo = "lua-language-server";
-            rev = version;
-            sha256 = "sha256-rxferVxTWmclviDshHhBmbCezOI+FvcfUW3gAkBQNHQ=";
-            fetchSubmodules = true;
-          };
-      });
     in
     writeText "nixos-integration.el" ''
       (setq-default ispell-program-name "${hunspell}/bin/hunspell")
       (setq-default langtool-java-bin "${jre}/bin/java"
                     langtool-language-tool-jar "${languagetool}/share/languagetool-commandline.jar")
-      (setq-default dap-cpptools-debug-program (list "${cpptools}/debugAdapters/bin/OpenDebugAD7")
+      (setq-default dap-cpptools-debug-program (list "${vscode-extensions.ms-vscode.cpptools}/debugAdapters/bin/OpenDebugAD7")
                     lsp-eslint-server-command (list "${nodejs-slim}/bin/node" "${vscode-extensions.dbaeumer.vscode-eslint}/share/vscode/extensions/dbaeumer.vscode-eslint/server/out/eslintServer.js" "--stdio")
                     lsp-clangd-binary-path "${clang-tools}/bin/clangd"
                     lsp-clients-typescript-tls-path "${nodePackages.typescript-language-server}/bin/typescript-language-server"
-                    lsp-clients-lua-language-server-bin "${lua-language-server}/bin/lua-language-server"
-                    lsp-clients-lua-language-server-main-location "${lua-language-server}/share/lua-language-server/main.lua"
+                    lsp-clients-lua-language-server-bin "${sumneko-lua-language-server}/bin/lua-language-server"
+                    lsp-clients-lua-language-server-main-location "${sumneko-lua-language-server}/share/lua-language-server/main.lua"
                     lsp-markdown-server-command "${nodePackages.unified-language-server}/bin/unified-language-server"
                     mu4e-binary "${mu}/bin/mu"
                     sendmail-program "${msmtp}/bin/msmtp")
