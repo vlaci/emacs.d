@@ -1814,6 +1814,7 @@ For popup management
   (use-package rustic
     :defer t
     :after (lsp-mode flycheck)
+    :hook (rustic-mode . turn-on-tree-sitter-mode)
     :mode ("\\.rs$" . rustic-mode)
     :commands rustic-run-cargo-command rustic-cargo-outdated
     :general
