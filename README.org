@@ -1374,7 +1374,7 @@ For popup management
     (org-indent-mode . org-modern-indent-mode))
 
   (use-package olivetti
-    :hook (org-mode . olivetti-mode)
+    :hook ((markdown-mode org-mode) . olivetti-mode)
     :init
     (setq olivetti-body-width 120))
 
