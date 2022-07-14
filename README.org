@@ -1192,6 +1192,20 @@ For popup management
     (interactive "P")
     (vl-org-todo-with-date "DONE"))
 
+  (defun vl--url-get-title (url &optional descr)
+    "Takes a URL and returns the value of the <title> HTML tag,
+     Thanks to https://frozenlock.org/tag/url-retrieve/ for documenting url-retrieve"
+    (when (string-match "https?://" url)
+      (let ((buffer (url-retrieve-synchronously url))
+            (title nil))
+        (save-excursion
+          (set-buffer buffer)
+          (goto-char (point-min))
+          (search-forward-regexp "<title>\\([^<]+?\\)</title>")
+          (setq title (match-string 1 ) )
+          (kill-buffer (current-buffer)))
+        title)))
+
   (defun vl--setup-org ()
     (custom-declare-face 'vl-org-next    '((t (:inherit (underline org-todo)))) "")
     (custom-declare-face 'vl-org-active  '((t (:inherit (bold org-scheduled org-todo)))) "")
@@ -1336,9 +1350,8 @@ For popup management
         ((agenda ""
                  ((org-agenda-span 'day)
                   (org-agenda-use-time-grid nil)
-                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline))))))
-
-       )))
+                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline))))))))
+    (org-make-link-description-function #'vl--url-get-title))
 
   (use-package org-cliplink
     :after org-capture)
