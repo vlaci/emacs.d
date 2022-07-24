@@ -1192,6 +1192,21 @@ For popup management
     :after magit
     :custom
     (magit-todos-keyword-suffix "\\(?:([^)]+)\\)?:?")) ; make colon optional)
+
+  (use-package magit-commit-mark
+    :bind (:map magit-log-mode-map
+                (";" . magit-commit-mark-toggle-read)
+                ("M-;" . magit-commit-mark-toggle-star)
+                ("C-;" . magit-commit-mark-toggle-urgent)))
+
+  (use-package magit-tbdiff
+    :after magit)
+
+  (use-package magit-lfs
+    :after magit)
+
+  (use-package magit-delta
+    :hook (magit-mode . magit-delta-mode))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -1482,6 +1497,8 @@ For popup management
           (replace-match "- " nil nil))
         (buffer-string))))
 
+  (use-package orgit
+    :after magit org)
 
   (use-package org-roam
     :general

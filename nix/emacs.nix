@@ -74,7 +74,8 @@ let
     } ''
     mkdir -p $out
     cp $literateInitFile $out/init.org
-    emacs --batch --quick -l ob-tangle --eval '(progn (defvar org-element-cache-persistent nil)(org-babel-tangle-file "'$out'/init.org"))'
+    # using unconfigured emacs so that nothing can hook into tangling (looking at you, orgit)
+    ${emacs}/bin/emacs --batch --quick -l ob-tangle --eval '(progn (defvar org-element-cache-persistent nil)(org-babel-tangle-file "'$out'/init.org"))'
     rm $out/init.org
     emacs --batch --quick -l package --eval '(let ((package-quickstart-file "'$out'/autoloads.el")) (defun byte-compile-file (f)) (package-quickstart-refresh))'
   '';
