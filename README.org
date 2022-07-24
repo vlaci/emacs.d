@@ -924,7 +924,9 @@ For popup management
   (setq use-short-answers t
         kill-buffer-delete-auto-save-files t
         next-error-message-highlight t)
-
+#+end_src
+** Term
+#+begin_src emacs-lisp
   (use-package vterm
     :commands vterm-mode vl-vterm-popup
     :after window
@@ -937,6 +939,67 @@ For popup management
     :general
     (global-leader-prefix
       "o t" '(vl-vterm-popup :wk "vterm popup")))
+#+end_src
+
+#+begin_src emacs-lisp
+  (use-package eshell
+    :ensure nil
+    :custom
+    (eshell-banner-message
+     '(format "%s %s\n"
+              (propertize (format " %s " (string-trim (buffer-name)))
+                          'face 'mode-line-highlight)
+              (propertize (current-time-string)
+                          'face 'font-lock-keyword-face)))
+    (eshell-scroll-to-bottom-on-input 'all)
+    (eshell-scroll-to-bottom-on-output 'all)
+    (eshell-kill-processes-on-exit t)
+    (eshell-hist-ignoredups t)
+    (eshell-input-filter #'eshell-input-filter-initial-space)
+    ;; em-glob
+    (eshell-glob-case-insensitive t)
+    (eshell-error-if-no-glob t)
+    :hook
+    (eshell-mode .
+                 (lambda ()
+                   (set-window-fringes nil 0 0)
+                   (set-window-margins nil 1 nil)
+                   (set-display-table-slot standard-display-table 0 ?\ )
+                   (visual-line-mode +1)
+                   (setq-local corfu-auto nil)
+                   (corfu-mode)
+                   (add-to-list 'completion-at-point-functions #'cape-file))))
+
+  (use-package eshell-prompt-extras
+    :after esh-opt
+    :commands epe-theme-lambda
+    :custom
+    (eshell-highlight-prompt nil)
+    (eshell-prompt-function #'epe-theme-lambda))
+
+  (use-package eshell-up
+    :commands eshell-up eshell-up-peek)
+
+  (use-package esh-help
+    :after eshell
+    :config (setup-esh-help-eldoc))
+
+  (use-package eshell-syntax-highlighting
+    :hook (eshell-mode . eshell-syntax-highlighting-mode))
+
+  (use-package esh-autosuggest
+    :hook (eshell-mode . esh-autosuggest-mode))
+
+  (use-package eshell-vterm
+    :hook
+    (esh-mode . eshell-vterm-mode))
+
+  (use-package eshell-fixed-prompt
+    :commands eshell-fixed-prompt-mode)
+
+  (use-package eshell-outline
+    :hook
+    (eshell-mode . eshell-outline-mode))
 #+end_src
 ** Font
 
@@ -1931,7 +1994,13 @@ For popup management
     :init
     (add-to-list 'completion-at-point-functions #'cape-file)
     (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-    (add-to-list 'completion-at-point-functions #'cape-keyword))
+    (add-to-list 'completion-at-point-functions #'cape-keyword)
+    ;; Silence the pcomplete capf, no errors or messages!
+    (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-silent)
+
+    ;; Ensure that pcomplete does not write to the buffer
+    ;; and behaves as a pure `completion-at-point-function'.
+    (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-purify))
 
   (use-package corfu
     :hook (vl-first-input . global-corfu-mode)
