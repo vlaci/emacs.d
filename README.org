@@ -1169,6 +1169,11 @@ For popup management
 
   (use-package transient-posframe
     :hook (vl-first-input . transient-posframe-mode))
+
+  (use-package magit-todos
+    :after magit
+    :custom
+    (magit-todos-keyword-suffix "\\(?:([^)]+)\\)?:?")) ; make colon optional)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -1226,6 +1231,8 @@ For popup management
   ;; UTF-8 as default encoding
   (set-language-environment "UTF-8")
   (set-default-coding-systems 'utf-8-unix)
+
+  (use-package hl-todo)
 
 #+end_src
 ** Org mode
