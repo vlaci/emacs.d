@@ -1009,6 +1009,12 @@ For popup management
     :defer t)
 #+end_src
 
+#+begin_src emacs-lisp
+  (use-package flyspell-correct
+    :after flyspell
+    :bind (:map flyspell-mode-map ("s-;" . flyspell-correct-wrapper)))
+#+end_src
+
 ** Misc
 #+begin_src emacs-lisp
   (use-package savehist
