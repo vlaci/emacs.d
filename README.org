@@ -972,13 +972,20 @@ For popup management
 #+end_src
 ** Project
 #+begin_src emacs-lisp
+  (use-package consult-project-extra
+    :general
+    (global-leader-prefix
+      "SPC" '(consult-project-extra-find :wk "Open file from project")
+      "p f" '(consult-project-extra-find :wk "Open file from project")
+      "p o" '(consult-project-extra-find-other-window :wk "Open file from project in other window")))
+#+end_src
+
+#+begin_src emacs-lisp
   (use-package project
     :general
     (global-leader-prefix
-      "SPC" '(project-find-file :wk "Open file from project")
       "," '(consult-project-buffer :wk "Switch to project buffer")
       "p d" '(project-find-dir :wk "Open dir from project")
-      "p f" '(project-find-file :wk "Open file from project")
       "p p" '(project-switch-project :wk "Open project")))
 #+end_src
 
