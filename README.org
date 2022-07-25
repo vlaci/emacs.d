@@ -1104,6 +1104,10 @@ For popup management
       (funcall f proc (xterm-color-filter string)))
 
     (advice-add 'compilation-filter :around #'vl--advice-compilation-filter))
+
+  (use-package with-editor
+    :hook
+    ((shell-mode eshell-mode term-exec vterm-mode) . with-editor-export-editor))
 #+end_src
 ** Font
 
