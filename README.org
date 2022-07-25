@@ -1591,6 +1591,8 @@ For popup management
     :after magit org)
 
   (use-package org-roam
+    :defer t
+    :defer-incrementally dash rx seq magit-section emacsql emacsql-sqlite org org-attach org-capture
     :general
     (global-leader-prefix
       :infix "r"
@@ -1624,13 +1626,29 @@ For popup management
           "[ ] %a"
           :if-new (file+head+olp "%<%Y-%m-%d>.org" ,head ("Maybe Do Today"))
           :immediate-finish t))))
+    (org-roam-capture-ref-templates
+     '(("r" "ref" plain "%?" :if-new (file+head "web/${slug}.org" "#+title: ${title}\n\n#+begin_quote\n${body}\n#+end_quote")
+        :unnarrowed t)))
+    :commands org-roam-setup
+    :hook
+    (after-init . (lambda ()
+                    (org-roam-setup)
+                    ;; If using org-roam-protocol
+                    (require 'org-roam-protocol))))
+
+  (use-package consult-org-roam
+    :custom
+    (consult-org-roam-grep-func #'consult-ripgrep)
     :config
-    (org-roam-setup)
-    ;; If using org-roam-protocol
-    (require 'org-roam-protocol)
-    (setq org-roam-capture-ref-templates
-          '(("r" "ref" plain "%?" :if-new (file+head "web/${slug}.org" "#+title: ${title}\n\n#+begin_quote\n${body}\n#+end_quote")
-             :unnarrowed t))))
+    (consult-org-roam-mode 1)
+    ;; Eventually suppress previewing for certain functions
+    (consult-customize
+     consult-org-roam-forward-links
+     :preview-key (kbd "M-."))
+    :bind
+    ("C-c n e" . consult-org-roam-file-find)
+    ("C-c n b" . consult-org-roam-backlinks)
+    ("C-c n r" . consult-org-roam-search))
 
   (use-package websocket
     :defer t)
