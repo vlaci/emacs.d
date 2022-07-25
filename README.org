@@ -869,11 +869,9 @@ For popup management
       ";" '(embark-dwim :wk "Contextual Actions DWIM"))
     ("C-." 'embark-act)
     ("C-;" 'embark-dwim)
+    ([remap describe-bindings] 'embark-bindings)
     :init
-    (setq embark-indicators
-          '(embark-minimal-indicator
-            embark-highlight-indicator
-            embark-isearch-highlight-indicator)))
+    (setq prefix-help-command #'embark-prefix-help-command))
 
   (use-package embark-consult
     :after (embark consult)
