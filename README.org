@@ -1845,6 +1845,13 @@ For popup management
     :hook
     (after-init . apheleia-global-mode))
 #+end_src
+
+#+begin_src emacs-lisp
+  (use-package consult-lsp
+    :bind (:map lsp-mode-map
+                ([remap xref-find-apropos] . consult-lsp-symbols)))
+#+end_src
+
 *** ELISP
 #+begin_src emacs-lisp
   (defun vl--ignore-elisp-keywords (cand)
