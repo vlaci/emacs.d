@@ -989,6 +989,26 @@ For popup management
       "p p" '(project-switch-project :wk "Open project")))
 #+end_src
 
+** Spelling
+#+begin_src emacs-lisp
+  (use-package flyspell
+    :ensure nil
+    :defer 5
+    :commands flyspell-mode flyspell-prog-mode
+    :hook
+    (text-mode . flyspell-mode)
+    (prog-mode . flyspell-prog-mode)
+    :init
+    (setq ;; ispell-program-name "hunspell"
+          ispell-dictionary "en_US,hu_HU")
+    :config
+    (ispell-set-spellchecker-params)
+    (ispell-hunspell-add-multi-dic ispell-dictionary))
+
+  (use-package langtool
+    :defer t)
+#+end_src
+
 ** Misc
 #+begin_src emacs-lisp
   (use-package savehist
@@ -2136,20 +2156,6 @@ For popup management
 
   (use-package flycheck-posframe
     :hook (flycheck-mode . flycheck-posframe-mode))
-
-  (use-package flyspell
-    :ensure nil
-    :defer 5
-    :hook (text-mode . flyspell-mode)
-    :init
-    (setq ;; ispell-program-name "hunspell"
-          ispell-dictionary "en_US,hu_HU")
-    :config
-    (ispell-set-spellchecker-params)
-    (ispell-hunspell-add-multi-dic ispell-dictionary))
-
-  (use-package langtool
-    :defer t)
 
   ;; coverage
   (use-package cov)
