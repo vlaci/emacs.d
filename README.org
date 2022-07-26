@@ -480,23 +480,37 @@ For popup management
 
 #+begin_src emacs-lisp
   (use-package popper
-    :bind (("C-`"   . popper-toggle-latest)
-           ("M-`"   . popper-cycle)
-           ("C-M-`" . popper-toggle-type))
-    :hook (after-init . popper-mode)
-    :config
-    ;;(setq popper-group-function #'popper-group-by-project)
+    :bind (:map popper-mode-map
+                ("C-`"   . popper-toggle-latest)
+                ("M-`"   . popper-cycle)
+                ("C-M-`" . popper-toggle-type))
+    :hook (vl-first-input . popper-mode)
     :init
     (setq popper-display-control nil)
     (setq popper-reference-buffers
-          '("\\*Warning"
-            "Output\\*\\'"
+          '("\\*Messages\\*"
+            "Output\\*$"
+            "\\*Warnings\\*"
+            "\\*Async Shell Command\\*"
             "\\*Backtrace\\*"
+            compilation-mode
+
+            "^\\*eshell.*\\*$" eshell-mode
+            "^\\*shell.*\\*$"  shell-mode
+            "^\\*term.*\\*$"   term-mode
+            "^\\*vterm.*\\*$"  vterm-mode
+
             flycheck-error-list-mode
-            messages-buffer-mode
-            help-mode
-            helpful-mode
-            compilation-mode)))
+            "\\*[Wo]*Man.*\\*$"
+            "\\*Org Src .*\\*" "\\*Org Select\\*" "\\*Capture\\*" "^CAPTURE-.*\\.org*"
+            "\\*docker-containers\\*" "\\*docker-images\\*" "\\*docker-networks\\*" "\\*docker-volumes\\*"
+            inferior-python-mode))
+    (setq popper-group-function #'popper-group-by-project)
+    (setq popper-echo-dispatch-actions t)
+    :config
+    ;; in order to grouping to work
+    (require 'project)
+    (popper-echo-mode +1))
 
   (use-package window
     :ensure nil
