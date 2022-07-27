@@ -982,6 +982,10 @@ For popup management
     ([remap describe-symbol] . helpful-symbol)
     ([remap describe-variable] . helpful-variable))
 #+end_src
+
+#+begin_src emacs-lisp
+  (use-package devdocs)
+#+end_src
 ** Project
 #+begin_src emacs-lisp
   (use-package consult-project-extra
