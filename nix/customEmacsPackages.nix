@@ -70,6 +70,4 @@ in
     pname = "mu4e-thread-folding";
     files = [ "mu4e-thread-folding.el" ];
   };
-
-  inherit (final.elpaPackages) modus-themes;
 }
