@@ -1174,8 +1174,8 @@ For popup management
 ** Font
 
 #+begin_src emacs-lisp
-  (defvar vl-default-font (font-spec :name "Iosevka" :size 14))
-  (defvar vl-sans-font (font-spec :name "Iosevka Aile" :size 14))
+  (defvar vl-default-font (font-spec :name "Iosevka Comfy" :size 14))
+  (defvar vl-sans-font (font-spec :name "Iosevka Comfy Duo" :size 14))
   (defvar vl-serif-font (font-spec :name "ETBembo" :size 14))
   (set-face-attribute 'variable-pitch nil :font vl-sans-font)
   (set-face-attribute 'fixed-pitch nil :font vl-default-font)

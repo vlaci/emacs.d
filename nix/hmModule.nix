@@ -39,8 +39,8 @@ in {
     home.packages = with pkgs; [
       cfg.package
       emacs-all-the-icons-fonts
-      iosevka-bin
-      (iosevka-bin.override { variant = "aile"; })
+      iosevka-comfy.comfy
+      iosevka-comfy.comfy-duo
       etBook
 
       direnv
