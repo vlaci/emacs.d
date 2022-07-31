@@ -1200,6 +1200,10 @@ For popup management
                    (corfu-mode)
                    (add-to-list 'completion-at-point-functions #'cape-file)))
     :config
+    (defun eshell/rg (&rest args)
+      "Use rg in eshell"
+      (eshell-grep "rg" args t))
+
     (defun eshell/z (&optional regexp)
       "Navigate to a previously visited directory in eshell, or to
   any directory proferred by `consult-dir'."
@@ -2217,7 +2221,9 @@ For popup management
                            (require 'lsp-pyright)
                            (lsp-deferred))))
   (use-package pyvenv
-    :hook (python-mode . pyvenv-tracking-mode))
+    :hook (python-mode . pyvenv-tracking-mode)
+    :init
+    (setq pyvenv-default-virtual-env-name ".venv"))
 #+end_src
 *** Rust
 #+begin_src emacs-lisp
