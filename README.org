@@ -493,6 +493,7 @@ For popup management
             "\\*Warnings\\*"
             "\\*Async Shell Command\\*"
             "\\*Backtrace\\*"
+            "\\*Embark .*\\*"
             compilation-mode
 
             "^\\*eshell.*\\*$" eshell-mode
@@ -526,7 +527,18 @@ For popup management
     (even-window-sizes nil)
     ;; Default rules
     (display-buffer-alist
-     `(;; Display *Help* buffer at the right
+     `(;; Embark Actions above minibuffer
+       ("\\*Embark Actions\\*"
+        (display-buffer-reuse-window display-buffer-in-side-window)
+        (side . bottom)
+        (slot . 1)
+        (window-height . fit-window-to-buffer))
+       ("\\*Embark"
+        (display-buffer-reuse-window display-buffer-in-side-window)
+        (side . right)
+        (slot . -1)
+        (window-width . 0.4))
+       ;; Display *Help* buffer at the right
        ("\\*\\(Help\\|company-documentation\\|info\\|Man\\|WoMan\\)"
         (display-buffer-reuse-window display-buffer-in-previous-window display-buffer-in-side-window)
         (side . right)
