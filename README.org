@@ -496,6 +496,8 @@ For popup management
             "\\*Embark .*\\*"
             compilation-mode
 
+            magit-diff-mode
+
             "^\\*eshell.*\\*$" eshell-mode
             "^\\*shell.*\\*$"  shell-mode
             "^\\*term.*\\*$"   term-mode
@@ -552,6 +554,7 @@ For popup management
         (window-height . 16)
         (reusable-frames . visible))
        ("magit-diff:" nil
+        (display-buffer-reuse-window display-buffer-in-previous-window)
         (inhibit-same-window . t))
        ;; Split shells at the bottom
        ("^\\*e?shell"
