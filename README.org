@@ -630,7 +630,38 @@ For popup management
         window-divider-default-right-width 1)
   (add-hook 'after-init-hook #'window-divider-mode)
 #+end_src
+*** Workspaces
+#+begin_src emacs-lisp
+  (use-package burly
+    :hook (tab-bar-mode . burly-tabs-mode))
 
+  (use-package bufler
+    :hook
+    (vl-first-input . (lambda ()
+                        (bufler-mode)
+                        (bufler-tabs-mode)))
+    :init
+    (defvar consult--bufler-workspace+
+      `( :name "Workspace"
+         :narrow ?w
+         :category buffer
+         :face consult-buffer
+         :history  buffer-name-history
+         :state    ,#'consult--buffer-state
+         :enabled  ,(lambda () (frame-parameter nil 'bufler-workspace-path))
+         :items
+         ,(lambda ()
+            (let ((bufler-vc-state nil))
+              (mapcar #'buffer-name
+                      (mapcar #'cdr
+                              (bufler-buffer-alist-at
+                               (frame-parameter nil 'bufler-workspace-path)
+                               :filter-fns bufler-filter-buffer-fns))))))
+      "Bufler workspace buffers source for `consult-buffer'.")
+
+    (with-eval-after-load 'consult
+      (push #'consult--bufler-workspace+ consult-buffer-sources)))
+#+end_src
 *** Modeline
 
 #+begin_src emacs-lisp
@@ -1499,10 +1530,6 @@ For popup management
 
   (use-package emacs
     :hook (prog-mode . (lambda () (setq show-trailing-whitespace t))))
-
-  (use-package tab-line
-    :ensure nil
-    :hook (after-init . (lambda()(global-tab-line-mode 1))))
 
   (use-package display-fill-column-indicator
     :ensure nil
