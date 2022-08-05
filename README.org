@@ -2342,6 +2342,17 @@ For popup management
 
   ;; coverage
   (use-package cov)
+
+  (use-package dumb-jump
+    :init
+    (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
+    (defun vl--dumb-jump-nix-derivation-root (filepath)
+      "Predicate returning when we are at a nix derivation's root directory"
+      (when (string-match-p "^/nix/store/[^/]+$" "/nix/store/foo")
+        filepath))
+
+    ;; When dumb-jump couldn't find a project directory, check if we are in a nix derivation,
+    (advice-add #'dumb-jump-get-config :after-until #'vl--dumb-jump-nix-derivation-root))
 #+end_src
 
 ** Email
