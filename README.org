@@ -1971,7 +1971,7 @@ For popup management
 *** LSP
 #+begin_src emacs-lisp
   (use-package lsp-mode
-    :commands (lsp lsp-deferred vl--lsp-mode-setup-completion)
+    :commands lsp lsp-deferred vl--lsp-mode-setup-completion
     :hook
     (lsp-mode . lsp-enable-which-key-integration)
     (lsp-completion-mode . vl--lsp-mode-setup-completion)
@@ -2249,6 +2249,7 @@ For popup management
                            (smart-newline-mode -1)
                            (require 'lsp-pyright)
                            (lsp-deferred))))
+
   (use-package pyvenv
     :hook (python-mode . pyvenv-tracking-mode)
     :init
