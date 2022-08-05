@@ -336,6 +336,10 @@ Idea of a =vl-first-input-hook= is borrowed from =doom-emacs=
             meow-keypad-leader-dispatch vl--leader-keymap
             meow-expand-hint-remove-delay 3
             meow-use-clipboard t)
+      (add-to-list 'meow-mode-state-list '(magit-mode . insert))
+      (add-to-list 'meow-mode-state-list '(eshell-mode . insert))
+      (add-to-list 'meow-mode-state-list '(shell-mode . insert))
+      (add-to-list 'meow-mode-state-list '(vterm-mode . insert))
       (meow-motion-overwrite-define-key
        '("j" . meow-next)
        '("k" . meow-prev)
@@ -1365,8 +1369,7 @@ For popup management
     (with-eval-after-load 'meow
       (add-hook 'magit-setup-buffer-hook #'magit-set-buffer-margin)
       (add-hook 'magit-setup-buffer-hook #'(lambda ()
-                                             (setq-local meow-cursor-type-insert 'box)
-                                             (meow-insert))))
+                                             (setq-local meow-cursor-type-insert 'box))))
 
     (require 'magit-extras)
 
