@@ -903,6 +903,7 @@ For popup management
            ("<help> a" . consult-apropos)            ;; orig. apropos-command
            ;; M-g bindings (goto-map)
            ("M-g e" . consult-compile-error)
+           ("M-g f" . consult-flymake)
            ("M-g g" . consult-goto-line)             ;; orig. goto-line
            ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
            ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
@@ -1004,7 +1005,8 @@ For popup management
 
 #+begin_src emacs-lisp
   (use-package consult-flycheck
-    :bind (("M-g f" . consult-flycheck)))
+    :bind (:map flycheck-mode-map
+                ("M-g f" . consult-flycheck)))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -1973,54 +1975,13 @@ For popup management
 #+end_src
 *** LSP
 #+begin_src emacs-lisp
-  (use-package lsp-mode
-    :commands lsp lsp-deferred vl--lsp-mode-setup-completion
-    :hook
-    (lsp-mode . lsp-enable-which-key-integration)
-    (lsp-completion-mode . vl--lsp-mode-setup-completion)
-    :custom
-    (lsp-completion-provider :none)
-    (lsp-keymap-prefix "s-a")
-    (lsp-signature-render-documentation nil)
+  (use-package eglot
+    :init
+    (defvar vl--eglot-pyright-executable "pyright")
+    (defvar vl--eglot-rust-analyzer-executable "rust-analyzer")
     :config
-    (defun vl--lsp-mode-setup-completion ()
-      (setq-local completion-at-point-functions
-                  (list (cape-super-capf
-                         (cape-capf-buster #'lsp-completion-at-point)
-                         vl--cape-yasnippet
-                         #'cape-dabbrev)))
-
-      (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
-            '(orderless)))
-    (defun vl--orderless-dispatch-flex-first (_pattern index _total)
-      (and (eq index 0) 'orderless-flex))
-    (add-hook 'orderless-style-dispatchers #'vl--orderless-dispatch-flex-first nil 'local))
-
-  (use-package lsp-ui
-    :hook (lsp-mode . lsp-ui-mode)
-    :bind ("M-h" . lsp-ui-doc-show)
-    :config
-    (setq lsp-ui-doc-show-with-cursor nil
-          lsp-ui-doc-show-with-mouse nil
-          lsp-ui-doc-position 'top ;; 'at-point
-          lsp-ui-sideline-enable t
-          lsp-ui-sideline-show-hover nil
-          lsp-ui-sideline-ignore-duplicate t
-          lsp-ui-sideline-delay 0.4
-          lsp-ui-sideline-actions-icon lsp-ui-sideline-actions-icon-default
-          lsp-ui-doc-max-width 80
-          lsp-ui-doc-max-height 40
-          lsp-ui-peek-enable t
-          lsp-headerline-breadcrumb-enable nil
-          lsp-lens-enable t
-          lsp-file-watch-threshold 1000000))
-
-  (use-package dap-mode
-    :after lsp-mode
-    :hook (lsp-mode . dap-mode)
-    :config
-    (add-hook 'dap-stopped-hook
-              (lambda (arg) (call-interactively #'dap-hydra))))
+    (setq eglot-server-programs `((python-mode . (,vl--eglot-pyright-executable "--stdio"))
+                                  (rust-mode . ,vl--eglot-rust-analyzer-executable))))
 
   (use-package tree-sitter
     :hook
@@ -2047,8 +2008,8 @@ For popup management
 #+end_src
 
 #+begin_src emacs-lisp
-  (use-package consult-lsp
-    :bind (:map lsp-mode-map
+  (use-package consult-eglot
+    :bind (:map eglot-mode-map
                 ([remap xref-find-apropos] . consult-lsp-symbols)))
 #+end_src
 
@@ -2090,21 +2051,21 @@ For popup management
 #+begin_src emacs-lisp
   (use-package prog-mode
     :ensure nil
-    :hook ((c-mode c++mode) . lsp-deferred))
+    :hook ((c-mode c++mode) . eglot-ensure))
 #+end_src
 
 *** CSS/LessCSS/SASS/SCSS
 #+begin_src emacs-lisp
   (use-package css-mode
     :ensure nil
-    :hook (css-mode . lsp-deferred))
+    :hook (css-mode . eglot-ensure))
 
   (use-package scss-mode
     :ensure nil
-    :hook (scss-mode . lsp-deferred))
+    :hook (scss-mode . eglot-ensure))
 
   (use-package sass-mode
-    :hook (sass-mode .lsp-deferred))
+    :hook (sass-mode .eglot-ensure))
 #+end_src
 
 *** Docker
@@ -2122,7 +2083,7 @@ For popup management
 
 #+begin_src emacs-lisp
   (use-package fsharp-mode
-    :hook (fsharp-mode . lsp-deferred))
+    :hook (fsharp-mode . eglot-ensure))
 #+end_src
 
 *** Graphql
@@ -2141,7 +2102,7 @@ For popup management
     :mode "\\.erb\\'"
     :mode "\\.mustache\\'"
     :mode "\\.djhtml\\'"
-    :hook (web-mode . lsp-deferred))
+    :hook (web-mode . eglot-ensure))
 #+end_src
 
 *** Just
@@ -2156,7 +2117,7 @@ For popup management
 #+begin_src emacs-lisp
   (use-package lua-mode
     :mode "\\.lua\\'"
-    :hook (lua-mode . lsp-deferred))
+    :hook (lua-mode . eglot-ensure))
 #+end_src
 
 *** Json
@@ -2164,7 +2125,7 @@ For popup management
 #+begin_src emacs-lisp
   (use-package json-mode
     :mode "\\.json\\'"
-    ;;:hook (json-mode . lsp-deferred)
+    ;;:hook (json-mode . eglot-ensure)
     )
 #+end_src
 
@@ -2174,7 +2135,7 @@ For popup management
   (use-package js-mode
     :ensure nil
     :init (setq js-indent-level 2)
-    :hook (js-mode . lsp-deferred))
+    :hook (js-mode . eglot-ensure))
 
   (use-package js2-mode
     :hook (js-mode . js2-minor-mode)
@@ -2194,7 +2155,7 @@ For popup management
 
   (use-package typescript-mode
     :mode "\\.tsx?\\'"
-    :hook (typescript-mode . lsp-deferred)
+    :hook (typescript-mode . eglot-ensure)
     :init
     (define-derived-mode typescriptreact-mode typescript-mode
       "TypeScript TSX")
@@ -2209,7 +2170,7 @@ For popup management
 *** Nix
 #+begin_src emacs-lisp
   (use-package nix-mode
-    :hook (nix-mode . lsp-deferred)
+    :hook (nix-mode . eglot-ensure)
     :mode "\\.nix\\'"
     :config
     (setq tab-width 2))
@@ -2221,37 +2182,15 @@ For popup management
     :mode "\\.jl\\'")
   (use-package julia-repl
     :hook (julia-mode . julia-repl-mode))
-
-  (use-package lsp-julia
-    :defer t
-    :hook (julia-mode . (lambda ()
-                          (require 'lsp-julia)
-                          (lsp-deferred)))
-    :config
-    (defun lsp-julia--get-root ()
-      "Get the (Julia) project root directory of the current file."
-      (concat "\""
-              (expand-file-name
-               (or (locate-dominating-file buffer-file-name "Project.toml")
-                   lsp-julia-default-environment))
-              "\""))
-
-    (let ((lsp-orig-path (expand-file-name "Project.toml" (expand-file-name "languageserver" lsp-julia--self-path))))
-      (unless (file-exists-p lsp-julia-package-dir)
-        (make-directory lsp-julia-package-dir))
-      (f-write (f-read lsp-orig-path) 'utf-8 (expand-file-name "Project.toml" lsp-julia-package-dir)))
-    :custom
-    (lsp-julia-package-dir (expand-file-name "lsp-julia" no-littering-var-directory))
-    (lsp-julia-default-environment "~/.julia/environments/v1.6"))
+  (use-package eglot-jl
+    :hook (julia-mode . (lambda () (eglot-jl-init) (eglot-ensure))))
 #+end_src
 *** Python
 #+begin_src emacs-lisp
-  (use-package lsp-pyright
-    :defer t
+  (use-package python-mode
     :hook (python-mode . (lambda ()
                            (smart-newline-mode -1)
-                           (require 'lsp-pyright)
-                           (lsp-deferred))))
+                           (eglot-ensure))))
 
   (use-package pyvenv
     :hook (python-mode . pyvenv-tracking-mode)
@@ -2260,20 +2199,10 @@ For popup management
 #+end_src
 *** Rust
 #+begin_src emacs-lisp
-  (use-package lsp-mode
-    :init
-    (defun vl-lsp-extend-semantic-tokens ()
-               (require 'lsp-semantic-tokens)
-               (add-to-list 'lsp-semantic-token-modifier-faces
-                            '("mutable" . underline))
-               (remove-hook 'lsp-before-initialize-hook 'vl-lsp-extend-semantic-tokens))
-    :hook (lsp-before-initialize . vl-lsp-extend-semantic-tokens))
-
   (use-package rustic
     :defer t
-    :after (lsp-mode flycheck)
-    :hook (rustic-mode . turn-on-tree-sitter-mode)
-    :mode ("\\.rs$" . rustic-mode)
+    :hook (rustic-mode . (lambda ()
+                           (add-hook 'eglot--managed-mode-hook (lambda () (flymake-mode -1)) 0 'local)))
     :commands rustic-run-cargo-command rustic-cargo-outdated
     :general
     (local-leader-prefix
@@ -2287,25 +2216,16 @@ For popup management
               "M-<up>" 'lsp-rust-analyzer-move-item-up
               "M-<down>" 'lsp-rust-analyzer-move-item-down)
     :init
-    (setq rust-indent-method-chain t
-          lsp-rust-analyzer-cargo-watch-command "clippy"
-          lsp-rust-analyzer-highlighting-strings t
-          lsp-rust-analyzer-server-display-inlay-hints t
-          lsp-rust-analyzer-display-chaining-hints t
-          lsp-rust-analyzer-display-parameter-hints t
-          lsp-rust-analyzer-diagnostics-disabled ["unresolved-macro-call" "unresolved-proc-macro"]
-          lsp-enable-semantic-highlighting t
-          lsp-semantic-tokens-apply-modifiers t)
+    (setq rustic-lsp-client 'eglot
+          rust-indent-method-chain t)
     :config
     (with-eval-after-load 'rustic-flycheck
-      (add-to-list 'flycheck-checkers 'rustic-clippy))
-    (with-eval-after-load 'dap-mode
-      (require 'dap-cpptools)))
+      (add-to-list 'flycheck-checkers 'rustic-clippy)))
 #+end_src
 *** Markdown
 #+begin_src emacs-lisp
   (use-package markdown-mode
-    :hook (markdown-mode . lsp-deferred)
+    :hook (markdown-mode . eglot-ensure)
     :config
     (add-to-list 'markdown-code-lang-modes '("rust" . rustic-mode)))
   (use-package edit-indirect
@@ -2325,7 +2245,7 @@ For popup management
 *** Zig
 #+begin_src emacs-lisp
   (use-package zig-mode
-    :hook (zig-mode . lsp-deferred))
+    :hook (zig-mode . eglot-ensure))
 #+end_src
 *** Misc
 #+begin_src emacs-lisp
@@ -2333,9 +2253,6 @@ For popup management
     :hook (after-init . direnv-mode)
     :init
     (setq direnv-always-show-summary nil))
-
-  (use-package flycheck
-    :hook (vl-first-input . global-flycheck-mode))
 
   (use-package flycheck-posframe
     :hook (flycheck-mode . flycheck-posframe-mode))

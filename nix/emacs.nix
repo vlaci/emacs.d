@@ -1,4 +1,5 @@
-{ inputs
+{ lib
+, inputs
 , autoPatchelfHook
 , emacsPackagesFor
 , emacs
@@ -21,6 +22,10 @@
 , nodejs-slim
 , nodePackages
 , sumneko-lua-language-server
+, pyright
+, rnix-lsp
+, rust-analyzer
+, zls
 , parse
 , extraPackages ? (_: [])
 }:
@@ -33,20 +38,26 @@ let
     writeText "nixos-integration.el" ''
       (setq-default ispell-program-name "${hunspell}/bin/hunspell")
       (setq-default langtool-java-bin "${jre}/bin/java"
-                    langtool-language-tool-jar "${languagetool}/share/languagetool-commandline.jar")
-      (setq-default dap-cpptools-debug-program (list "${vscode-extensions.ms-vscode.cpptools}/debugAdapters/bin/OpenDebugAD7")
-                    lsp-eslint-server-command (list "${nodejs-slim}/bin/node" "${vscode-extensions.dbaeumer.vscode-eslint}/share/vscode/extensions/dbaeumer.vscode-eslint/server/out/eslintServer.js" "--stdio")
-                    lsp-clangd-binary-path "${clang-tools}/bin/clangd"
-                    lsp-clients-typescript-tls-path "${nodePackages.typescript-language-server}/bin/typescript-language-server"
-                    lsp-clients-lua-language-server-bin "${sumneko-lua-language-server}/bin/lua-language-server"
-                    lsp-clients-lua-language-server-main-location "${sumneko-lua-language-server}/share/lua-language-server/main.lua"
-                    lsp-markdown-server-command "${nodePackages.unified-language-server}/bin/unified-language-server"
+                    langtool-language-tool-jar "${languagetool}/share/languagetool-commandline.jar"
                     mu4e-binary "${mu}/bin/mu"
                     sendmail-program "${msmtp}/bin/msmtp")
-
-       (advice-add 'lsp-css--server-command
-                   :override (lambda () (list "${nodePackages.vscode-css-languageserver-bin}/bin/css-languageserver" "--stdio")))
+      (setq-default vl--eglot-pyright-executable "${pyright}/bin/pyright-langserver"
+                    vl--eglot-rust-analyzer-executable "${rust-analyzer}/bin/rust-analyzer")
     '';
+
+  runtimeDependencies = [
+    clang-tools
+    nodePackages.typescript-language-server
+    sumneko-lua-language-server
+    nodePackages.unified-language-server
+    nodePackages.bash-language-server
+    nodePackages.typescript
+    nodePackages.vscode-css-languageserver-bin
+    nodePackages.vscode-html-languageserver-bin
+    nodePackages.vscode-json-languageserver
+    rnix-lsp
+    zls
+  ];
 
   packages = parse.parsePackagesFromUsePackage {
     configText = builtins.readFile ../README.org;
@@ -99,4 +110,15 @@ let
     [ default ] ++ extra
   );
 in
-emacsStage2 // { inherit emacs_d emacs-nixos-integration; }
+emacsStage2.overrideAttrs (super: {
+  buildCommand = super.buildCommand + ''
+    wrapEmacs() {
+        wrapProgram "$1" --suffix PATH : "${lib.makeBinPath runtimeDependencies}"
+    }
+
+    for prog in $out/bin/*; do
+        wrapEmacs $prog
+    done
+  '';
+  passthru = { inherit emacs_d emacs-nixos-integration; };
+})
