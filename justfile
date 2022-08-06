@@ -14,4 +14,4 @@ tangle:
     #!/usr/bin/env nix-shell
     #!nix-shell -p emacs -i "emacs --script"
     (require 'ob-tangle)
-    (org-babel-tangle-file "README.org" nil "makefile\\|sh")
+    (org-babel-tangle-file "README.org" nil)

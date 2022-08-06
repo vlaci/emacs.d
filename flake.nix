@@ -9,6 +9,8 @@
       };
     };
     flake-utils.url = "github:numtide/flake-utils";
+    fromElisp.url = "github:talyz/fromElisp";
+    fromElisp.flake = false;
     ligature.url = "github:mickeynp/ligature.el";
     ligature.flake = false;
     evil-markdown.url = "github:Somelauw/evil-markdown";
@@ -36,7 +38,8 @@
         };
       in
       {
-        packages = pkgs;
+        legacyPackages = pkgs;
+        packages = { inherit (pkgs) emacsVlaci; };
         defaultPackage = pkgs.emacsVlaci;
         devShell = import ./shell.nix { inherit pkgs; };
       });

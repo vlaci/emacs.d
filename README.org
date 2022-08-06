@@ -59,7 +59,7 @@ Now everything is set-up to be able to run the following =justfile=
       #!/usr/bin/env nix-shell
       #!nix-shell -p emacs -i "emacs --script"
       (require 'ob-tangle)
-      (org-babel-tangle-file "README.org" nil "makefile\\|sh")
+      (org-babel-tangle-file "README.org" nil)
 #+end_src
 
 * early-init
@@ -98,7 +98,7 @@ to disable UI elements from it. Lifted from ~doom-emacs~
 
   (setq inhibit-startup-message t
         inhibit-startup-echo-area-message user-login-name
-        inhibit-default-init t
+        ;;inhibit-default-init t
         inhibit-startup-sceen t
         initial-scratch-message nil)
   (setq auto-mode-case-fold nil
@@ -1650,7 +1650,9 @@ For popup management
       "t" '(vl-org-todo-with-date :wk "toggle-todo")
       "d" '(vl-org-done-with-date :wk "mark-done"))
     :init
-    (setq vl-org-agenda-dir (expand-file-name "agenda" org-directory))
+    (setq vl-org-agenda-dir (if (boundp 'org-directory)
+                                (expand-file-name "agenda" org-directory)
+                              nil))
     :custom
     (org-modules
      '(;; ol-w3m

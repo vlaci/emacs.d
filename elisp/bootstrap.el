@@ -1,0 +1,86 @@
+;;; bootstrap.el --- summary -*- lexical-binding: t -*-
+
+;; This file is not part of GNU Emacs
+
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+
+;;; Commentary:
+
+;; commentary
+
+;;; Code:
+
+(setq package-enable-at-startup nil)
+
+;; Prevent the glimpse of un-styled Emacs by disabling these UI elements early.
+(push '(menu-bar-lines . 0) default-frame-alist)
+(push '(tool-bar-lines . 0) default-frame-alist)
+(push '(vertical-scroll-bars) default-frame-alist)
+
+;; Resizing the Emacs frame can be a terribly expensive part of changing the
+;; font. By inhibiting this, we easily halve startup times with fonts that are
+;; larger than the system default.
+(setq frame-inhibit-implied-resize t
+      idle-update-delay 1.0
+      inhibit-compacting-font-caches t
+      fast-but-imprecise-scrolling t
+      redisplay-skip-fontification-on-input t
+      initial-major-mode 'fundamental-mode)
+
+(setq use-dialog-box nil)
+
+(setq inhibit-startup-message t
+      inhibit-startup-screen t
+      inhibit-startup-echo-area-message user-login-name
+      initial-scratch-message nil)
+(setq auto-mode-case-fold nil
+      read-process-output-max (* 64 1024 1024))
+
+(message "early-init %s" inhibit-startup-screen)
+
+(add-to-list 'load-path (file-name-directory load-file-name))
+
+(defvar +nix-build?
+  (eval-when-compile
+    (equal (getenv "HOME") "/homeless-shelter")))
+
+
+(message "in nix build? %s" +nix-build?)
+
+(require 'package)
+
+(if +nix-build?
+    ;; If built with nix, we have precomputed autoloads that we should load
+    (load "autoloads")
+  ;; Otherwise load package definitions
+  (message "loading packages")
+  (require 'packages))
+
+(defvar no-littering-etc-directory)
+(defvar no-littering-var-directory)
+
+(require 'xdg)
+(setq no-littering-var-directory (expand-file-name "emacs" (xdg-data-home))
+      no-littering-etc-directory (expand-file-name "emacs" (xdg-config-home)))
+
+(setq custom-file (expand-file-name "settings.el" no-littering-etc-directory))
+
+(when (not (bound-and-true-p byte-compile-current-file))
+  (startup-redirect-eln-cache (expand-file-name "eln-cache" no-littering-var-directory))
+  (require 'no-littering))
+
+(provide 'bootstrap)
+
+;;; bootstrap.el ends here
