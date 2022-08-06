@@ -1,9 +1,11 @@
-{ inputs
+{ lib
+, inputs
 , autoPatchelfHook
 , emacsPackagesFor
 , emacs
 , fetchFromGitHub
 , runCommand
+, substituteAll
 , stdenv
 , libkrb5
 , zlib
@@ -11,9 +13,9 @@
 , writeText
 , graphviz
 , vscode-extensions
-, clang-tools
 , hunspellDicts
 , hunspellWithDicts
+, proselint
 , jre
 , languagetool
 , mu
@@ -21,39 +23,82 @@
 , nodejs-slim
 , nodePackages
 , sumneko-lua-language-server
-, parse
-, extraPackages ? (_: [])
+, pyright
+, rnix-lsp
+, rust-analyzer
+, zls
+, black
+, clang-tools
+, isort
+, nixpkgs-fmt
+, fromElisp
+, extraPackages ? (_: [ ])
+, impure ? { }
 }:
 
 let
-  emacs-nixos-integration =
+  emacs-nix-integration =
     let
       hunspell = hunspellWithDicts (with hunspellDicts; [ hu-hu en-us ]);
+      binaries = [
+        hunspell
+        proselint
+        jre
+        languagetool
+        mu
+        msmtp
+        # lsp
+        pyright
+        rnix-lsp
+        rust-analyzer
+        sumneko-lua-language-server
+        zls
+        # formatters for prettier
+        black
+        clang-tools
+        isort
+        nixpkgs-fmt
+        nodePackages.prettier
+      ];
+      makeElispExecPath = paths: with lib; "(list" + (concatStringsSep " " (map (path: "\"${path}/bin\"") (filter (x: x != null) paths))) + ")";
+      extra_exec_path = makeElispExecPath binaries;
     in
-    writeText "nixos-integration.el" ''
-      (setq-default ispell-program-name "${hunspell}/bin/hunspell")
-      (setq-default langtool-java-bin "${jre}/bin/java"
-                    langtool-language-tool-jar "${languagetool}/share/languagetool-commandline.jar")
-      (setq-default dap-cpptools-debug-program (list "${vscode-extensions.ms-vscode.cpptools}/debugAdapters/bin/OpenDebugAD7")
-                    lsp-eslint-server-command (list "${nodejs-slim}/bin/node" "${vscode-extensions.dbaeumer.vscode-eslint}/share/vscode/extensions/dbaeumer.vscode-eslint/server/out/eslintServer.js" "--stdio")
-                    lsp-clangd-binary-path "${clang-tools}/bin/clangd"
-                    lsp-clients-typescript-tls-path "${nodePackages.typescript-language-server}/bin/typescript-language-server"
-                    lsp-clients-lua-language-server-bin "${sumneko-lua-language-server}/bin/lua-language-server"
-                    lsp-clients-lua-language-server-main-location "${sumneko-lua-language-server}/share/lua-language-server/main.lua"
-                    lsp-markdown-server-command "${nodePackages.unified-language-server}/bin/unified-language-server"
-                    mu4e-binary "${mu}/bin/mu"
-                    sendmail-program "${msmtp}/bin/msmtp")
+    substituteAll {
+      src = ./nix-integration.el;
+      inherit extra_exec_path;
+    };
 
-       (advice-add 'lsp-css--server-command
-                   :override (lambda () (list "${nodePackages.vscode-css-languageserver-bin}/bin/css-languageserver" "--stdio")))
-    '';
+  src = impure.init_d or ../.;
 
-  packages = parse.parsePackagesFromUsePackage {
-    configText = builtins.readFile ../README.org;
-    isOrgModeFile = true;
-    alwaysTangle = true;
-    alwaysEnsure = true;
-  };
+  parsePackages = configText:
+    let
+      name = builtins.head;
+      recurse = item:
+        if builtins.isList item && item != [ ] then
+          let
+            head = builtins.head item;
+            tail = builtins.tail item;
+          in
+          if head == "+install!" then
+            name tail
+          else
+            map recurse item
+        else
+          [ ];
+    in
+    lib.flatten (map recurse (fromElisp configText));
+
+  packages =
+    let
+      files = builtins.filter (f: lib.hasSuffix ".el" f) (lib.filesystem.listFilesRecursive src);
+    in
+    lib.flatten (map
+      (f:
+        let
+          text = builtins.readFile f;
+        in
+        parsePackages text)
+      files);
 
   emacsPackages = emacsPackagesFor emacs;
   emacsWithPackages = emacsPackages.emacsWithPackages;
@@ -64,39 +109,44 @@ let
       ++ (extraPkgs epkgs)
     );
 
-  emacsStage1 = mkEmacs (epkgs: [ epkgs.use-package ]);
+  emacsStage1 = mkEmacs (epkgs: [ ]);
 
-
-  emacs_d = runCommand "mk-emacs.d"
+  init_d = impure.init_d or (runCommand "emacs.d"
     {
-      buildInputs = [ emacsStage1 ];
-      literateInitFile = ../README.org;
+      src = ../.;
+      buildInputs = [ emacsStage2 ];
     } ''
-    mkdir -p $out
-    cp $literateInitFile $out/init.org
-    # using unconfigured emacs so that nothing can hook into tangling (looking at you, orgit)
-    ${emacs}/bin/emacs --batch --quick -l ob-tangle --eval '(progn (defvar org-element-cache-persistent nil)(org-babel-tangle-file "'$out'/init.org"))'
-    rm $out/init.org
-    emacs --batch --quick -l package --eval '(let ((package-quickstart-file "'$out'/autoloads.el")) (defun byte-compile-file (f)) (package-quickstart-refresh))'
-  '';
+    cp -r $src/{elisp,*.el} .
+    chmod -R u+w .
+    cp ${emacs-nix-integration} elisp/nix-integration.el
+    find
+    emacs \
+      --batch \
+      --quick \
+      -l package \
+      --eval '(let ((package-quickstart-file "elisp/autoloads.el"))
+                (defun byte-compile-file (f))
+                (package-quickstart-refresh))'
 
-  emacsStage2 = mkEmacs (epkgs: let
-    default = epkgs.trivialBuild {
-      pname = "default";
-      packageRequires = emacsStage1.deps.explicitRequires;
-      unpackPhase = ''
-        cp ${emacs-nixos-integration} ./nixos-integration.el
-        cp ${emacs_d}/{*.el,*.elc} .
-        cat > default.el <<EOF
-        (load "nixos-integration")
-        (setq package-quickstart-file "$out/share/emacs/site-lisp/autoloads.el")
-        (load "init")
-        EOF
-      '';
-    };
-    extra = extraPackages epkgs;
-  in
-    [ default ] ++ extra
+    mkdir -p $out
+    export EMACSNATIVELOADPATH=$out/eln-cache
+    emacs -L elisp --batch -f batch-byte-compile {,elisp/}*.el
+    cp -r * $out
+    emacs -L $out/elisp --batch -f batch-native-compile $out/{,elisp/}*.el
+  '');
+
+  emacsStage2 = mkEmacs (epkgs:
+    let
+      packagesFun = epkgs:
+        map (n: epkgs.${n}) packages;
+      extra = extraPackages epkgs;
+    in
+    extra
   );
 in
-emacsStage2 // { inherit emacs_d emacs-nixos-integration; }
+emacsStage2.overrideAttrs (super: {
+  buildCommand = super.buildCommand + ''
+    wrapProgram $out/bin/emacs --append-flags "--init-directory ${toString init_d}"
+  '';
+  passthru = { inherit init_d emacs-nix-integration; };
+})

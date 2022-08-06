@@ -9,18 +9,12 @@
       };
     };
     flake-utils.url = "github:numtide/flake-utils";
+    fromElisp.url = "github:talyz/fromElisp";
+    fromElisp.flake = false;
     ligature.url = "github:mickeynp/ligature.el";
     ligature.flake = false;
-    evil-markdown.url = "github:Somelauw/evil-markdown";
-    evil-markdown.flake = false;
-    org.url = "github:bzg/org-mode";
-    org.flake = false;
-    org-modern-indent.url = "github:jdtsmith/org-modern-indent";
-    org-modern-indent.flake = false;
-    org-roam-ui.url = "github:org-roam/org-roam-ui";
-    org-roam-ui.flake = false;
-    mu4e-thread-folding.url = "github:rougier/mu4e-thread-folding";
-    mu4e-thread-folding.flake = false;
+    eglot-x.url = "github:nemethf/eglot-x";
+    eglot-x.flake = false;
   };
 
   outputs = { self, nixpkgs, flake-utils, ... }@inputs:
@@ -36,7 +30,8 @@
         };
       in
       {
-        packages = pkgs;
+        legacyPackages = pkgs;
+        packages = { inherit (pkgs) emacsVlaci; };
         defaultPackage = pkgs.emacsVlaci;
         devShell = import ./shell.nix { inherit pkgs; };
       });

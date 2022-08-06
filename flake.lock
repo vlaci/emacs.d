@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "eglot-x": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1648823992,
+        "narHash": "sha256-WHPV4VTq1/ahtJxRCN+qHHCYKE7YvJdyHNMesfhTM8Y=",
+        "owner": "nemethf",
+        "repo": "eglot-x",
+        "rev": "b56fbab9754030959f605cccb5d1f2cf7dd07616",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nemethf",
+        "repo": "eglot-x",
+        "type": "github"
+      }
+    },
     "emacs-overlay": {
       "inputs": {
         "flake-utils": [
@@ -20,22 +36,6 @@
       "original": {
         "owner": "nix-community",
         "repo": "emacs-overlay",
-        "type": "github"
-      }
-    },
-    "evil-markdown": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1626852210,
-        "narHash": "sha256-HBBuZ1VWIn6kwK5CtGIvHM1+9eiNiKPH0GUsyvpUVN8=",
-        "owner": "Somelauw",
-        "repo": "evil-markdown",
-        "rev": "8e6cc68af83914b2fa9fd3a3b8472573dbcef477",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Somelauw",
-        "repo": "evil-markdown",
         "type": "github"
       }
     },
@@ -86,22 +86,6 @@
         "type": "github"
       }
     },
-    "mu4e-thread-folding": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1627717910,
-        "narHash": "sha256-ZF6i/32iFXfeXTPCT/LPFpXmboZ3tpdB+GDs6T9IwfA=",
-        "owner": "rougier",
-        "repo": "mu4e-thread-folding",
-        "rev": "b95cd5f4587d458e9578708cf1101be5c2e3c8f8",
-        "type": "github"
-      },
-      "original": {
-        "owner": "rougier",
-        "repo": "mu4e-thread-folding",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1660305968,
@@ -118,66 +102,14 @@
         "type": "github"
       }
     },
-    "org": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1660285732,
-        "narHash": "sha256-+Sa++6ARObjzVHM3qxta8rQqNZzm8YaczyeiN0rf2IA=",
-        "owner": "bzg",
-        "repo": "org-mode",
-        "rev": "b428839f1b5b772d391c1e6bdd80e3f5e23b4441",
-        "type": "github"
-      },
-      "original": {
-        "owner": "bzg",
-        "repo": "org-mode",
-        "type": "github"
-      }
-    },
-    "org-modern-indent": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1659545330,
-        "narHash": "sha256-IZUyZju1X/8Rkkypg8jy3YZgxenWIEWBMEUS8ql4v5A=",
-        "owner": "jdtsmith",
-        "repo": "org-modern-indent",
-        "rev": "ff10d3dd2f1acb95ab30b0b836602d12c5b7e16b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "jdtsmith",
-        "repo": "org-modern-indent",
-        "type": "github"
-      }
-    },
-    "org-roam-ui": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1660411811,
-        "narHash": "sha256-MUqley9eaZRSBv/p8jdXiZBxd0GI0MluYi0WqkBbrFA=",
-        "owner": "org-roam",
-        "repo": "org-roam-ui",
-        "rev": "16a8da9e5107833032893bc4c0680b368ac423ac",
-        "type": "github"
-      },
-      "original": {
-        "owner": "org-roam",
-        "repo": "org-roam-ui",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
+        "eglot-x": "eglot-x",
         "emacs-overlay": "emacs-overlay",
-        "evil-markdown": "evil-markdown",
         "flake-utils": "flake-utils",
         "fromElisp": "fromElisp",
         "ligature": "ligature",
-        "mu4e-thread-folding": "mu4e-thread-folding",
-        "nixpkgs": "nixpkgs",
-        "org": "org",
-        "org-modern-indent": "org-modern-indent",
-        "org-roam-ui": "org-roam-ui"
+        "nixpkgs": "nixpkgs"
       }
     }
   },

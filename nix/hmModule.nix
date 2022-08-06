@@ -1,5 +1,5 @@
 { overlay }:
-{ config, lib, pkgs, ...}:
+{ config, lib, pkgs, ... }:
 
 let
   inherit (lib) concatMapStringsSep generators isAttrs isBool isInt isList mkIf mkOption mkEnableOption types;
@@ -7,28 +7,30 @@ let
   cfg = config.emacsVlaci;
 
   toEmacsLisp = value:
-        if isBool value then
-          (if value then "t" else "nil")
-        else if isInt value then
-          value
-        else if isList value then
-          '''(${concatMapStringsSep " " toEmacsLisp value})''
-        else if isAttrs value && value ? elisp then
-          value.elisp
-        else
-          ''"${toString value}"'';
+    if isBool value then
+      (if value then "t" else "nil")
+    else if isInt value then
+      value
+    else if isList value then
+      '''(${concatMapStringsSep " " toEmacsLisp value})''
+    else if isAttrs value && value ? elisp then
+      value.elisp
+    else
+      ''"${toString value}"'';
   toEmacsConfig = generators.toKeyValue {
     mkKeyValue = key: value:
       let
         value' = toEmacsLisp value;
-      in "(setq ${key} ${value'})";
+      in
+      "(setq ${key} ${value'})";
   };
-in {
+in
+{
   options.emacsVlaci = {
-    enable = mkEnableOption {};
+    enable = mkEnableOption { };
     package = mkOption { default = emacs.override { inherit (cfg) extraPackages; }; };
     extraConfig = mkOption { default = ""; };
-    extraPackages = mkOption { default = _: []; };
+    extraPackages = mkOption { default = _: [ ]; };
     settings = mkOption {
       type = with types; attrsOf anything;
       default = { };
@@ -45,24 +47,13 @@ in {
 
       direnv
       lorri
-
-      nodePackages.bash-language-server
-      nodePackages.typescript # https://github.com/emacs-lsp/lsp-mode/pull/2633
-      nodePackages.vscode-css-languageserver-bin
-      nodePackages.vscode-html-languageserver-bin
-      nodePackages.vscode-json-languageserver
-      pyright
-      rnix-lsp
-      rust-analyzer
     ];
     emacsVlaci.settings."mu4e-maildir" = config.accounts.email.maildirBasePath;
     emacsVlaci.extraPackages = with pkgs; (_: [ mu ]);
 
-    xdg.configFile."emacs/early-init.el".source = "${cfg.package.emacs_d}/early-init.el";
-    xdg.configFile."emacs/init.el".text = ''
+    xdg.configFile."emacs/nix-settings.el".text = ''
       ${cfg.extraConfig}
       ${toEmacsConfig cfg.settings}
-      (load "default")
     '';
     xdg.desktopEntries."org-protocol" = {
       name = "Org-Protocol";

@@ -18,7 +18,7 @@ let
       minor = removeLeadingZeros (builtins.substring 8 6 ver);
     in
     "${major}.${minor}";
-  build = { pname, files, ... }@args:
+  build = { pname, files ? [ "*.el" ], ... }@args:
     let
       input = inputs.${pname};
       files' =
@@ -46,28 +46,7 @@ in
         --replace '(getenv "LSP_USE_PLISTS")' 't'
     '';
   });
-  ligature = build { pname = "ligature"; files = [ "ligature.el" ]; };
-  evil-markdown = build { pname = "evil-markdown"; files = [ "evil-markdown.el" ]; };
-  org = build {
-    pname = "org";
-    files = [ "lisp/*.el" ];
-    preBuild = ''
-      # dummy .git direcotry to force org into proper version detection
-      mkdir .git
-      # this will create the necessary auxulary files like org-version.el
-      make autoloads
-    '';
-  };
-  org-modern-indent = build {
-    pname = "org-modern-indent";
-    files = [ "*.el" ];
-  };
-  org-roam-ui = build {
-    pname = "org-roam-ui";
-    files = [ "*.el" "out" ];
-  };
-  mu4e-thread-folding = build {
-    pname = "mu4e-thread-folding";
-    files = [ "mu4e-thread-folding.el" ];
-  };
+  ligature = build { pname = "ligature"; };
+  eglot-x = build { pname = "eglot-x"; };
+  inherit (final.melpaPackages) apheleia;
 }
