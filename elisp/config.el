@@ -1,4 +1,12 @@
-;;; packages.el --- summary -*- lexical-binding: t -*-
+;;; config.el --- summary -*- lexical-binding: t -*-
+
+;; Author: László Vaskó
+;; Maintainer: László Vaskó
+;; Version: version
+;; Package-Requires: (dependencies)
+;; Homepage: homepage
+;; Keywords: keywords
+
 
 ;; This file is not part of GNU Emacs
 
@@ -21,20 +29,10 @@
 ;; commentary
 
 ;;; Code:
-(require 'config)
+(defvar +nix-build?
+  (eval-when-compile
+    (equal (getenv "HOME") "/homeless-shelter")))
 
-(defmacro +install! (pkg)
-  "Install PKG when used outside of Nix build."
-  `(when (and (not +nix-build?) (not (package-installed-p ',pkg)))
-     (package-install ',pkg)))
+(provide 'config)
 
-(if +nix-build?
-    ;; If built with nix, we have precomputed autoloads that we should load
-    (load "autoloads")
-  ;; Otherwise load package definitions
-  (message "loading packages")
-  (require 'packages))
-
-(provide 'packages)
-
-;;; packages.el ends here
+;;; config.el ends here

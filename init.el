@@ -21,7 +21,39 @@
 ;; commentary
 
 ;;; Code:
-;;(package-initialize)
+(require 'packages)
+
+;;; To organize runtime and config files
+
+(+install! no-littering)
+
+(defvar no-littering-etc-directory)
+(defvar no-littering-var-directory)
+
+(require 'xdg)
+(setq no-littering-var-directory (expand-file-name "emacs" (xdg-data-home))
+      no-littering-etc-directory (expand-file-name "emacs" (xdg-config-home)))
+
+(setq custom-file (expand-file-name "settings.el" no-littering-etc-directory))
+
+(when (not (bound-and-true-p byte-compile-current-file))
+  (startup-redirect-eln-cache (expand-file-name "eln-cache" no-littering-var-directory))
+  (require 'no-littering))
+
 (load custom-file 'noerror)
+
+
+;;; To improve help
+(+install! helpful)
+(+install! elisp-demos)
+
+(global-set-key [remap describe-command] #'helpful-command)
+(global-set-key [remap describe-function] #'helpful-callable)
+(global-set-key [remap describe-macro] #'helpful-macro)
+(global-set-key [remap describe-key] #'helpful-key)
+(global-set-key [remap describe-symbol] #'helpful-symbol)
+(global-set-key [remap describe-variable] #'helpful-variable)
+
+(advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update)
 
 ;;; init.el ends here

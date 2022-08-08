@@ -48,38 +48,7 @@
 (setq auto-mode-case-fold nil
       read-process-output-max (* 64 1024 1024))
 
-(message "early-init %s" inhibit-startup-screen)
-
 (add-to-list 'load-path (file-name-directory load-file-name))
-
-(defvar +nix-build?
-  (eval-when-compile
-    (equal (getenv "HOME") "/homeless-shelter")))
-
-
-(message "in nix build? %s" +nix-build?)
-
-(require 'package)
-
-(if +nix-build?
-    ;; If built with nix, we have precomputed autoloads that we should load
-    (load "autoloads")
-  ;; Otherwise load package definitions
-  (message "loading packages")
-  (require 'packages))
-
-(defvar no-littering-etc-directory)
-(defvar no-littering-var-directory)
-
-(require 'xdg)
-(setq no-littering-var-directory (expand-file-name "emacs" (xdg-data-home))
-      no-littering-etc-directory (expand-file-name "emacs" (xdg-config-home)))
-
-(setq custom-file (expand-file-name "settings.el" no-littering-etc-directory))
-
-(when (not (bound-and-true-p byte-compile-current-file))
-  (startup-redirect-eln-cache (expand-file-name "eln-cache" no-littering-var-directory))
-  (require 'no-littering))
 
 (provide 'bootstrap)
 

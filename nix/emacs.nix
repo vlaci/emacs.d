@@ -48,10 +48,9 @@ let
   parsePackages = configText: let
     name = item: let
       pkg = builtins.head item;
-      isQuoted = (builtins.head pkg) == "quote";
     in
-      if (builtins.length item == 1) && isQuoted then
-        [ (builtins.elemAt pkg 1) ]
+      if builtins.length item == 1 then
+        [ pkg ]
       else
         []
       ;
@@ -61,7 +60,7 @@ let
           head = builtins.head item;
           tail = builtins.tail item;
         in
-          if head == "package-install" then
+          if head == "+install!" then
             name tail
           else
             map recurse item
@@ -70,7 +69,10 @@ let
   in
     lib.flatten  (map recurse (fromElisp configText));
 
-  packages = parsePackages (builtins.readFile (src + "/elisp/packages.el"));
+  packages = let
+    files = builtins.filter (f: lib.hasSuffix ".el" f) (lib.filesystem.listFilesRecursive src);
+  in
+    lib.flatten (map (f: parsePackages (builtins.readFile f)) files);
 
   emacsPackages = emacsPackagesFor emacs;
   emacsWithPackages = emacsPackages.emacsWithPackages;
