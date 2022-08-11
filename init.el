@@ -23,11 +23,9 @@
 ;;; Code:
 (require '+packages)
 
-(+install! use-package)
-(require 'use-package)
 ;;;; To organize runtime and config files
 
-(+install! no-littering)
+(+install! no-littering 'no-require)
 
 (defvar no-littering-etc-directory)
 (defvar no-littering-var-directory)
@@ -40,7 +38,7 @@
 (setq custom-file (expand-file-name "settings.el" no-littering-etc-directory))
 
 (when (not (bound-and-true-p byte-compile-current-file))
-  (setq native-comp-deferred-compilation t)
+  (defvar native-comp-deferred-compilation t)
   (startup-redirect-eln-cache (expand-file-name "eln-cache" no-littering-var-directory))
   (require 'no-littering))
 
@@ -71,12 +69,13 @@
 (delete-selection-mode)
 
 (add-hook 'after-init-hook #'recentf-mode)
-(with-eval-after-load 'recentf
+
+(add-hook 'recentf-load-hook (lambda()
   (defvar recentf-exclude)
   (add-to-list 'recentf-exclude no-littering-var-directory)
   (add-to-list 'recentf-exclude no-littering-etc-directory)
   (add-to-list 'recentf-exclude user-emacs-directory)
-  (run-at-time nil (* 5 60) 'recentf-save-list))
+  (run-at-time nil (* 5 60) 'recentf-save-list)))
 
 (setq-default bidi-paragraph-direction 'left-to-right)
 (setq-default bidi-inhibit-bpa t)

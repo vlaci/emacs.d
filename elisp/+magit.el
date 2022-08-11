@@ -31,8 +31,7 @@
 (set-defaults
  '(magit-save-repository-buffers nil))
 
-(with-eval-after-load 'project
-  (defvar project-switch-commands)
+(+after! project
   (define-key project-prefix-map "m" #'magit-project-status)
   (add-to-list 'project-switch-commands '(magit-project-status "Magit") t))
 

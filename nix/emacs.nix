@@ -47,14 +47,7 @@ let
   src = impure.init_d or ../.;
 
   parsePackages = configText: let
-    name = item: let
-      pkg = builtins.head item;
-    in
-      if builtins.length item == 1 then
-        [ pkg ]
-      else
-        []
-      ;
+    name = builtins.head;
     recurse = item:
       if builtins.isList item && item != [] then
         let
@@ -104,9 +97,11 @@ let
                 (defun byte-compile-file (f))
                 (package-quickstart-refresh))'
 
+    mkdir -p $out/eln-cache
+    export EMACSNATIVELOADPATH=$out/eln-cache
     emacs -L . -L elisp --batch -f batch-byte-compile {,elisp/}*.el
+    emacs -L . -L elisp --batch -f batch-native-compile {,elisp/}*.el
 
-    mkdir -p $out
     cp -r * $out
 
   '');

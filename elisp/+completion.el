@@ -24,33 +24,32 @@
 (require '+packages)
 
 (+install! vertico)
-(use-package vertico
-  :hook
-  (after-init . vertico-mode)
-  (rfn-eshadow-update-overlay . vertico-directory-tidy)
-  :bind
-  (:map vertico-map
-        ("\r" . vertico-directory-enter)
-        ("\d" . vertico-directory-delete-char)
-        ("M-d" . vertico-directory-delete-word)
-        ("M-h" . vertico-directory-up))
-  :init
-  (set-defaults
-   '(vertico-cycle t)))
+(add-hook 'after-init-hook #'vertico-mode)
+
+(+after! vertico
+  (define-key vertico-map "\r" #'vertico-directory-enter)
+  (define-key vertico-map "\d" #'vertico-directory-delete-char)
+  (define-key vertico-map "\M-\d" #'vertico-directory-delete-word)
+  (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
+  (define-key vertico-map "\M-h" #'vertico-directory-up))
+
+(set-defaults
+ '(vertico-cycle t))
 
 (+install! marginalia)
 (add-hook 'after-init-hook #'marginalia-mode)
 (define-key minibuffer-local-map "\M-A" #'marginalia-cycle)
 
 (+install! consult)
-(use-package consult
-  :init
-  (set-defaults
-   '(consult-narrow-key "<"))
-  :bind
-  (:map consult-narrow-map
-        ("?" . consult-narrow-help))
-  :config
+
+(defvar consult-narrow-map)
+
+;;(+define-key! consult consult-narrow-map (kbd "?") consult-narrow-help)
+
+(+after! consult
+
+  (define-key consult-narrow-map (kbd "?") #'consult-narrow-help)
+
   ;; Optionally configure preview. The default value
   ;; is 'any, such that any key triggers the preview.
   ;; (setq consult-preview-key 'any)
@@ -59,6 +58,7 @@
   ;; For some commands and buffer sources it is useful to configure the
   ;; :preview-key on a per-command basis using the `consult-customize' macro.
   (eval-when-compile
+    (require 'consult)
     (consult-customize
      consult-theme
      :preview-key '(:debounce 0.2 any)
@@ -68,22 +68,17 @@
      consult--source-project-recent-file
      :preview-key (kbd "M-."))))
 
-(use-package xref
-  :ensure nil
-  :defines xref-show-xrefs-function xref-show-definitions-function
-  :config
+(+after! xref
   (setq xref-show-xrefs-function #'consult-xref
         xref-show-definitions-function #'consult-xref))
 
 (+install! consult-dir)
-(autoload 'consult-dir "consult-dir")
 
-(with-eval-after-load 'vertico
+(+after! vertico
   (define-key vertico-map (kbd "C-x C-d") #'consult-dir)
   (define-key vertico-map (kbd "C-x C-j") #'consult-dir-jump-file))
 
 (global-set-key (kbd "C-x C-d") #'consult-dir)
-
 
 (+install! orderless)
 
@@ -94,7 +89,6 @@
               (+ consult--tofu-char consult--tofu-range -1))
     "$"))
 
-(eval-when-compile (require 'orderless))
 (defvar +orderless-dispatch-alist
   '((?% . char-fold-to-regexp)
     (?! . orderless-without-literal)
@@ -156,7 +150,6 @@
 ;; 4. (setq completion-styles '(substring orderless basic))
 ;; Combine substring, orderless and basic.
 ;;
-(declare-function orderless-escapable-split-on-space "orderless")
 (setq completion-styles '(orderless basic)
       completion-category-defaults nil
           ;;; Enable partial-completion for files.
@@ -175,23 +168,18 @@
 
 (+install! embark)
 (+install! embark-consult)
+(global-set-key [remap describe-bindings] #'embark-bindings)
+(global-set-key (kbd "C-.") #'embark-act)
+(global-set-key (kbd "C-;") #'embark-dwim)
 
-(use-package embark
-  :bind
-  (([remap describe-bindings] . embark-bindings)
-   ("C-." . embark-act)
-   ("C-;" . embark-dwim))
-  :init
-  (setq prefix-help-command #'embark-prefix-help-command)
-  (add-to-list 'display-buffer-alist
-               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-                 nil
-                 (window-parameters (mode-line-format . none)))))
+(setq prefix-help-command #'embark-prefix-help-command)
 
-(use-package embark-consult
-  :after embark consult
-  :hook
-  (embark-collect-mode . consult-preview-at-point-mode))
+(add-to-list 'display-buffer-alist
+             '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+               nil
+               (window-parameters (mode-line-format . none))))
+
+(add-hook 'embark-collect-mode-hook #'consult-preview-at-point-mode)
 
 (+install! corfu)
 (+install! corfu-doc)
@@ -246,10 +234,11 @@
 
 (+install! consult-project-extra)
 
+(global-set-key [remap switch-to-buffer] #'consult-buffer)
 (global-set-key [remap project-switch-to-buffer] #'consult-project-buffer)
 (global-set-key [remap project-find-file] #'consult-project-extra-find)
-(with-eval-after-load 'project
-  (defvar project-switch-commands)
+
+(+after! project
   (define-key project-prefix-map "r" #'consult-ripgrep)
   (add-to-list 'project-switch-commands '(consult-ripgrep "rg") t))
 

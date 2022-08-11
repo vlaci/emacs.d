@@ -24,10 +24,36 @@
 (require '+config)
 (require '+set-defaults)
 
-(defmacro +install! (pkg)
+(defmacro +install! (pkg &optional no-require)
   "Install PKG when used outside of Nix build."
-  `(when (and (not +nix-build?) (not (package-installed-p ',pkg)))
-     (package-install ',pkg)))
+  (list
+   #'progn
+   (unless +nix-build?
+     `(when (not (package-installed-p ',pkg))
+        (package-install ',pkg)))
+  (when (and (not no-require) (bound-and-true-p byte-compile-current-file) (not (featurep pkg)))
+    `(require ',pkg))))
+
+(defmacro +define-key! (pkg keymap key def &optional remove)
+  (list
+   #'progn
+   `(unless (fboundp ',def)
+     (autoload #',def ,(symbol-name pkg) nil t))
+   `(eval-when-compile
+     (declare-function ,def ,(symbol-name pkg)))
+   `(if (boundp ',keymap)
+       (progn
+         (defvar ,keymap)
+         (define-key ,keymap ,key #',def ,remove))
+     (eval-after-load
+         ',pkg
+       '(define-key ,keymap ,key #',def ,remove)))))
+
+(defmacro +after! (feature &rest body)
+  (declare (indent defun)(debug t))
+  (when (bound-and-true-p byte-compile-current-file)
+                (require feature nil 'noerror))
+  `(eval-after-load ',feature ',(macroexp-progn body)))
 
 (when +nix-build?
   ;; If built with nix, we have precomputed autoloads that we should load
