@@ -22,18 +22,19 @@
 
 ;;; Code:
 (require 'config)
+(require 'set-defaults)
 
 (defmacro +install! (pkg)
   "Install PKG when used outside of Nix build."
   `(when (and (not +nix-build?) (not (package-installed-p ',pkg)))
      (package-install ',pkg)))
 
-(if +nix-build?
-    ;; If built with nix, we have precomputed autoloads that we should load
-    (load "autoloads")
+(when +nix-build?
+  ;; If built with nix, we have precomputed autoloads that we should load
+  (load "autoloads")
   ;; Otherwise load package definitions
   (message "loading packages")
-  (require 'packages))
+  (package-activate-all))
 
 (provide 'packages)
 

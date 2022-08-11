@@ -22,8 +22,6 @@
 
 ;;; Code:
 
-(setq package-enable-at-startup nil)
-
 ;; Prevent the glimpse of un-styled Emacs by disabling these UI elements early.
 (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(tool-bar-lines . 0) default-frame-alist)
@@ -49,6 +47,15 @@
       read-process-output-max (* 64 1024 1024))
 
 (add-to-list 'load-path (file-name-directory load-file-name))
+
+(require 'config)
+
+(if +nix-build?
+    (setq package-enable-at-startup nil)
+  (require 'package)
+  (add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/"))
+  (add-to-list 'package-archives '("stable" . "https://stable.melpa.org/packages/"))
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/")))
 
 (provide 'bootstrap)
 
