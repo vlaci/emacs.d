@@ -28,6 +28,7 @@
 , rust-analyzer
 , zls
 , fromElisp
+, parse
 , extraPackages ? (_: [])
 , impure ? {}
 }:
@@ -72,7 +73,9 @@ let
   packages = let
     files = builtins.filter (f: lib.hasSuffix ".el" f) (lib.filesystem.listFilesRecursive src);
   in
-    lib.flatten (map (f: parsePackages (builtins.readFile f)) files);
+    lib.flatten (map (f: let
+      text = builtins.readFile f;
+    in (parsePackages text) ++ (parse.parsePackagesFromUsePackage { configText = text; alwaysEnsure = true; })) files);
 
   emacsPackages = emacsPackagesFor emacs;
   emacsWithPackages = emacsPackages.emacsWithPackages;
@@ -100,6 +103,7 @@ let
       --eval '(let ((package-quickstart-file "elisp/autoloads.el"))
                 (defun byte-compile-file (f))
                 (package-quickstart-refresh))'
+
     emacs -L . -L elisp --batch -f batch-byte-compile {,elisp/}*.el
 
     mkdir -p $out

@@ -23,6 +23,8 @@
 ;;; Code:
 (require '+packages)
 
+(+install! use-package)
+(require 'use-package)
 ;;;; To organize runtime and config files
 
 (+install! no-littering)
@@ -38,6 +40,7 @@
 (setq custom-file (expand-file-name "settings.el" no-littering-etc-directory))
 
 (when (not (bound-and-true-p byte-compile-current-file))
+  (setq native-comp-deferred-compilation t)
   (startup-redirect-eln-cache (expand-file-name "eln-cache" no-littering-var-directory))
   (require 'no-littering))
 
@@ -46,14 +49,44 @@
 
 ;;; Defaults
 (set-defaults
- '(read-answer-short t)
+ '(use-short-answers t)
  '(vc-follow-symlinks t)
  '(mouse-yank-at-point t)
  '(indent-tabs-mode nil)
- '(global-auto-revert-non-file-buffers t)) ;; for dired et al
+ '(tab-width 4)
+ '(global-auto-revert-non-file-buffers t) ;; for dired et al
+ '(recentf-max-saved-items 1000)
+ '(kill-do-not-save-duplicates t)
+ '(auto-window-vscroll nil)
+ '(fast-but-imprecise-scrolling t)
+ '(scroll-conservatively 101)
+ '(scroll-margin 0)
+ '(scroll-preserve-screen-position t))
 
 ;; Revert buffers when the underlying file has changed
 (global-auto-revert-mode 1)
+
+;; Typed text replaces the selection if the selection is active,
+;; pressing delete or backspace deletes the selection.
+(delete-selection-mode)
+
+(add-hook 'after-init-hook #'recentf-mode)
+(with-eval-after-load 'recentf
+  (defvar recentf-exclude)
+  (add-to-list 'recentf-exclude no-littering-var-directory)
+  (add-to-list 'recentf-exclude no-littering-etc-directory)
+  (add-to-list 'recentf-exclude user-emacs-directory)
+  (run-at-time nil (* 5 60) 'recentf-save-list))
+
+(setq-default bidi-paragraph-direction 'left-to-right)
+(setq-default bidi-inhibit-bpa t)
+(global-so-long-mode)
+
+;; Make shebang (#!) file executable when saved
+(add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
+
+;; Enable savehist-mode for an command history
+(savehist-mode 1)
 
 ;;;; Theme
 (+install! modus-themes)
@@ -84,7 +117,6 @@
 
 (load-theme 'modus-operandi t)
 
-;;(declare-function modus-themes-toggle "modus-themes")
 (global-set-key [f10] #'modus-themes-toggle)
 
 ;;;; Modeline
@@ -258,32 +290,11 @@
 (require '+completion)
 
 ;;; Project
-(+install! consult-project-extra)
 (meow-leader-define-key (cons "p" project-prefix-map))
-(global-set-key [remap project-switch-to-buffer] #'consult-project-buffer)
-(global-set-key [remap project-find-file] #'consult-project-extra-find)
 
 ;;;; Programming
+(require '+programming)
 
-(add-hook 'prog-mode-hook #'display-line-numbers-mode)
+(require '+magit)
 
-(+install! tree-sitter)
-(+install! tree-sitter-langs)
-(add-hook 'after-init-hook (lambda ()
-                             (global-tree-sitter-mode)
-                             (require 'tree-sitter-langs)))
-(add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
-(+install! eglot)
-
-(defvar +eglot-pyright-executable "pyright-langserver")
-
-(with-eval-after-load 'eglot
-  (defvar eglot-server-programs)
-  (add-to-list 'eglot-server-programs (cons 'python-mode `(,+eglot-pyright-executable "--stdio"))))
-
-(add-hook 'python-mode-hook #'eglot-ensure)
-
-(+install! pyvenv)
-(add-hook 'python-mode-hook #'pyvenv-tracking-mode)
-(set-defaults '(pyvenv-default-virtual-env-name ".venv"))
 ;;; init.el ends here

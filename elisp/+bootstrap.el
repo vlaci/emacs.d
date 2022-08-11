@@ -51,7 +51,7 @@
 (require '+config)
 
 (if +nix-build?
-    (setq package-enable-at-startup nil)
+    (setq package-enable-at-startup t)
   (require 'package)
   (add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/"))
   (add-to-list 'package-archives '("stable" . "https://stable.melpa.org/packages/"))

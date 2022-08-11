@@ -24,26 +24,65 @@
 (require '+packages)
 
 (+install! vertico)
-(add-hook 'after-init-hook #'vertico-mode)
-(with-eval-after-load 'vertico
-  (defvar vertico-map)
-  (define-key vertico-map "\r" #'vertico-directory-enter)
-  (define-key vertico-map "\d" #'vertico-directory-delete-char)
-  (define-key vertico-map "\M-\d" #'vertico-directory-delete-word)
-  (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
-  (define-key vertico-map "\M-h" #'vertico-directory-up))
-
-(set-defaults
- '(vertico-cycle t))
+(use-package vertico
+  :hook
+  (after-init . vertico-mode)
+  (rfn-eshadow-update-overlay . vertico-directory-tidy)
+  :bind
+  (:map vertico-map
+        ("\r" . vertico-directory-enter)
+        ("\d" . vertico-directory-delete-char)
+        ("M-d" . vertico-directory-delete-word)
+        ("M-h" . vertico-directory-up))
+  :init
+  (set-defaults
+   '(vertico-cycle t)))
 
 (+install! marginalia)
 (add-hook 'after-init-hook #'marginalia-mode)
 (define-key minibuffer-local-map "\M-A" #'marginalia-cycle)
 
 (+install! consult)
-(set-defaults
- '(corfy-cycle t)
- '(corfu-echo-documentation t))
+(use-package consult
+  :init
+  (set-defaults
+   '(consult-narrow-key "<"))
+  :bind
+  (:map consult-narrow-map
+        ("?" . consult-narrow-help))
+  :config
+  ;; Optionally configure preview. The default value
+  ;; is 'any, such that any key triggers the preview.
+  ;; (setq consult-preview-key 'any)
+  ;; (setq consult-preview-key (kbd "M-."))
+  ;; (setq consult-preview-key (list (kbd "<S-down>") (kbd "<S-up>")))
+  ;; For some commands and buffer sources it is useful to configure the
+  ;; :preview-key on a per-command basis using the `consult-customize' macro.
+  (eval-when-compile
+    (consult-customize
+     consult-theme
+     :preview-key '(:debounce 0.2 any)
+     consult-ripgrep consult-git-grep consult-grep
+     consult-bookmark consult-recent-file consult-xref
+     consult--source-bookmark consult--source-recent-file
+     consult--source-project-recent-file
+     :preview-key (kbd "M-."))))
+
+(use-package xref
+  :ensure nil
+  :defines xref-show-xrefs-function xref-show-definitions-function
+  :config
+  (setq xref-show-xrefs-function #'consult-xref
+        xref-show-definitions-function #'consult-xref))
+
+(+install! consult-dir)
+(autoload 'consult-dir "consult-dir")
+
+(with-eval-after-load 'vertico
+  (define-key vertico-map (kbd "C-x C-d") #'consult-dir)
+  (define-key vertico-map (kbd "C-x C-j") #'consult-dir-jump-file))
+
+(global-set-key (kbd "C-x C-d") #'consult-dir)
 
 
 (+install! orderless)
@@ -136,29 +175,33 @@
 
 (+install! embark)
 (+install! embark-consult)
-(global-set-key [remap describe-bindings] #'embark-bindings)
-(global-set-key (kbd "C-.") #'embark-act)
-(global-set-key (kbd "C-;") #'embark-dwim)
 
-                (setq prefix-help-command #'embark-prefix-help-command)
-(add-to-list 'display-buffer-alist
-             '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-               nil
-               (window-parameters (mode-line-format . none))))
+(use-package embark
+  :bind
+  (([remap describe-bindings] . embark-bindings)
+   ("C-." . embark-act)
+   ("C-;" . embark-dwim))
+  :init
+  (setq prefix-help-command #'embark-prefix-help-command)
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil
+                 (window-parameters (mode-line-format . none)))))
 
-(with-eval-after-load 'embark
-(require 'embark-consult)
-(declare-function consult-preview-at-point-mode "consult")
-(add-hook 'embark-collect-mode-hook #'consult-preview-at-point-mode))
+(use-package embark-consult
+  :after embark consult
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
 
 (+install! corfu)
 (+install! corfu-doc)
+(autoload 'corfu-insert-separator "corfu")
 
 (set-defaults
  '(corfu-cycle t)
  '(corfu-echo-documentation 0.3))
 
-(global-corfu-mode 1)
+(add-hook 'after-init-hook #'global-corfu-mode)
 
 (add-hook 'eshell-mode-hook
           (lambda () (setq-local corfu-quit-at-boundary t
@@ -178,11 +221,13 @@
   (let ((completion-extra-properties corfu--extra)
         completion-cycle-threshold completion-cycling)
     (apply #'consult-completion-in-region completion-in-region--data)))
+
 (with-eval-after-load 'corfu
   (defvar corfu-map)
   (add-hook 'corfu-mode-hook #'corfu-doc-mode)
   (define-key corfu-map (kbd "M-d") #'corfu-doc-toggle)
-  (define-key corfu-map (kbd "M-m") #'+corfu-move-to-minibuffer))
+  (define-key corfu-map (kbd "M-m") #'+corfu-move-to-minibuffer)
+  (define-key corfu-map (kbd "SPC") #'corfu-insert-separator))
 
 (+install! cape)
 
@@ -196,6 +241,17 @@
 ;; Ensure that pcomplete does not write to the buffer
 ;; and behaves as a pure `completion-at-point-function'.
 (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-purify)
+
+;;;; Project
+
+(+install! consult-project-extra)
+
+(global-set-key [remap project-switch-to-buffer] #'consult-project-buffer)
+(global-set-key [remap project-find-file] #'consult-project-extra-find)
+(with-eval-after-load 'project
+  (defvar project-switch-commands)
+  (define-key project-prefix-map "r" #'consult-ripgrep)
+  (add-to-list 'project-switch-commands '(consult-ripgrep "rg") t))
 
 (provide '+completion)
 ;;; +completion.el ends here
