@@ -8,7 +8,7 @@
 ;; Defer garbage collection further back in the startup process
 (setq gc-cons-threshold most-positive-fixnum)
 
-(load (expand-file-name "elisp/bootstrap" (file-name-directory load-file-name)))
+(load (expand-file-name "elisp/+bootstrap" (file-name-directory load-file-name)))
 
 (setq eval-expression-print-length nil)
 (setq eval-expression-print-level nil)

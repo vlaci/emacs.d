@@ -27,8 +27,8 @@
               langtool-language-tool-jar "@languagetool@/share/languagetool-commandline.jar"
               mu4e-binary "@mu@/bin/mu"
               sendmail-program "@msmtp@/bin/msmtp")
-(setq-default vl--eglot-pyright-executable "@pyright@/bin/pyright-langserver"
-              vl--eglot-rust-analyzer-executable "@rustanalyzer@/bin/rust-analyzer")
+(setq-default +eglot-pyright-executable "@pyright@/bin/pyright-langserver"
+              +eglot-rust-analyzer-executable "@rustanalyzer@/bin/rust-analyzer")
 
 (provide 'nix-integration)
 

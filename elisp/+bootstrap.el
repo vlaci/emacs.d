@@ -48,7 +48,7 @@
 
 (add-to-list 'load-path (file-name-directory load-file-name))
 
-(require 'config)
+(require '+config)
 
 (if +nix-build?
     (setq package-enable-at-startup nil)
@@ -57,6 +57,6 @@
   (add-to-list 'package-archives '("stable" . "https://stable.melpa.org/packages/"))
   (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/")))
 
-(provide 'bootstrap)
+(provide '+bootstrap)
 
-;;; bootstrap.el ends here
+;;; +bootstrap.el ends here

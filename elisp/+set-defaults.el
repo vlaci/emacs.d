@@ -96,5 +96,5 @@ verifies path exists"
       (when (file-exists-p path)
         (set-defaults entry)))))
 
-(provide 'set-defaults)
-;;; set-defaults.el ends here
+(provide '+set-defaults)
+;;; +set-defaults.el ends here

@@ -91,6 +91,7 @@ let
   } ''
     cp -r $src/{elisp,*.el} .
     chmod -R u+w .
+    cp ${emacs-nix-integration} elisp/nix-integration.el
     find
     emacs \
       --batch \
