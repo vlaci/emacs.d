@@ -132,7 +132,7 @@ let
     export EMACSNATIVELOADPATH=$out/eln-cache
     emacs -L elisp --batch -f batch-byte-compile {,elisp/}*.el
     cp -r * $out
-    emacs -L $out/elisp --batch -f batch-native-compile $out/{,elisp/}*.el
+    #emacs -L $out/elisp --batch -f batch-native-compile $out/{,elisp/}*.el
   '');
 
   emacsStage2 = mkEmacs (epkgs:
