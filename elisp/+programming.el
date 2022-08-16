@@ -63,6 +63,15 @@
 
 (+define-key! consult-eglot goto-map "s" #'consult-eglot-symbols)
 
+;;;; Python
+(+install! pyvenv)
+(+install! python-docstring)
+
+(+set-defaults! pyvenv-default-virtual-env-name ".venv")
+
+(add-hook 'python-mode-hook #'pyvenv-tracking-mode)
+(add-hook 'python-mode-hook #'python-docstring-mode)
+
 (+install! direnv)
 (+install! docker)
 (+install! docker-tramp)
@@ -73,7 +82,6 @@
 (+install! just-mode)
 (+install! lua-mode)
 (+install! nix-mode)
-(+install! pyvenv)
 (+install! rust-mode)
 (+install! rustic)
 (+install! typescript-mode)
@@ -97,7 +105,6 @@
 (add-hook 'lua-mode-hook #'eglot-ensure)
 (add-hook 'nix-mode-hook #'eglot-ensure)
 (add-hook 'python-mode-hook #'eglot-ensure)
-(add-hook 'python-mode-hook #'pyvenv-tracking-mode)
 (add-hook 'sh-mode-hook #'eglot-ensure)
 (add-hook 'typescript-mode-hook #'eglot-ensure)
 (add-hook 'zig-mode-hook #'eglot-ensure)
