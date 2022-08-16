@@ -116,7 +116,7 @@ let
       src = ../.;
       buildInputs = [ emacsStage2 ];
     } ''
-    cp -r $src/{elisp,*.el} .
+    cp -r $src/{elisp,templates,*.el} .
     chmod -R u+w .
     cp ${emacs-nix-integration} elisp/nix-integration.el
     find

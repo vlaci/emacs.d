@@ -35,6 +35,8 @@
 
 (defvar +extra-exec-path ())
 
+(defvar +emacs-config-root (file-name-directory (directory-file-name (file-name-directory load-file-name))))
+
 (provide '+config)
 
 ;;; +config.el ends here

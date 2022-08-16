@@ -163,5 +163,22 @@
 ;;  undo-tree-auto-save-history t)
 ;;
 ;; (add-hook 'after-init-hook global-undo-tree-mode)
+
+;;;; Templating
+(+install! tempel)
+
+(defun +tempel-setup-capf ()
+  (setq-local completion-at-point-functions
+              (cons #'tempel-expand
+                    completion-at-point-functions)))
+
+(add-hook 'prog-mode-hook #'+tempel-setup-capf)
+(add-hook 'text-mode-hook #'+tempel-setup-capf)
+
+(unless (bound-and-true-p byte-compile-current-file)
+  (require 'no-littering)
+  (+set-defaults! tempel-path (list (expand-file-name "templates" no-littering-var-directory)
+                                    (expand-file-name "templates/*.eld" +emacs-config-root))))
+
 (provide '+editing)
 ;;; +editing.el ends here
