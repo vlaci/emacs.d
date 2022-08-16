@@ -33,6 +33,7 @@
   "Override default of `defcustom' variable VAR to VALUE from PAIRS.
 
 \(fn [VAR VALUE]...)"
+  (declare (debug setq))
   (unless (zerop (mod (length pairs) 2))
     (error "PAIRS must have an even number of var/value members"))
   (let ((pairs (cl-loop for (k v) on pairs by #'cddr
