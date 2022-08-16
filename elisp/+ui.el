@@ -102,7 +102,6 @@
 (global-set-key [f10] #'modus-themes-toggle)
 
 ;;;; Modeline
-
 (+install! doom-modeline)
 (+install! all-the-icons)
 (add-hook 'after-init-hook #'doom-modeline-mode)
@@ -115,6 +114,7 @@
 (add-hook 'after-init-hook #'size-indication-mode)
 (add-hook 'after-init-hook #'column-number-mode)
 
+;;;; Current line highlighting
 (+install! pulsar)
 
 (add-hook 'after-init-hook #'pulsar-global-mode)
