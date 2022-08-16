@@ -101,6 +101,7 @@
 (global-set-key [remap describe-variable] #'helpful-variable)
 
 (advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update)
+(add-hook 'helpful-mode-hook #'visual-line-mode)
 
 (add-to-list 'display-buffer-alist
              '("\\`\\*helpful"

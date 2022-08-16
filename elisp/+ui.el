@@ -51,7 +51,7 @@
  popper-echo-dispatch-actions t
  popper-group-function #'+popper-group-by-project
  popper-reference-buffers
- '("\\`\\*\\(Messages\\|Backtrace\\|Warnings\\|Output\\|Flymake\\)'"
+ '("\\`\\*\\(Messages\\|Backtrace\\|Warnings\\|Output\\|Flymake\\|eldoc\\|Help\\)'"
    "\\`\\*Embark"
    "\\`\\*helpful")
  display-buffer-base-action
@@ -60,7 +60,7 @@
  even-window-sizes nil)
 
 (add-to-list 'display-buffer-alist
-             '("\\`\\*\\(Messages\\|Backtrace\\|Warnings\\|Output\\|Flymake\\)"
+             '("\\`\\*\\(Messages\\|Backtrace\\|Warnings\\|Output\\|Flymake\\|eldoc\\|Help\\)"
                (display-buffer-reuse-window display-buffer-in-previous-window display-buffer-in-side-window)
                (side . bottom)
                (slot . 0)
