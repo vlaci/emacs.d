@@ -123,5 +123,14 @@
 
 (add-hook 'after-init-hook #'lin-global-mode)
 
+;;;; Sideline
+(+install! sideline)
+(+install! sideline-flymake)
+
+(+set-defaults! sideline-backends-skip-current-line nil
+                sideline-backends-right '(sideline-flymake))
+
+(add-hook 'prog-mode-hook #'sideline-mode)
+
 (provide '+ui)
 ;;; +ui.el ends here
