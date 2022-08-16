@@ -29,11 +29,13 @@
   ;; If built with nix, we have precomputed autoloads that we should load
   (load "autoloads"))
 
-(defmacro +set-defaults! (&rest args)
-  "Override default of `defcustom' variable VAR to VALUE.
+(defmacro +set-defaults! (&rest pairs)
+  "Override default of `defcustom' variable VAR to VALUE from PAIRS.
 
 \(fn [VAR VALUE]...)"
-  (let ((pairs (cl-loop for (k v) on args by #'cddr
+  (unless (zerop (mod (length pairs) 2))
+    (error "PAIRS must have an even number of var/value members"))
+  (let ((pairs (cl-loop for (k v) on pairs by #'cddr
                     collect `'(,k ,v))))
     `(set-defaults ,@pairs)))
 
