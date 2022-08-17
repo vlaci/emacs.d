@@ -96,10 +96,12 @@
   (ctl-x-map
    (((kbd "M-:") #'consult-complex-command)     ;; orig. repeat-complex-command
     ((kbd "b") #'consult-buffer)                ;; orig. switch-to-buffer
+    ((kbd "C-b") #'consult-buffer)              ;; orig. buffer-menu
     ((kbd "4 b") #'consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
     ((kbd "5 b") #'consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
     ((kbd "r b") #'consult-bookmark)            ;; orig. bookmark-jump
-    ((kbd "p b") #'consult-project-buffer)))      ;; orig. project-switch-to-buffer
+    ((kbd "p b") #'consult-project-buffer)      ;; orig. project-switch-to-buffer
+    ((kbd "C-r") #'consult-recent)))            ;; orig. find-file-read-only
   (global-map
    (((kbd "M-#") #'consult-register-load)
     ((kbd "M-'") #'consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
@@ -392,15 +394,15 @@
 ;;;; Project
 (+install! consult-project-extra)
 (+after! consult-project-extra
-  (setq consult-project-extra-sources
-        (append consult-project-extra-sources
-                (list consult--source-recent-file consult--source-hidden-buffer))))
+  (setq consult-buffer-sources
+        (append consult-buffer-sources
+                (list consult-project-extra--source-file))))
 
 (global-set-key [remap switch-to-buffer] #'consult-buffer)
 (global-set-key [remap list-buffer] #'consult-buffer)
 (global-set-key [remap project-switch-to-buffer] #'consult-project-buffer)
 (global-set-key [remap project-find-file] #'consult-project-extra-find)
-(global-set-key [f2] #'consult-project-extra-find)
+(global-set-key [f2] #'consult-buffer)
 (global-set-key [f3] #'consult-ripgrep)
 
 (+after! project
