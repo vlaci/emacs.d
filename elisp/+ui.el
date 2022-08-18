@@ -36,9 +36,9 @@
 
 (+define-keys! popper
   (popper-mode-map
-   (((kbd "C-`") #'popper-toggle-latest)
-    ((kbd "M-`") #'popper-cycle)
-    ((kbd "C-M-`") #'popper-toggle-type))))
+   ((kbd "C-`") #'popper-toggle-latest)
+   ((kbd "M-`") #'popper-cycle)
+   ((kbd "C-M-`") #'popper-toggle-type)))
 
 (add-hook 'after-init-hook #'popper-mode)
 

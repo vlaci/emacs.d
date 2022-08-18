@@ -93,9 +93,9 @@
 
 (defvar +magit-map (make-keymap))
 (+define-keys! magit
-  (+magit-map (("g" #'magit-status)
-               ("l" #'magit-log)
-               ("b" #'magit-blame))))
+  (+magit-map ("g" #'magit-status)
+              ("l" #'magit-log)
+              ("b" #'magit-blame)))
 
 (+after! meow
   (meow-leader-define-key (cons "g" +magit-map)))

@@ -24,6 +24,7 @@
 
 (require '+config)
 (require '+set-defaults)
+(require 'cl-lib)
 
 (when +nix-build?
   ;; If built with nix, we have precomputed autoloads that we should load
@@ -66,16 +67,14 @@ Require PKG during byte-compoilation unless NO-REQUIRE is set."
           ',pkg
         '(define-key ,keymap ,key ,def ,remove)))))
 
-(require 'cl-macs)
-
 (defmacro +define-keys! (pkg &rest definitions)
   (declare (indent defun)(debug t))
   (let (forms)
     (dolist (bind-specs definitions)
-      (cl-destructuring-bind (keymap defs) bind-specs
+      (let ((keymap (car bind-specs))
+            (defs (cdr bind-specs)))
         (dolist (bind-spec defs)
-          (cl-destructuring-bind (key def) bind-spec
-            (push `(+define-key! ,pkg ,keymap ,key ,def) forms)))))
+          (push `(+define-key! ,pkg ,keymap ,@bind-spec) forms))))
     `(progn ,@(reverse forms))))
 
 (defmacro +after! (feature &rest body)

@@ -90,56 +90,56 @@
 
 (+define-keys! consult
   (mode-specific-map
-   (((kbd "h") #'consult-history)
-    ((kbd "m") #'consult-mode-command)
-    ((kbd "C-k") #'consult-kmacro)))
+   ((kbd "h") #'consult-history)
+   ((kbd "m") #'consult-mode-command)
+   ((kbd "C-k") #'consult-kmacro))
   (ctl-x-map
-   (((kbd "M-:") #'consult-complex-command)     ;; orig. repeat-complex-command
-    ((kbd "b") #'consult-buffer)                ;; orig. switch-to-buffer
-    ((kbd "C-b") #'consult-buffer)              ;; orig. buffer-menu
-    ((kbd "4 b") #'consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
-    ((kbd "5 b") #'consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
-    ((kbd "r b") #'consult-bookmark)            ;; orig. bookmark-jump
-    ((kbd "p b") #'consult-project-buffer)      ;; orig. project-switch-to-buffer
-    ((kbd "C-r") #'consult-recent)))            ;; orig. find-file-read-only
+   ((kbd "M-:") #'consult-complex-command)     ;; orig. repeat-complex-command
+   ((kbd "b") #'consult-buffer)                ;; orig. switch-to-buffer
+   ((kbd "C-b") #'consult-buffer)              ;; orig. buffer-menu
+   ((kbd "4 b") #'consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+   ((kbd "5 b") #'consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+   ((kbd "r b") #'consult-bookmark)            ;; orig. bookmark-jump
+   ((kbd "p b") #'consult-project-buffer)      ;; orig. project-switch-to-buffer
+   ((kbd "C-r") #'consult-recent))             ;; orig. find-file-read-only
   (global-map
-   (((kbd "M-#") #'consult-register-load)
-    ((kbd "M-'") #'consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
-    ((kbd "C-M-#") #'consult-register)
-    ((kbd "M-y") #'consult-yank-pop)                ;; orig. yank-pop
-    ((kbd "<help> a") #'consult-apropos)))            ;; orig. apropos-command
+   ((kbd "M-#") #'consult-register-load)
+   ((kbd "M-'") #'consult-register-store)      ;; orig. abbrev-prefix-mark (unrelated)
+   ((kbd "C-M-#") #'consult-register)
+   ((kbd "M-y") #'consult-yank-pop)            ;; orig. yank-pop
+   ((kbd "<help> a") #'consult-apropos))       ;; orig. apropos-command
   (goto-map ;; M-g
-   (((kbd "e") #'consult-compile-error)
-    ((kbd "f") #'consult-flymake)               ;; Alternative: consult-flycheck
-    ((kbd "g") #'consult-goto-line)             ;; orig. goto-line
-    ((kbd "M-g") #'consult-goto-line)           ;; orig. goto-line
-    ((kbd "o") #'consult-outline)               ;; Alternative: consult-org-heading
-    ((kbd "m") #'consult-mark)
-    ((kbd "k") #'consult-global-mark)
-    ((kbd "i") #'consult-imenu)
-    ((kbd "I") #'consult-imenu-multi)))
+   ((kbd "e") #'consult-compile-error)
+   ((kbd "f") #'consult-flymake)               ;; Alternative: consult-flycheck
+   ((kbd "g") #'consult-goto-line)             ;; orig. goto-line
+   ((kbd "M-g") #'consult-goto-line)           ;; orig. goto-line
+   ((kbd "o") #'consult-outline)               ;; Alternative: consult-org-heading
+   ((kbd "m") #'consult-mark)
+   ((kbd "k") #'consult-global-mark)
+   ((kbd "i") #'consult-imenu)
+   ((kbd "I") #'consult-imenu-multi))
   (search-map ;; M-s
-   (((kbd "d") #'consult-find)
-    ((kbd "D") #'consult-locate)
-    ((kbd "g") #'consult-grep)
-    ((kbd "G") #'consult-git-grep)
-    ((kbd "r") #'consult-ripgrep)
-    ((kbd "l") #'consult-line)
-    ((kbd "L") #'consult-line-multi)
-    ((kbd "m") #'consult-multi-occur)
-    ((kbd "k") #'consult-keep-lines)
-    ((kbd "u") #'consult-focus-lines)
-    ((kbd "e") #'consult-isearch-history)))
+   ((kbd "d") #'consult-find)
+   ((kbd "D") #'consult-locate)
+   ((kbd "g") #'consult-grep)
+   ((kbd "G") #'consult-git-grep)
+   ((kbd "r") #'consult-ripgrep)
+   ((kbd "l") #'consult-line)
+   ((kbd "L") #'consult-line-multi)
+   ((kbd "m") #'consult-multi-occur)
+   ((kbd "k") #'consult-keep-lines)
+   ((kbd "u") #'consult-focus-lines)
+   ((kbd "e") #'consult-isearch-history))
   (isearch-mode-map
-   (((kbd "M-e") #'consult-isearch-history)         ;; orig. isearch-edit-string
-    ((kbd "M-s e") #'consult-isearch-history)       ;; orig. isearch-edit-string
-    ((kbd "M-s l") #'consult-line)                  ;; needed by consult-line to detect isearch
-    ((kbd "M-s L") #'consult-line-multi)))          ;; needed by consult-line to detect isearch
+   ((kbd "M-e") #'consult-isearch-history)     ;; orig. isearch-edit-string
+   ((kbd "M-s e") #'consult-isearch-history)   ;; orig. isearch-edit-string
+   ((kbd "M-s l") #'consult-line)              ;; needed by consult-line to detect isearch
+   ((kbd "M-s L") #'consult-line-multi))       ;; needed by consult-line to detect isearch
   (minibuffer-local-map
-   (((kbd "M-s") #'consult-history)                 ;; orig. next-matching-history-element
-    ((kbd "M-r") #'consult-history)))               ;; orig. previous-matching-history-element
+   ((kbd "M-s") #'consult-history)             ;; orig. next-matching-history-element
+   ((kbd "M-r") #'consult-history))            ;; orig. previous-matching-history-element
   (consult-narrow-map
-   (((kbd "?") #'consult-narrow-help))))
+   ((kbd "?") #'consult-narrow-help)))
 
 (+after! consult
   (dolist

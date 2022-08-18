@@ -48,8 +48,8 @@
 
 (+define-keys!
   dired-subtree
-  (dired-mode-map (((kbd "<tab>") #'dired-subtree-toggle)
-                   ((kbd "<backtab>") #'dired-subtree-remove))))
+  (dired-mode-map ((kbd "<tab>") #'dired-subtree-toggle)
+                  ((kbd "<backtab>") #'dired-subtree-remove)))
 
 (provide '+dired)
 ;;; +dired.el ends here

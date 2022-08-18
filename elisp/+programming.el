@@ -42,8 +42,8 @@
 
 (+define-keys! flymake
   (flymake-mode-map
-   (((kbd "C-c ! n") #'flymake-goto-next-error)
-    ((kbd "C-c ! p") #'flymake-goto-prev-error))))
+   ((kbd "C-c ! n") #'flymake-goto-next-error)
+   ((kbd "C-c ! p") #'flymake-goto-prev-error)))
 
 (+install! tree-sitter)
 (+install! tree-sitter-langs)
@@ -66,12 +66,12 @@
 
 (+define-keys! eglot
   (eglot-mode-map
-   (((kbd "C-c C-l r") #'eglot-rename)
+    ((kbd "C-c C-l r") #'eglot-rename)
     ((kbd "C-c C-l a") #'eglot-code-actions)
     ((kbd "C-c C-l f") #'eglot-format)
     ((kbd "C-c C-l C-f d") #'eglot-find-declaration)
     ((kbd "C-c C-l C-f i") #'eglot-find-implementation)
-    ((kbd "C-c C-l C-f t") #'eglot-find-typeDefinition))))
+    ((kbd "C-c C-l C-f t") #'eglot-find-typeDefinition)))
 (+define-key! consult-eglot eglot-mode-map (kbd "M-g s") #'consult-eglot-symbols)
 
 
