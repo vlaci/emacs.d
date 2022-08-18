@@ -73,6 +73,7 @@
 
 ;;;; Theme
 (+install! modus-themes)
+(+install! ef-themes)
 
 (+set-defaults!
  modus-themes-italic-constructs t
