@@ -91,6 +91,7 @@
 
 (add-hook 'python-mode-hook #'+setup-python-mode)
 (add-hook 'pdb-mode-hook #'+setup-pdb-capf)
+(add-hook 'pdb-track-mode-hook #'+setup-pdb-capf)
 (add-hook 'python-pytest-mode-hook #'+setup-pdb-capf)
 
 (defun +setup-python-mode ()
@@ -103,6 +104,7 @@
   "Tab completion in pdb prompt."
   (add-to-list 'completion-at-point-functions #'pdb-capf))
 
+(+install! realgud)
 
 (+install! direnv)
 (+install! docker)
