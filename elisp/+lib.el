@@ -94,8 +94,8 @@ Require PKG during byte-compoilation unless NO-REQUIRE is set."
 (defun +display-buffer-in-direction (buffer alist)
   "Try to display BUFFER at edge specified in ALIST."
   (let* ((direction (alist-get 'direction alist))
-         (reference-window (+find-window direction))
          (selected-window (selected-window))
+         (reference-window (+find-window direction))
          (should-split (or (eq reference-window selected-window)
                            (>= (window-width reference-window) split-width-threshold)))
          (nd (+normalize-direction direction))
@@ -106,7 +106,6 @@ Require PKG during byte-compoilation unless NO-REQUIRE is set."
                             (split-window reference-window nil split-dir)
                           reference-window))))
     (window--display-buffer buffer window (if should-split 'window 'reuse) alist)
-    (set-window-parameter window 'quit-restore (list 'window 'window selected-window buffer))
     (when should-split
       (set-window-prev-buffers window nil))))
 

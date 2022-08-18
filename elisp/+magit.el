@@ -71,9 +71,8 @@
     (dolist (mode '(magit-diff-mode magit-revision-mode) found)
       (when-let* ((buffer (magit-get-mode-buffer mode))
                   (window (get-buffer-window buffer)))
-        (kill-buffer buffer)
         (when (window-live-p window)
-          (delete-window window))
+          (quit-window 1))
         (push buffer found)))
     (when found
       (+magit--kill-diff-buffers-in-current-repo))))
