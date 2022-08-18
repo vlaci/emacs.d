@@ -69,6 +69,8 @@
                (slot . 0)
                (window-height . 16)))
 
+(add-hook 'after-init-hook #'winner-mode)
+
 ;;;; Theme
 (+install! modus-themes)
 
