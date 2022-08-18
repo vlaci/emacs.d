@@ -78,11 +78,31 @@
 ;;;; Python
 (+install! pyvenv)
 (+install! python-docstring)
+(+install! poetry)
+(+install! pippel)
+(+install! python-pytest)
+(+install! pdb-capf)
 
-(+set-defaults! pyvenv-default-virtual-env-name ".venv")
+(+set-defaults!
+ pyvenv-default-virtual-env-name ".venv"
+ python-pytest-executable "python -m pytest")
 
-(add-hook 'python-mode-hook #'pyvenv-tracking-mode)
-(add-hook 'python-mode-hook #'python-docstring-mode)
+(+define-key! python-mode python-mode-map (kbd "C-c t")  #'python-pytest-dispatch)
+
+(add-hook 'python-mode-hook #'+setup-python-mode)
+(add-hook 'pdb-mode-hook #'+setup-pdb-capf)
+(add-hook 'python-pytest-mode-hook #'+setup-pdb-capf)
+
+(defun +setup-python-mode ()
+  "Defaults for Python development."
+  (setq-local tab-width 4)
+  (pyvenv-tracking-mode)
+  (python-docstring-mode))
+
+(defun +setup-pdb-capf ()
+  "Tab completion in pdb prompt."
+  (add-to-list 'completion-at-point-functions #'pdb-capf))
+
 
 (+install! direnv)
 (+install! docker)
