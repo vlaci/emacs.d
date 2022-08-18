@@ -53,7 +53,10 @@
  popper-reference-buffers
  '("\\`\\*\\(Messages\\|Backtrace\\|Warnings\\|Output\\|Flymake\\|eldoc\\|Help\\)'"
    "\\`\\*Embark"
-   "\\`\\*helpful")
+   "\\`\\*helpful"))
+
+(+set-defaults!
+ window-combination-resize t
  display-buffer-base-action
    '((display-buffer-reuse-window display-buffer-same-window)
      (reusable-frames . t))
