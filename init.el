@@ -70,12 +70,16 @@
 
 (add-hook 'after-init-hook #'recentf-mode)
 
-(add-hook 'recentf-load-hook (lambda()
+(defun +setup-recentf-mode ()
+  "Exclude Emacs state and config files from recents."
   (defvar recentf-exclude)
-  (add-to-list 'recentf-exclude no-littering-var-directory)
-  (add-to-list 'recentf-exclude no-littering-etc-directory)
-  (add-to-list 'recentf-exclude user-emacs-directory)
-  (run-at-time nil (* 5 60) 'recentf-save-list)))
+  (let ((home (getenv "HOME")))
+    (dolist (dir (list no-littering-etc-directory no-littering-var-directory))
+      (add-to-list 'recentf-exclude dir)
+      (add-to-list 'recentf-exclude (string-remove-prefix home dir))))
+  (run-at-time nil (* 5 60) 'recentf-save-list))
+
+(add-hook 'recentf-load-hook #'+setup-recentf-mode)
 
 (setq-default bidi-paragraph-direction 'left-to-right)
 (setq-default bidi-inhibit-bpa t)
