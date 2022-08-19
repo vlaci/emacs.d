@@ -142,7 +142,15 @@
                        indentation::space))
 (customize-set-variable 'whitespace-action '(cleanup auto-cleanup))
 (add-hook 'prog-mode-hook #'whitespace-mode)
-(add-hook 'text-mode-hook #'whitespace-mode)
+
+(defun +setup-whitespace-mode ()
+  "Whitespace mode for text mode buffers, except Magit.
+
+Whitespace mode somehow breaks message box when using native
+compilation via clearing the first two emtpy lines."
+  (unless (bound-and-true-p git-commit-mode)
+    (whitespace-mode)))
+(add-hook 'text-mode-hook #'+setup-whitespace-mode)
 
 ;;;; Undo management
 
