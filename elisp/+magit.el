@@ -32,7 +32,7 @@
   (let* ((buffer-mode (buffer-local-value 'major-mode buffer)))
     (display-buffer
      buffer (cond
-             ((memq buffer-mode '(magit-status-mode magit-log-mode))
+             ((memq buffer-mode '(magit-status-mode magit-log-mode magit-log-select-mode))
               `((display-buffer-reuse-window display-buffer-reuse-mode-window +display-buffer-in-direction)
                 (direction . leftmost)
                 (window-width . 90)))
