@@ -51,5 +51,12 @@
   (dired-mode-map ((kbd "<tab>") #'dired-subtree-toggle)
                   ((kbd "<backtab>") #'dired-subtree-remove)))
 
+(+define-keys!
+  dired-hist
+  (dired-mode-map ("l" #'dired-hist-go-back)
+                  ("r" #'dired-hist-go-forward)))
+
+(add-hook 'after-init #'dired-hist-mode)
+
 (provide '+dired)
 ;;; +dired.el ends here

@@ -18,6 +18,7 @@
 
 ;;; Code:
 (require '+core)
+(require 'dired-hist)
 
 (provide '+fallback)
 
