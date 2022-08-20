@@ -155,12 +155,8 @@ compilation via clearing the first two emtpy lines."
  undo-strong-limit (* 120 1024 1024)
  undo-strong-limit (* 360 1024 1024))
 
-;; (+install! undo-tree)
-;;
-;; (+set-defaults!
-;;  undo-tree-auto-save-history t)
-;;
-;; (add-hook 'after-init-hook global-undo-tree-mode)
+(+install! undohist)
+(add-hook 'after-init-hook #'undohist-initialize)
 
 ;;;; Templating
 (+install! tempel)
