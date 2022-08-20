@@ -141,6 +141,46 @@
   (consult-narrow-map
    ((kbd "?") #'consult-narrow-help)))
 
+(defvar +consult-project-history nil)
+
+(defvar +consult-source-project
+  `( :name "Known Project"
+     :narrow    (?p . "Project")
+     :category  'consult-project-extra-project
+     :face      consult-file
+     :history   +consult-project-history
+     :annotate  ,(lambda (dir) dir)
+     :action    ,#'project-switch-project
+     :items     ,(lambda ()
+                   (let ((projects (project-known-project-roots)))
+                     (mapcar (lambda (project)
+                               (let ((dir (file-name-nondirectory (directory-file-name project))))
+                                 (put-text-property 0 (length dir) 'multi-category `(file . ,project) dir)
+                                 dir))
+                             projects)))))
+
+(defvar +consult-source-project-file
+  `( :name "Project File"
+     :narrow    (?f . "Project File")
+     :category  file
+     :face      consult-file
+     :history   file-name-history
+     :action    ,#'consult--file-action
+     :enabled   ,(lambda () consult-project-function)
+     :items
+     ,(lambda ()
+        (when-let* ((root (consult--project-root))
+                    (buffers (consult--buffer-file-hash))
+                    (project (project--find-in-directory root)))
+          (mapcar (lambda (file)
+                    (let ((root-part (substring file (length root))))
+                      (when (string= root-part "")
+                        (setq root-part "./"))
+                      (put-text-property 0 (length root-part) 'multi-category `(file . , file) root-part)
+                      root-part))
+                  (seq-filter (lambda (file) (not (gethash file buffers)))
+                              (project-files project)))))))
+
 (+after! consult
   (dolist
       (pattern (list
@@ -164,7 +204,25 @@
    consult-bookmark consult-recent-file consult-xref
    consult--source-bookmark consult--source-recent-file
    consult--source-project-recent-file
-   :preview-key (kbd "M-.")))
+   :preview-key (kbd "M-.")
+   consult-buffer :sort nil
+   consult--source-buffer :hidden t
+   consult--source-project-buffer :hidden nil
+   consult--source-recent-file :narrow '(?r . "Recent File") :hidden t
+   consult--source-project-buffer :narrow '(?B . "Project Buffer")
+   consult--source-project-recent-file :narrow '(?R . "Project Recent File"))
+
+  (+set-defaults!
+   consult-buffer-sources
+   '(consult--source-hidden-buffer
+     consult--source-modified-buffer
+     consult--source-buffer
+     consult--source-project-buffer
+     consult--source-recent-file
+     consult--source-project-recent-file
+     +consult-source-project-file
+     +consult-source-project
+     consult--source-bookmark)))
 
 (+after! xref
   (setq xref-show-xrefs-function #'consult-xref
@@ -392,16 +450,10 @@
 (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-purify)
 
 ;;;; Project
-(+install! consult-project-extra)
-(+after! consult-project-extra
-  (setq consult-buffer-sources
-        (append consult-buffer-sources
-                (list consult-project-extra--source-file))))
 
 (global-set-key [remap switch-to-buffer] #'consult-buffer)
 (global-set-key [remap list-buffer] #'consult-buffer)
 (global-set-key [remap project-switch-to-buffer] #'consult-project-buffer)
-(global-set-key [remap project-find-file] #'consult-project-extra-find)
 (global-set-key [f2] #'consult-buffer)
 (global-set-key [f3] #'consult-ripgrep)
 
