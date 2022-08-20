@@ -117,16 +117,6 @@
           (motion . "🅼")
           (keypad . "🅺"))))
 
-(defun +meow-modus-themes-custom-faces ()
-  (set-face-attribute 'meow-beacon-indicator nil :foreground (modus-themes-color 'magenta))
-  (set-face-attribute 'meow-insert-indicator nil :foreground (modus-themes-color 'red))
-  (set-face-attribute 'meow-keypad-indicator nil :foreground (modus-themes-color 'cyan))
-  (set-face-attribute 'meow-motion-indicator nil :foreground (modus-themes-color 'black))
-  (set-face-attribute 'meow-normal-indicator nil :foreground (modus-themes-color 'blue)))
-
-(+meow-modus-themes-custom-faces)
-(add-hook 'modus-themes-after-load-theme-hook #'+meow-modus-themes-custom-faces)
-
 (meow-setup)
 (meow-global-mode)
 

@@ -104,9 +104,43 @@
                             (internal-border-width . 3)
                             (border-width . 0)))
 
-(load-theme 'modus-operandi t)
 
-(global-set-key [f10] #'modus-themes-toggle)
+(defmacro +meow-prot-themes-custom-faces (theme)
+  "Common face override for `modus' and `ef' THEMEs."
+  (let ((theme-name (symbol-name theme)))
+    `(defun ,(intern (concat "+meow-" theme-name "-custom-faces")) ()
+       (+after! meow
+         (eval
+          '(,(intern (concat theme-name "-with-colors"))
+            (set-face-attribute 'meow-beacon-indicator nil :foreground magenta)
+            (set-face-attribute 'meow-insert-indicator nil :foreground red)
+            (set-face-attribute 'meow-keypad-indicator nil :foreground cyan)
+            (set-face-attribute 'meow-motion-indicator nil :foreground fg-dim)
+            (set-face-attribute 'meow-normal-indicator nil :foreground blue)))))))
+
+(add-hook 'modus-themes-after-load-theme-hook (+meow-prot-themes-custom-faces modus-themes))
+(add-hook 'ef-themes-post-load-hook (+meow-prot-themes-custom-faces ef-themes))
+
+(load-theme 'modus-operandi :no-confirm)
+
+(defun +after-load-theme ()
+  (cond ((modus-themes--current-theme) (run-hooks 'modus-themes-after-load-theme-hook))
+        ((ef-themes--current-theme) (run-hooks 'ef-themes-post-load-hook))))
+
+(+after-load-theme)
+
+(defun +theme-toggle (&optional force)
+  "Toggle between modus or ef themes or FORCE theme selection."
+  (interactive "P")
+  (cond (force (call-interactively 'consult-theme))
+        ((modus-themes--current-theme) (modus-themes-toggle))
+        ((ef-themes--current-theme) (call-interactively 'ef-themes-select nil))
+        (t (call-interactively 'consult-theme))))
+
+(+after! consult
+  (defvar +consult-theme-after-load-hook nil)
+  (advice-add #'consult-theme :after (lambda () (run-hooks '+consult-theme-after-load-hook)))
+  (global-set-key [f10] #'+theme-toggle))
 
 ;;;; Modeline
 (+install! doom-modeline)
