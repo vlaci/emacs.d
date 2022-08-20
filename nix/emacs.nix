@@ -119,7 +119,8 @@ let
     cp -r $src/{modules,elisp,templates,*.el} .
     chmod -R u+w .
     cp ${emacs-nix-integration} elisp/nix-integration.el
-    find
+
+    echo "-- Generating autoloads for package quickstart..."
     emacs \
       --batch \
       --quick \
@@ -128,11 +129,16 @@ let
                 (defun byte-compile-file (f))
                 (package-quickstart-refresh))'
 
-    mkdir -p $out
-    export EMACSNATIVELOADPATH=$out/eln-cache
+    echo "-- Generating autoloads for local packages..."
     emacs -L elisp -L modules --batch -f loaddefs-generate-batch elisp/local-autoloads.el elisp
+
+    echo "-- Byte compiling elisp files..."
     emacs -L elisp -L modules --batch -f batch-byte-compile {,modules,elisp/}*.el
+
+    mkdir -p $out
     cp -r * $out
+    export EMACSNATIVELOADPATH=$out/eln-cache
+    echo "-- Native compiling elisp files..."
     emacs -L $out/elisp --batch -f batch-native-compile $out/elisp/*.el
   '');
 
