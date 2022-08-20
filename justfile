@@ -6,7 +6,7 @@ help:
 
 # Run fully complied package
 run:
-    $(nix build --impure --no-link --print-out-paths)/bin/emacs --debug-init
+    $(nix build -L --impure --no-link --print-out-paths)/bin/emacs --debug-init
 
 # Quickly try out  modifications
 try:
