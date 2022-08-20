@@ -51,7 +51,7 @@ in
     emacsVlaci.settings."mu4e-maildir" = config.accounts.email.maildirBasePath;
     emacsVlaci.extraPackages = with pkgs; (_: [ mu ]);
 
-    xdg.configFile."emacs/nix-settings.el".text = ''
+    xdg.configFile."emacs/etc/nix-settings.el".text = ''
       ${cfg.extraConfig}
       ${toEmacsConfig cfg.settings}
     '';

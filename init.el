@@ -32,7 +32,6 @@
 
 (setq custom-file (expand-file-name "etc/settings.el" user-emacs-directory))
 (add-hook 'after-init-hook (lambda () (load custom-file 'noerror)))
-(load "nix-integration" 'noerror)
 
 (when (not (bound-and-true-p byte-compile-current-file))
   (defvar no-littering-etc-directory)

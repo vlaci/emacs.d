@@ -20,6 +20,9 @@
 (require '+core)
 (require 'dired-hist)
 
+(require 'xdg)
+(load (expand-file-name "emacs/etc/nix-settings.el" (xdg-config-home)) 'noerror)
+
 (provide '+fallback)
 
 ;;; +fallback.el ends here

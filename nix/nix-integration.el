@@ -22,6 +22,11 @@
 
 ;;; Code:
 
+(add-hook 'after-init-hook
+          (lambda ()
+            (require 'xdg)
+            (load (expand-file-name "emacs/etc/nix-settings.el" (xdg-config-home)) 'noerror)))
+
 (setq-default +extra-exec-path @extra_exec_path@)
 
 (provide 'nix-integration)
