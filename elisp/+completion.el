@@ -101,7 +101,7 @@
    ((kbd "5 b") #'consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
    ((kbd "r b") #'consult-bookmark)            ;; orig. bookmark-jump
    ((kbd "p b") #'consult-project-buffer)      ;; orig. project-switch-to-buffer
-   ((kbd "C-r") #'consult-recent))             ;; orig. find-file-read-only
+   ((kbd "C-r") #'consult-recent-file))        ;; orig. find-file-read-only
   (global-map
    ((kbd "M-#") #'consult-register-load)
    ((kbd "M-'") #'consult-register-store)      ;; orig. abbrev-prefix-mark (unrelated)
