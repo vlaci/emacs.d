@@ -77,18 +77,13 @@
     (when found
       (+magit--kill-diff-buffers-in-current-repo))))
 
-(defun +magit-burry-buffer (kill-buffer)
-  (magit-mode-quit-window kill-buffer)
-  (+magit--kill-diff-buffers-in-current-repo))
-
-
 (+set-defaults!
  magit-define-global-key-bindings nil
  magit-save-repository-buffers nil
  magit-diff-refine-hunk t
  magit-diff-refine-hunk t
  magit-display-buffer-function #'+magit-display-buffer
- magit-bury-buffer-function #'+magit-burry-buffer)
+ magit-bury-buffer-function #'magit-restore-window-configuration)
 
 (defvar +magit-map (make-keymap))
 (+define-keys! magit
