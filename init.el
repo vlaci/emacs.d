@@ -68,18 +68,17 @@
 ;; pressing delete or backspace deletes the selection.
 (delete-selection-mode)
 
-(add-hook 'after-init-hook #'recentf-mode)
+(add-hook 'after-init-hook #'+setup-recentf-mode)
 
 (defun +setup-recentf-mode ()
   "Exclude Emacs state and config files from recents."
-  (defvar recentf-exclude)
+  (require 'recentf)
   (let ((home (getenv "HOME")))
     (dolist (dir (list no-littering-etc-directory no-littering-var-directory))
       (add-to-list 'recentf-exclude dir)
       (add-to-list 'recentf-exclude (string-remove-prefix home dir))))
-  (run-at-time nil (* 5 60) 'recentf-save-list))
-
-(add-hook 'recentf-load-hook #'+setup-recentf-mode)
+  (run-at-time nil (* 5 60) 'recentf-save-list)
+  (recentf-mode))
 
 (setq-default bidi-paragraph-direction 'left-to-right)
 (setq-default bidi-inhibit-bpa t)
