@@ -75,7 +75,7 @@ ARGS are a list in the form of (SYMBOL VALUE)."
   "Append environment variables with SEP from ENV alist."
   (dolist (x env)
     (setenv (car x) (string-join (cons (getenv (car x))
-				       (cadr x)) sep))))
+                       (cadr x)) sep))))
 
 (defun prepend-envs (sep &rest env)
   "Prepend environment variables with SEP from ENV alist."
@@ -96,5 +96,5 @@ verifies path exists"
       (when (file-exists-p path)
         (set-defaults entry)))))
 
-(provide '+set-defaults)
-;;; +set-defaults.el ends here
+(provide 'set-defaults)
+;;; set-defaults.el ends here

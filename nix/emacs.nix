@@ -116,7 +116,7 @@ let
       src = ../.;
       buildInputs = [ emacsStage2 ];
     } ''
-    cp -r $src/{elisp,templates,*.el} .
+    cp -r $src/{modules,elisp,templates,*.el} .
     chmod -R u+w .
     cp ${emacs-nix-integration} elisp/nix-integration.el
     find
@@ -130,9 +130,9 @@ let
 
     mkdir -p $out
     export EMACSNATIVELOADPATH=$out/eln-cache
-    emacs -L elisp --batch -f batch-byte-compile {,elisp/}*.el
+    emacs -L elisp -L modules --batch -f batch-byte-compile {,modules,elisp/}*.el
     cp -r * $out
-    #emacs -L $out/elisp --batch -f batch-native-compile $out/{,elisp/}*.el
+    emacs -L $out/elisp --batch -f batch-native-compile $out/elisp/*.el
   '');
 
   emacsStage2 = mkEmacs (epkgs:

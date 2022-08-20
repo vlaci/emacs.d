@@ -278,6 +278,7 @@
       (when-let (x (assq (aref word (1- (length word))) +orderless-dispatch-alist))
         (cons (cdr x) (substring word 0 -1)))))))
 
+(require 'orderless)
 ;; Define orderless style with initialism by default
 (orderless-define-completion-style +orderless-with-initialism
   (orderless-matching-styles '(orderless-initialism orderless-literal orderless-regexp)))

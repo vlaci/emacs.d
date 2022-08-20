@@ -47,12 +47,9 @@
 (setq auto-mode-case-fold nil
       read-process-output-max (* 64 1024 1024))
 
-(add-to-list 'load-path (file-name-directory load-file-name))
-
 (require '+config)
 
-;; TODO figure out startup speed issues if init files are compiled
-;;(add-to-list 'native-comp-eln-load-path (expand-file-name "eln-cache" user-emacs-directory))
+(add-to-list 'native-comp-eln-load-path (expand-file-name "eln-cache" user-emacs-directory))
 
 (setq user-emacs-directory (expand-file-name "emacs" (xdg-config-home))
       package-user-dir (expand-file-name "emacs/package" (xdg-data-home))

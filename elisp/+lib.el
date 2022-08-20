@@ -23,13 +23,14 @@
 ;;; Code:
 
 (require '+config)
-(require '+set-defaults)
+(require 'set-defaults)
 (require 'cl-lib)
 
 (when +nix-build?
   ;; If built with nix, we have precomputed autoloads that we should load
   (load "autoloads"))
 
+;;;###autoload
 (defmacro +set-defaults! (&rest pairs)
   "Override default of `defcustom' variable VAR to VALUE from PAIRS.
 
@@ -41,6 +42,7 @@
                     collect `'(,k ,v))))
     `(set-defaults ,@pairs)))
 
+;;;###autoload
 (defmacro +install! (pkg &optional no-require)
   "Install PKG when used outside of Nix build.
 Require PKG during byte-compoilation unless NO-REQUIRE is set."
@@ -50,8 +52,9 @@ Require PKG during byte-compoilation unless NO-REQUIRE is set."
      `(when (not (package-installed-p ',pkg))
         (package-install ',pkg)))
    (when (and (not no-require) (or (not +nix-build?) (bound-and-true-p byte-compile-current-file)) (not (featurep pkg)))
-     `(require ',pkg nil 'noerror))))
+     `(eval-and-compile (require ',pkg nil 'noerror)))))
 
+;;;###autoload
 (defmacro +define-key! (pkg keymap key def &optional remove)
   (list
    #'progn
@@ -67,6 +70,7 @@ Require PKG during byte-compoilation unless NO-REQUIRE is set."
           ',pkg
         '(define-key ,keymap ,key ,def ,remove)))))
 
+;;;###autoload
 (defmacro +define-keys! (pkg &rest definitions)
   (declare (indent defun)(debug t))
   (let (forms)
@@ -77,6 +81,7 @@ Require PKG during byte-compoilation unless NO-REQUIRE is set."
           (push `(+define-key! ,pkg ,keymap ,@bind-spec) forms))))
     `(progn ,@(reverse forms))))
 
+;;;###autoload
 (defmacro +after! (feature &rest body)
   (declare (indent defun)(debug t))
   (when (bound-and-true-p byte-compile-current-file)
@@ -91,6 +96,7 @@ Require PKG during byte-compoilation unless NO-REQUIRE is set."
    ((memq direction '(below bottom down)) '(below . above))
    (t '(below above))))
 
+;;;###autoload
 (defun +display-buffer-in-direction (buffer alist)
   "Try to display BUFFER at edge specified in ALIST."
   (let* ((direction (alist-get 'direction alist))
