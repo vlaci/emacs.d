@@ -31,6 +31,7 @@
 (+install! ace-window)
 
 (global-set-key [remap other-window] #'ace-window)
+(global-set-key [remap kill-buffer] #'kill-this-buffer)
 
 (+install! popper)
 
