@@ -38,7 +38,8 @@
  electric-pair-inhibit-predicate #'electric-pair-conservative-inhibit
  eldoc-echo-area-display-truncation-message nil
  eldoc-echo-area-use-multiline-p 3
- eldoc-echo-area-prefer-doc-buffer t)
+ eldoc-echo-area-prefer-doc-buffer t
+ elisp-flymake-byte-compile-load-path load-path)
 
 (+define-keys! flymake
   (flymake-mode-map
