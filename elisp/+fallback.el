@@ -1,4 +1,4 @@
-;;; +lib.el --- summary -*- lexical-binding: t -*-
+;;; +fallback.el --- In case not built with Nix load libraries manually -*- lexical-binding: t -*-
 
 ;; This file is not part of GNU Emacs
 ;; This program is free software: you can redistribute it and/or modify
@@ -17,16 +17,8 @@
 ;; commentary
 
 ;;; Code:
-(require '+config)
-(if +nix-build?
-    (progn
-      ;; If built with nix, we have precomputed autoloads that we should load
-      (load "autoloads")
-      (load "local-autoloads"))
-  (require '+fallback))
+(require '+core)
 
-(autoload 'set-defaults "set-defaults")
+(provide '+fallback)
 
-(provide '+lib)
-
-;;; +lib.el ends here
+;;; +fallback.el ends here

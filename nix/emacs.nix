@@ -130,6 +130,7 @@ let
 
     mkdir -p $out
     export EMACSNATIVELOADPATH=$out/eln-cache
+    emacs -L elisp -L modules --batch -f loaddefs-generate-batch elisp/local-autoloads.el elisp
     emacs -L elisp -L modules --batch -f batch-byte-compile {,modules,elisp/}*.el
     cp -r * $out
     emacs -L $out/elisp --batch -f batch-native-compile $out/elisp/*.el
