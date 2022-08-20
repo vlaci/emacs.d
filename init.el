@@ -69,9 +69,9 @@
 
 (add-hook 'after-init-hook #'+setup-recentf-mode)
 
+(require 'recentf)
 (defun +setup-recentf-mode ()
   "Exclude Emacs state and config files from recents."
-  (require 'recentf)
   (let ((home (getenv "HOME")))
     (dolist (dir (list no-littering-etc-directory no-littering-var-directory))
       (add-to-list 'recentf-exclude dir)
