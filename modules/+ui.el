@@ -178,5 +178,7 @@
 
 (add-hook 'prog-mode-hook #'sideline-mode)
 
+(+install! hyperbole 'no-require)
+
 (provide '+ui)
 ;;; +ui.el ends here
