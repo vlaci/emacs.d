@@ -45,6 +45,7 @@
                       (nil . (:maxlevel . 2)))
  org-refile-use-outline-path 'file
  org-refile-allow-creating-parent-nodes 'confirm
+ org-outline-path-complete-in-steps t ;; requires advising `org-olpath-completing-read'
  org-todo-keywords
  '((sequence "TODO(t)" "MAYBE(m)" "WAIT(w@/!)" "|" "CANCEL(c@)" "DONE(d!)"))
  org-todo-keyword-faces '(("WAIT" . '(bold org-todo))
@@ -61,44 +62,62 @@
  org-log-reschedule 'time
  org-log-into-drawer t
  org-read-date-prefer-future 'time
- org-capture-templates `(("t" "Basic Todo" entry
-                          (file+headline "tasks.org" "Tasks to be reviewed")
-                          ,(concat "* %^{Title}\n"
-                                   ":PROPERTIES:\n"
-                                   ":CAPTURED: %U\n"
-                                   ":END:\n\n"
-                                   "%i%l")
-                          :empty-lines-after 1)
-                         ("c" "Clock in to a task" entry
-                          (file+headline "tasks.org" "Clocked tasks")
-                          ,(concat "* TODO %^{Title}\n"
-                                   "SCHEDULED: %T\n"
-                                   ":PROPERTIES:\n"
-                                   ":EFFORT: %^{Effort estimate in minutes|5|10|15|30|45|60|90|120}\n"
-                                   ":END:\n\n"
-                                   "%a\n")
-                          :prepend t
-                          :clock-in t
-                          :clock-keep t
-                          :immediate-finish t
-                          :empty-lines-after 1)
-                         ("m" "Memorandum of conversation" entry
-                          (file+headline "tasks.org" "Tasks to be reviewed")
-                          ,(concat "* Memorandum of conversation with %^{Person}\n"
-                                   ":PROPERTIES:\n"
-                                   ":CAPTURED: %U\n"
-                                   ":END:\n\n"
-                                   "%i%?")
-                          :empty-lines-after 1)
-                         ("d" "Task with a due date" entry
-                          (file+headline "tasks.org" "Tasks with a date")
-                          ,(concat "* TODO %^{Title} %^g\n"
-                                   "SCHEDULED: %^t\n"
-                                   ":PROPERTIES:\n"
-                                   ":CAPTURED: %U\n"
-                                   ":END:\n\n"
-                                   "%a\n%i%?")
-                          :empty-lines-after 1))
+ org-capture-templates
+ (let ((personal-todo-file "personal/my-life.org")
+       (work-todo-file "work/my-work.org")
+       (work-journal-file "work/work-journal.org"))
+   (require 'cl-macs)
+   (cl-flet ((todo-entry (key file)
+                       `(,key "Todo" entry
+                             (file+headline ,file "Tasks to be reviewed")
+                             ,(concat "* %^{Title}\n"
+                                      ":PROPERTIES:\n"
+                                      ":CAPTURED: %U\n"
+                                      ":END:\n\n"
+                                      "%i%l")
+                             :empty-lines-after 1))
+          (clock-task (key file)
+                       `(,key "Clock in to a task" entry
+                             (list 'file+headline ,file "Clocked tasks")
+                             ,(concat "* TODO %^{Title}\n"
+                                      "SCHEDULED: %T\n"
+                                      ":PROPERTIES:\n"
+                                      ":EFFORT: %^{Effort estimate in minutes|5|10|15|30|45|60|90|120}\n"
+                                      ":END:\n\n"
+                                      "%a\n")
+                             :prepend t
+                             :clock-in t
+                             :clock-keep t
+                             :immediate-finish t
+                             :empty-lines-after 1)))
+         `(("p" "Personal")
+           ,(todo-entry "pt" personal-todo-file)
+           ,(clock-task "pc" personal-todo-file)
+           ("w" "Work")
+           ,(todo-entry "wt" work-todo-file)
+           ,(clock-task "wc" work-todo-file)
+           ("wd" "Daily standup" entry
+            (file+olp+datetree ,work-journal-file)
+            (file "work/daily-standup.orgcaptpl")
+            :empty-lines-after 1)
+           ("wm" "Memorandum of conversation" entry
+            (file+headline ,work-journal-file "Tasks to be reviewed")
+            ,(concat "* Memorandum of conversation with %^{Person}\n"
+                     ":PROPERTIES:\n"
+                     ":CAPTURED: %U\n"
+                     ":END:\n\n"
+                     "%i%?")
+            :empty-lines-after 1)
+           ("wd" "Task with a due date" entry
+            (file+headline ,work-todo-file "Tasks with a date")
+            ,(concat "* TODO %^{Title} %^g\n"
+                     "SCHEDULED: %^t\n"
+                     ":PROPERTIES:\n"
+                     ":CAPTURED: %U\n"
+                     ":END:\n\n"
+                     "%a\n%i%?")
+            :empty-lines-after 1))))
+ org-agenda-restore-windows-after-quit t
  org-roam-v2-ack t)
 
 (+define-keys! org
@@ -122,6 +141,17 @@ Thanks to https://frozenlock.org/tag/url-retrieve/ for documenting `url-retrieve
         (setq title (url-unhex-string (match-string 1 )) )
         (kill-buffer (current-buffer)))
       title)))
+
+(advice-add #'org-olpath-completing-read :around
+            (lambda (&rest args)
+              (minibuffer-with-setup-hook
+                  (lambda () (setq-local completion-styles '(basic)))
+                (apply args))))
+
+(advice-add #'org-capture-fill-template :around
+            (lambda (&rest args)
+              (let ((default-directory  org-directory))
+                (apply args))))
 
 (provide '+org)
 ;;; +org.el ends here
