@@ -15,7 +15,6 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-
 ;;; Commentary:
 
 ;; commentary
@@ -35,7 +34,7 @@
   (unless (zerop (mod (length pairs) 2))
     (error "PAIRS must have an even number of var/value members"))
   (let ((pairs (cl-loop for (k v) on pairs by #'cddr
-                    collect `'(,k ,v))))
+                        collect `'(,k ,v))))
     `(set-defaults ,@pairs)))
 
 ;;;###autoload
