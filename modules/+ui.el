@@ -52,7 +52,7 @@
  popper-echo-dispatch-actions t
  popper-group-function #'+popper-group-by-project
  popper-reference-buffers
- '("\\`\\*\\(Messages\\|Backtrace\\|Warnings\\|Output\\|Flymake\\|eldoc\\|Help\\)'"
+ '("\\`\\*\\(Messages\\|Backtrace\\|Warnings\\|Output\\|Flymake\\|eldoc\\|Help\\)\\*'"
    "\\`\\*Embark"
    "\\`\\*helpful"))
 
