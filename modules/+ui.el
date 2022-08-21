@@ -25,13 +25,29 @@
 
 ;;;; Window management
 
-(+set-defaults!
- split-width-threshold 120)
-
 (+install! ace-window)
 
 (global-set-key [remap other-window] #'ace-window)
 (global-set-key [remap kill-buffer] #'kill-this-buffer)
+
+(+set-defaults!
+ window-combination-resize t
+ display-buffer-base-action '((display-buffer-reuse-window display-buffer-same-window)
+                              (reusable-frames . t))
+ even-window-sizes nil
+ split-height-threshold nil
+ split-width-threshold 120)
+
+(add-to-list 'display-buffer-alist
+             '("\\`\\*\\(Messages\\|Backtrace\\|Warnings\\|Output\\|Flymake\\|eldoc\\|Help\\)"
+               (display-buffer-reuse-window display-buffer-in-previous-window display-buffer-in-side-window)
+               (side . bottom)
+               (slot . 0)
+               (window-height . 16)))
+(add-to-list 'display-buffer-alist
+             '("\\*\\(Calendar\\|Bookmark Annotation\\).*"
+               (display-buffer-reuse-mode-window display-buffer-below-selected)
+               (window-height . fit-window-to-buffer)))
 
 (+install! popper)
 
@@ -55,24 +71,6 @@
  '("\\`\\*\\(Messages\\|Backtrace\\|Warnings\\|Output\\|Flymake\\|eldoc\\|Help\\)\\*'"
    "\\`\\*Embark"
    "\\`\\*helpful"))
-
-(+set-defaults!
- window-combination-resize t
- display-buffer-base-action
-   '((display-buffer-reuse-window display-buffer-same-window)
-     (reusable-frames . t))
- even-window-sizes nil)
-
-(add-to-list 'display-buffer-alist
-             '("\\`\\*\\(Messages\\|Backtrace\\|Warnings\\|Output\\|Flymake\\|eldoc\\|Help\\)"
-               (display-buffer-reuse-window display-buffer-in-previous-window display-buffer-in-side-window)
-               (side . bottom)
-               (slot . 0)
-               (window-height . 16)))
-(add-to-list 'display-buffer-alist
-             '("\\*\\(Calendar\\|Bookmark Annotation\\).*"
-               (display-buffer-reuse-mode-window display-buffer-below-selected)
-               (window-height . fit-window-to-buffer)))
 
 (add-hook 'after-init-hook #'winner-mode)
 
