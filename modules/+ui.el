@@ -69,6 +69,10 @@
                (side . bottom)
                (slot . 0)
                (window-height . 16)))
+(add-to-list 'display-buffer-alist
+             '("\\*\\(Calendar\\|Bookmark Annotation\\).*"
+               (display-buffer-reuse-mode-window display-buffer-below-selected)
+               (window-height . fit-window-to-buffer)))
 
 (add-hook 'after-init-hook #'winner-mode)
 
