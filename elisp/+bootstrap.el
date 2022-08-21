@@ -56,8 +56,9 @@
       native-comp-deferred-compilation nil ;;t
       package-enable-at-startup (not +nix-build?))
 
-(if +nix-build?
-    (require 'nix-integration)
+(require 'nix-integration)
+
+(unless +nix-build?
   (require 'package)
   (defvar package-archives)
   (startup-redirect-eln-cache "eln-cache")

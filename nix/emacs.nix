@@ -63,9 +63,12 @@ let
       makeElispExecPath = paths: with lib; "(list" + (concatStringsSep " " (map (path: "\"${path}/bin\"") (filter (x: x != null) paths))) + ")";
       extra_exec_path = makeElispExecPath binaries;
     in
-    substituteAll {
-      src = ./nix-integration.el;
-      inherit extra_exec_path;
+    emacsPackages.trivialBuild {
+      pname = "nix-integration";
+      src = substituteAll {
+        src = ./nix-integration.el;
+        inherit extra_exec_path;
+      };
     };
 
   src = impure.init_d or ../.;
@@ -106,7 +109,7 @@ let
   mkEmacs = extraPkgs:
     emacsWithPackages (epkgs:
       (map (n: epkgs.${n}) packages)
-      ++ (extraPkgs epkgs)
+      ++ (extraPkgs epkgs) ++ [ emacs-nix-integration ]
     );
 
   emacsStage1 = mkEmacs (epkgs: [ ]);
@@ -118,7 +121,6 @@ let
     } ''
     cp -r $src/{modules,elisp,templates,*.el} .
     chmod -R u+w .
-    cp ${emacs-nix-integration} elisp/nix-integration.el
 
     echo "-- Generating autoloads for package quickstart..."
     emacs \
