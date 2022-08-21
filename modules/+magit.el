@@ -49,15 +49,15 @@
 
              ((or (not (derived-mode-p 'magit-mode))
                   (memq (with-current-buffer buffer major-mode)
-                             '(magit-process-mode
-                               magit-revision-mode
+                             '(magit-revision-mode
                                magit-diff-mode
                                magit-stash-mode
                                magit-status-mode)))
               '((display-buffer-reuse-window display-buffer-reuse-mode-window +display-buffer-in-direction)
                 (direction . right)))
 
-             ('((display-buffer-in-previous-window display-buffer-reuse-mode-window display-buffer-below-selected)
+             (t
+              '((display-buffer-in-previous-window display-buffer-reuse-mode-window display-buffer-below-selected)
                 (window-height . 0.6)))))))
 
 (add-hook 'git-commit-setup-hook #'+magit--git-commit-setup  nil t)
