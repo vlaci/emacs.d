@@ -27,7 +27,10 @@
 
 (+install! ace-window)
 
-(global-set-key [remap other-window] #'ace-window)
+(+set-defaults! av-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+
+(global-set-key (kbd "M-o") #'ace-window)
+
 (global-set-key [remap kill-buffer] #'kill-this-buffer)
 
 (+set-defaults!
