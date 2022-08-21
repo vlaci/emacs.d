@@ -126,6 +126,13 @@
 ;; pressing delete or backspace deletes the selection.
 (delete-selection-mode)
 
+;; Backups and auto-save
+(+set-defaults! backup-by-copying t
+                version-control t
+                delete-old-versions t
+                kept-new-versions 6
+                kept-old-versions 3)
+
 ;; Whitespace
 (+set-defaults! whitespace-style
                 '(face empty trailing tab-mark
@@ -169,10 +176,12 @@ compilation via clearing the first two emtpy lines."
 (add-hook 'prog-mode-hook #'+tempel-setup-capf)
 (add-hook 'text-mode-hook #'+tempel-setup-capf)
 
+;; Requires no-littering
 (unless (bound-and-true-p byte-compile-current-file)
   (require 'no-littering)
-  (+set-defaults! tempel-path (list (expand-file-name "templates" no-littering-var-directory)
-                                    (expand-file-name "templates/*.eld" +emacs-config-root))))
+  (+set-defaults! tempel-path (list (no-littering-expand-var-file-name "templates")
+                                    (expand-file-name "templates/*.eld" +emacs-config-root))
+                  auto-save-file-name-transforms `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
 
 (provide '+editing)
 ;;; +editing.el ends here
