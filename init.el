@@ -58,7 +58,10 @@
  history-delete-duplicates t
  auto-revert-verbose nil
  show-paren-context-when-offscreen 'child-frame
- read-process-output-max (* 1024 1024))
+ read-process-output-max (* 1024 1024)
+ ;; Controls language and format of dates
+ system-time-locale "en_US"
+ calendar-week-start-day 1)
 
 ;; Revert buffers when the underlying file has changed
 (global-auto-revert-mode 1)
