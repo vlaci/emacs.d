@@ -15,6 +15,8 @@
     ligature.flake = false;
     eglot-x.url = "github:nemethf/eglot-x";
     eglot-x.flake = false;
+    explain-pause-mode.url = "github:lastquestion/explain-pause-mode";
+    explain-pause-mode.flake = false;
   };
 
   outputs = { self, nixpkgs, flake-utils, ... }@inputs:

@@ -48,5 +48,6 @@ in
   });
   ligature = build { pname = "ligature"; };
   eglot-x = build { pname = "eglot-x"; };
+  explain-pause-mode = build { pname = "explain-pause-mode"; };
   inherit (final.melpaPackages) apheleia;
 }
