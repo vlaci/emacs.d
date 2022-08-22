@@ -150,5 +150,6 @@
 (require '+magit)
 (require '+org)
 (require '+dired)
+(require '+eshell)
 
 ;;; init.el ends here
