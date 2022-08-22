@@ -102,6 +102,13 @@
   (define-key project-prefix-map "m" #'magit-project-status)
   (add-to-list 'project-switch-commands '(magit-project-status "Magit") t))
 
+(+after! smerge-mode
+  (map-keymap
+   (lambda (_key cmd)
+     (when (symbolp cmd)
+       (put cmd 'repeat-map 'smerge-basic-map)))
+   smerge-basic-map))
+
 (provide '+magit)
 
 ;;; +magit.el ends here
