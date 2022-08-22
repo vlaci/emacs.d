@@ -24,6 +24,11 @@
 (require '+lib)
 
 (+install! gcmh)
+
+(+set-defaults! gcmh-idle-delay 'auto
+                gcmh-auto-idle-delay-factor 10
+                gcmh-high-cons-threshold (* 32 1024 1024))
+
 (gcmh-mode)
 
 (+install! explain-pause-mode)
