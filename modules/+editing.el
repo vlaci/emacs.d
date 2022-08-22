@@ -120,7 +120,13 @@
 (meow-setup)
 (meow-global-mode)
 
-(repeat-mode)
+(+install! repeat-help)
+(+set-defaults! repeat-help-popup-type 'embark)
+(add-hook 'after-init-hook #'repeat-mode)
+(add-hook 'repeat-mode-hook #'repeat-help-mode)
+(add-hook 'repeat-help-mode-hook (lambda ()
+  ;; Restore non-intrusive help as well as verbose prompt
+  (setq repeat-echo-function repeat-help--echo-function)))
 
 ;; Typed text replaces the selection if the selection is active,
 ;; pressing delete or backspace deletes the selection.
