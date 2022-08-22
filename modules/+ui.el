@@ -109,6 +109,9 @@
                             (internal-border-width . 3)
                             (border-width . 0)))
 
+(defvar +after-load-theme-hook nil)
+(advice-add 'load-theme :after (lambda (&rest _) (run-hooks '+after-load-theme-hook)))
+(+set-defaults! custom-safe-themes t)
 
 (defmacro +meow-prot-themes-custom-faces (theme)
   "Common face override for `modus' and `ef' THEMEs."
@@ -126,26 +129,39 @@
 (add-hook 'modus-themes-after-load-theme-hook (+meow-prot-themes-custom-faces modus-themes))
 (add-hook 'ef-themes-post-load-hook (+meow-prot-themes-custom-faces ef-themes))
 
-(load-theme 'modus-operandi :no-confirm)
+(add-hook '+after-load-theme-hook #'+customize-prot-theme)
 
-(defun +after-load-theme ()
-  (cond ((modus-themes--current-theme) (run-hooks 'modus-themes-after-load-theme-hook))
-        ((ef-themes--current-theme) (run-hooks 'ef-themes-post-load-hook))))
+(defun +customize-prot-theme (&rest _)
+  (cond ((and (fboundp 'modus-themes--current-theme) (modus-themes--current-theme)) (run-hooks 'modus-themes-after-load-theme-hook))
+        ((and (fboundp 'ef-themes--current-theme) (ef-themes--current-theme)) (run-hooks 'ef-themes-post-load-hook))))
 
-(+after-load-theme)
+;; Change theme interactively
+
+(global-set-key [f10] #'+theme-toggle)
 
 (defun +theme-toggle (&optional force)
   "Toggle between modus or ef themes or FORCE theme selection."
   (interactive "P")
   (cond (force (call-interactively 'consult-theme))
-        ((modus-themes--current-theme) (modus-themes-toggle))
-        ((ef-themes--current-theme) (call-interactively 'ef-themes-select nil))
+        ((and (fboundp 'modus-themes--current-theme) (modus-themes--current-theme)) (modus-themes-toggle))
+        ((and (fboundp 'ef-themes--current-theme) (ef-themes--current-theme)) (call-interactively 'ef-themes-select nil))
         (t (call-interactively 'consult-theme))))
 
-(+after! consult
-  (defvar +consult-theme-after-load-hook nil)
-  (advice-add #'consult-theme :after (lambda () (run-hooks '+consult-theme-after-load-hook)))
-  (global-set-key [f10] #'+theme-toggle))
+;; Persist applied theme
+
+(defun +save-current-theme ()
+  (customize-save-variable 'custom-enabled-themes custom-enabled-themes))
+
+(unless custom-enabled-themes
+  (load-theme 'modus-operandi :no-confirm))
+
+(add-hook '+after-load-theme-hook #'+save-current-theme)
+
+(advice-add 'consult-theme :around (lambda (&rest args)
+                                     (cl-letf ((+save-current-theme #'ignore))
+                                       (ignore +save-current-theme)
+                                       (apply args))
+                                     (+save-current-theme)))
 
 ;;;; Modeline
 (+install! doom-modeline)
