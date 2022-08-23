@@ -455,8 +455,8 @@
 (global-set-key [remap switch-to-buffer] #'consult-buffer)
 (global-set-key [remap list-buffer] #'consult-buffer)
 (global-set-key [remap project-switch-to-buffer] #'consult-project-buffer)
-(global-set-key [f2] #'consult-buffer)
-(global-set-key [f3] #'consult-ripgrep)
+(global-set-key [f1] #'consult-buffer)
+(global-set-key [f2] #'consult-ripgrep)
 
 (+after! project
   (define-key project-prefix-map "r" #'consult-ripgrep)
