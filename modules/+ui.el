@@ -34,6 +34,7 @@
 (global-set-key [remap kill-buffer] #'kill-this-buffer)
 
 (+set-defaults!
+ pgtk-wait-for-event-timeout 0.001
  window-combination-resize t
  display-buffer-base-action '((display-buffer-reuse-window display-buffer-same-window)
                               (reusable-frames . t))
