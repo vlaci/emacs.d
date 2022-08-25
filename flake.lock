@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "bitwarden": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1657905291,
+        "narHash": "sha256-svBwmKslNsvAeV0mB7iGAhXZ3hqy6vY27JTIMCC4tN0=",
+        "owner": "seanfarley",
+        "repo": "emacs-bitwarden",
+        "rev": "02d6410003a42e7fbeb4aa109aba949eea553706",
+        "type": "github"
+      },
+      "original": {
+        "owner": "seanfarley",
+        "repo": "emacs-bitwarden",
+        "type": "github"
+      }
+    },
     "eglot-x": {
       "flake": false,
       "locked": {
@@ -120,6 +136,7 @@
     },
     "root": {
       "inputs": {
+        "bitwarden": "bitwarden",
         "eglot-x": "eglot-x",
         "emacs-overlay": "emacs-overlay",
         "explain-pause-mode": "explain-pause-mode",

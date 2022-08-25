@@ -53,10 +53,9 @@ in
       emacs-all-the-icons-fonts
       iosevka-comfy.comfy
       iosevka-comfy.comfy-duo
-      etBook
+      bitwarden-cli
 
       direnv
-      lorri
     ];
     emacsVlaci.settings."mu4e-maildir" = config.accounts.email.maildirBasePath;
     emacsVlaci.extraPackages = with pkgs; (_: [ mu ]);

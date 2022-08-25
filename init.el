@@ -141,6 +141,9 @@
 (+install! mixed-pitch)
 (add-hook 'text-mode-hook #'mixed-pitch-mode)
 
+(+install! bitwarden)
+(bitwarden-auth-source-enable)
+
 (require '+editing)
 (require '+completion)
 

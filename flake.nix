@@ -17,6 +17,8 @@
     eglot-x.flake = false;
     explain-pause-mode.url = "github:lastquestion/explain-pause-mode";
     explain-pause-mode.flake = false;
+    bitwarden.url = "github:seanfarley/emacs-bitwarden";
+    bitwarden.flake = false;
   };
 
   outputs = { self, nixpkgs, flake-utils, ... }@inputs:
