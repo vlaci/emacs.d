@@ -96,16 +96,13 @@
            ("w" "Work")
            ,(todo-entry "wt" work-todo-file)
            ,(clock-task "wc" work-todo-file)
-           ("wd" "Daily standup" entry
+           ("wd" "Daily stand-up" entry
             (file+olp+datetree ,work-journal-file)
             (file "work/daily-standup.orgcaptpl")
             :empty-lines-after 1)
            ("wm" "Memorandum of conversation" entry
-            (file+headline ,work-journal-file "Tasks to be reviewed")
-            ,(concat "* Memorandum of conversation with %^{Person}\n"
-                     ":PROPERTIES:\n"
-                     ":CAPTURED: %U\n"
-                     ":END:\n\n"
+            (file+olp+datetree ,work-journal-file)
+            ,(concat "* Memorandum of conversation on %^{Topic}\n"
                      "%i%?")
             :empty-lines-after 1)
            ("wd" "Task with a due date" entry
