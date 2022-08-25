@@ -82,6 +82,8 @@
 ;;;; Theme
 (+install! modus-themes)
 (+install! ef-themes)
+;; workaround undeclared 'ef-light-palette issue for `ef-themes-with-colors'
+(require 'ef-light-theme)
 
 (+set-defaults!
  modus-themes-italic-constructs t
