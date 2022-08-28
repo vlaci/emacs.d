@@ -46,6 +46,10 @@
   (add-hook 'dired-mode-hook #'dired-hide-details-mode)
   (add-hook 'dired-mode-hook #'hl-line-mode))
 
+(+after! dired-aux
+  (add-to-list 'dired-compress-file-suffixes
+                 '("\\.zip\\'" ".zip" "unzip")))
+
 (+define-keys!
   dired-subtree
   (dired-mode-map ((kbd "<tab>") #'dired-subtree-toggle)
