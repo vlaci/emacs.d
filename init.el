@@ -39,7 +39,6 @@
 (+install! no-littering 'no-require)
 
 (setq custom-file (expand-file-name "etc/settings.el" user-emacs-directory))
-(add-hook 'after-init-hook (lambda () (load custom-file 'noerror)))
 
 (when (not (bound-and-true-p byte-compile-current-file))
   (defvar no-littering-etc-directory)
@@ -48,6 +47,7 @@
 
 ;;; Defaults
 (+set-defaults!
+ custom-safe-themes t
  use-short-answers t
  vc-follow-symlinks t
  mouse-yank-at-point t
@@ -71,6 +71,8 @@
  system-time-locale "en_US"
  calendar-week-start-day 1)
 
+(load custom-file 'noerror)
+
 ;; Revert buffers when the underlying file has changed
 (global-auto-revert-mode 1)
 
@@ -78,7 +80,15 @@
 ;; pressing delete or backspace deletes the selection.
 (delete-selection-mode)
 
-(add-hook 'after-init-hook #'+setup-recentf-mode)
+;; Enable savehist-mode for an command history
+(savehist-mode)
+(save-place-mode)
+(+set-defaults!
+ desktop-restore-eager 0
+ desktop-lazy-idle-delay 1)
+
+(add-hook 'desktop-after-read-hook #'+setup-recentf-mode)
+(desktop-save-mode)
 
 (require 'recentf)
 (defun +setup-recentf-mode ()
@@ -96,9 +106,6 @@
 
 ;; Make shebang (#!) file executable when saved
 (add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
-
-;; Enable savehist-mode for an command history
-(savehist-mode 1)
 
 (require '+ui)
 
