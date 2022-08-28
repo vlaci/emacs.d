@@ -63,6 +63,9 @@
 
 (add-hook 'after-init-hook #'popper-mode)
 
+(+after! popper-echo
+  (popper-echo-mode))
+
 (defun +popper-group-by-project ()
   (when (featurep 'project)
     (popper-group-by-project)))
