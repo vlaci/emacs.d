@@ -77,8 +77,6 @@
    "\\`\\*eshell\\*\\'"
    "\\`\\*helpful"))
 
-(add-hook 'after-init-hook #'winner-mode)
-
 ;;;; Theme
 (+install! modus-themes)
 (+install! ef-themes)
@@ -166,8 +164,8 @@
                                        (apply args))
                                      (+save-current-theme)))
 
-;;;; Modeline
 (+install! doom-modeline)
+;;;; Tabs & Modeline
 (+install! all-the-icons)
 (add-hook 'after-init-hook #'doom-modeline-mode)
 (+set-defaults!
@@ -178,6 +176,39 @@
 
 (add-hook 'after-init-hook #'size-indication-mode)
 (add-hook 'after-init-hook #'column-number-mode)
+
+(add-hook 'after-init-hook #'tab-bar-mode)
+(add-hook 'after-init-hook #'tab-bar-history-mode)
+
+(defun +tab-bar-format-menu-bar ()
+  "Produce the Menu button for the tab bar that shows the menu bar."
+  `((menu-bar menu-item (propertize (concat " " (all-the-icons-fileicon "emacs") " ") 'face 'tab-bar-tab-inactive)
+              tab-bar-menu-bar :help "Menu Bar")))
+
+(defun +tab-bar-tab-name-format-comfortable (tab i)
+  (propertize (concat " " (tab-bar-tab-name-format-default tab i) " ")
+              'face (funcall tab-bar-tab-face-function tab)))
+
+(declare-function project-root "project")
+
+(defun +tab-bar-tab-name ()
+  "Use project/directory as tab name."
+  (let ((dir (if-let ((proj (project-current)))
+                 (project-root proj)
+               default-directory)))
+    (file-name-base (directory-file-name dir))))
+
+(+set-defaults!
+ tab-bar-tab-name-format-function #'+tab-bar-tab-name-format-comfortable
+ tab-bar-format '(+tab-bar-format-menu-bar
+                  tab-bar-format-history
+                  tab-bar-format-tabs
+                  tab-bar-separator
+                  tab-bar-format-add-tab)
+ tab-bar-close-button-show nil
+ tab-bar-tab-name-truncated-max 14
+ tab-bar-new-tab-choice 'ibuffer
+ tab-bar-tab-name-function #'+tab-bar-tab-name)
 
 ;;;; Current line highlighting
 (+install! pulsar)
