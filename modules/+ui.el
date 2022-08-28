@@ -58,6 +58,7 @@
 (+define-keys! popper
   (popper-mode-map
    ((kbd "C-`") #'popper-toggle-latest)
+   ((kbd "C-~") #'popper-kill-latest-popup)
    ((kbd "M-`") #'popper-cycle)
    ((kbd "C-M-`") #'popper-toggle-type)))
 
