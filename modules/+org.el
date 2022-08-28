@@ -124,6 +124,7 @@
    ((kbd "C-c c") #'org-capture)
    ((kbd "C-c l") #'org-store-link)))
 
+(add-hook 'org-mode-hook #'org-indent-mode)
 (add-hook 'org-mode-hook #'org-modern-mode)
 (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
 
