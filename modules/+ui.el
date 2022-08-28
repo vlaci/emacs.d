@@ -40,7 +40,7 @@
                               (reusable-frames . t))
  even-window-sizes nil
  split-height-threshold nil
- split-width-threshold 120)
+ split-width-threshold 200)
 
 (add-to-list 'display-buffer-alist
              '("\\`\\*\\(Messages\\|Backtrace\\|Warnings\\|Output\\|Flymake\\|eldoc\\|Help\\)"
