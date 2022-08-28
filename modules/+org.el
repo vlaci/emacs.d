@@ -61,6 +61,7 @@
  org-log-redeadline 'time
  org-log-reschedule 'time
  org-log-into-drawer t
+ org-clock-into-drawer "CLOCK"
  org-read-date-prefer-future 'time
  org-capture-templates
  (let ((personal-todo-file "personal/my-life.org")
