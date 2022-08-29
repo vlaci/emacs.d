@@ -71,6 +71,8 @@
  system-time-locale "en_US"
  calendar-week-start-day 1)
 
+(require '+ui)
+
 (load custom-file 'noerror)
 
 ;; Revert buffers when the underlying file has changed
@@ -106,8 +108,6 @@
 
 ;; Make shebang (#!) file executable when saved
 (add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
-
-(require '+ui)
 
 ;;;; To improve help
 (+install! helpful)
