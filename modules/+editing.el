@@ -120,6 +120,8 @@
 (meow-setup)
 (meow-global-mode)
 
+(+install! wgrep)
+
 (+install! repeat-help)
 (+set-defaults! repeat-help-popup-type 'embark)
 (add-hook 'after-init-hook #'repeat-mode)
