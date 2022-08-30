@@ -64,6 +64,7 @@
  savehist-save-minibuffer-history t
  history-length 1000
  history-delete-duplicates t
+ delete-old-versions t
  auto-revert-verbose nil
  show-paren-context-when-offscreen 'child-frame
  read-process-output-max (* 1024 1024)

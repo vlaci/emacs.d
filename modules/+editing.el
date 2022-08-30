@@ -137,7 +137,6 @@
 ;; Backups and auto-save
 (+set-defaults! backup-by-copying t
                 version-control t
-                delete-old-versions t
                 kept-new-versions 6
                 kept-old-versions 3)
 
