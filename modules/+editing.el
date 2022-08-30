@@ -123,7 +123,9 @@
 (+install! wgrep)
 
 (+install! repeat-help)
-(+set-defaults! repeat-help-popup-type 'embark)
+(+set-defaults!
+ repeat-help-popup-type 'embark
+ repeat-help-auto t)
 (add-hook 'after-init-hook #'repeat-mode)
 (add-hook 'repeat-mode-hook #'repeat-help-mode)
 (add-hook 'repeat-help-mode-hook (lambda ()
