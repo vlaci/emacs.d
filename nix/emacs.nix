@@ -116,10 +116,10 @@ let
 
   init_d = impure.init_d or (runCommand "emacs.d"
     {
-      src = ../.;
+      src = builtins.path { path = ../.; filter = path: type: type == "directory" || builtins.any (suffix: lib.hasSuffix suffix path) [ ".el" ".eld" ".png" ]; };
       buildInputs = [ emacsStage2 ];
     } ''
-    cp -r $src/{modules,elisp,templates,*.el} .
+    cp -r $src/* .
     chmod -R u+w .
 
     echo "-- Generating autoloads for package quickstart..."
