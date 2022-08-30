@@ -53,7 +53,7 @@ let
         rust-analyzer
         sumneko-lua-language-server
         zls
-        # formatters for prettier
+        # formatters for apheleia
         black
         clang-tools
         isort
