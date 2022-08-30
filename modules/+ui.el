@@ -114,7 +114,7 @@
                   tab-bar-format-add-tab)
  tab-bar-close-button-show nil
  tab-bar-tab-name-truncated-max 14
- tab-bar-new-tab-choice 'ibuffer
+ tab-bar-new-tab-choice #'+go-to-dashboard
  tab-bar-tab-name-function #'+tab-bar-tab-name)
 
 (tab-bar-mode)
@@ -239,6 +239,28 @@
 (add-hook 'prog-mode-hook #'sideline-mode)
 
 (+install! hyperbole 'no-require)
+
+;;;; Dashboard
+
+(+install! dashboard)
+
+(defun +go-to-dashboard ()
+  (get-buffer-create "*dashboard*"))
+
+(+set-defaults!
+ initial-buffer-choice #'+go-to-dashboard
+ dashboard-center-content t
+ dashboard-set-heading-icons t
+ dashboard-set-file-icons t
+ dashboard-set-navigator t
+ dashboard-banner-logo-title ""
+ dashboard-startup-banner (expand-file-name "logo.png" +emacs-config-root)
+ dashboard-items '((recents  . 5)
+                   (projects . 5)
+                   (bookmarks . 5)
+                   (agenda . 5)))
+
+(dashboard-setup-startup-hook)
 
 (provide '+ui)
 ;;; +ui.el ends here
