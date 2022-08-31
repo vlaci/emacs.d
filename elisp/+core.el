@@ -102,10 +102,11 @@ Require PKG during byte-compoilation unless NO-REQUIRE is set."
          (nd (+normalize-direction direction))
          (window-pos (car nd))
          (split-dir (if (eq window-pos direction) (cdr nd) window-pos))
-         (window (progn (delete-other-windows-vertically reference-window)
-                        (if should-split
-                            (split-window reference-window nil split-dir)
-                          reference-window))))
+         (window (if should-split
+                     (split-window (frame-root-window) nil split-dir)
+                   ;; TODO: delete according to direction
+                   (delete-other-windows-vertically reference-window)
+                   reference-window)))
     (window--display-buffer buffer window (if should-split 'window 'reuse) alist)
     (when should-split
       (set-window-prev-buffers window nil))))
