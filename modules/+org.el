@@ -100,12 +100,15 @@
            ("wd" "Daily stand-up" entry
             (file+olp+datetree ,work-journal-file)
             (file "work/daily-standup.orgcaptpl")
-            :empty-lines-after 1)
-           ("wm" "Memorandum of conversation" entry
+            :empty-lines-after 1
+            :immediate-finish t
+            :jump-to-captured t)
+           ("wm" "Teem meeting" entry
             (file+olp+datetree ,work-journal-file)
-            ,(concat "* Memorandum of conversation on %^{Topic}\n"
-                     "%i%?")
-            :empty-lines-after 1)
+            (file "work/meeting.orgcaptpl")
+            :empty-lines-after 1
+            :immediate-finish t
+            :jump-to-captured t)
            ("wd" "Task with a due date" entry
             (file+headline ,work-todo-file "Tasks with a date")
             ,(concat "* TODO %^{Title} %^g\n"
