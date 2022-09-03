@@ -344,8 +344,8 @@
 
 (+set-defaults!
  embark-indicators '(embark-minimal-indicator
-                       embark-highlight-indicator
-                       embark-isearch-highlight-indicator))
+                     embark-highlight-indicator
+                     embark-isearch-highlight-indicator))
 
 (+after! embark
   (require 'embark-consult)
