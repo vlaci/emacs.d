@@ -207,8 +207,7 @@
                              (add-hook '+after-load-theme-hook #'+save-current-theme)))
 
 (advice-add 'consult-theme :around (lambda (&rest args)
-                                     (cl-letf ((+save-current-theme #'ignore))
-                                       (ignore +save-current-theme)
+                                     (cl-letf (((symbol-function '+save-current-theme) #'ignore))
                                        (apply args))
                                      (+save-current-theme)))
 
