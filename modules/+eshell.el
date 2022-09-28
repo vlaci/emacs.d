@@ -18,7 +18,6 @@
 
 ;;; Code:
 (require '+lib)
-(+install! vterm)
 (+install! eshell-vterm)
 (+install! eshell-syntax-highlighting)
 (+install! eshell-fringe-status)

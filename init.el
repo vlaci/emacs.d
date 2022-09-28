@@ -162,5 +162,6 @@
 (require '+org)
 (require '+dired)
 (require '+eshell)
+(require '+term)
 
 ;;; init.el ends here
