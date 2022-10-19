@@ -109,7 +109,6 @@
 
 (+install! direnv)
 (+install! docker)
-(+install! docker-tramp)
 (+install! dockerfile-mode)
 (+install! gitlab-ci-mode)
 (+install! graphql-mode)
