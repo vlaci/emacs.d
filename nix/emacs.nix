@@ -22,6 +22,8 @@
 , msmtp
 , nodejs-slim
 , nodePackages
+, ocamlformat
+, ocamlPackages
 , sumneko-lua-language-server
 , pyright
 , rnix-lsp
@@ -48,6 +50,7 @@ let
         mu
         msmtp
         # lsp
+        ocamlPackages.ocaml-lsp
         pyright
         rnix-lsp
         rust-analyzer
@@ -59,6 +62,7 @@ let
         isort
         nixpkgs-fmt
         nodePackages.prettier
+        ocamlformat
       ];
       makeElispExecPath = paths: with lib; "(list" + (concatStringsSep " " (map (path: "\"${path}/bin\"") (filter (x: x != null) paths))) + ")";
       extra_exec_path = makeElispExecPath binaries;

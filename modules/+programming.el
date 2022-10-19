@@ -75,6 +75,22 @@
     ((kbd "C-c C-l C-f t") #'eglot-find-typeDefinition)))
 (+define-key! consult-eglot eglot-mode-map (kbd "M-g s") #'consult-eglot-symbols)
 
+(defun +advised-eglot--cmd (eglot--cmd-fn contact)
+  (let ((cmd (executable-find (car contact)))
+        (argv (cdr contact)))
+    (funcall eglot--cmd-fn `(,cmd ,@argv))))
+
+(advice-add 'eglot--cmd :around #'+advised-eglot--cmd)
+
+;;;; OCaml
+(+install! dune)
+(+install! tuareg)
+(+install! utop)
+
+(add-hook 'tuareg-mode-hook #'+setup-tuareg-mode)
+
+(defun +setup-tuareg-mode ()
+  (eglot-ensure))
 
 ;;;; Python
 (+install! pyvenv)
