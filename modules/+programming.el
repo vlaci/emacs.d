@@ -195,8 +195,9 @@
 ;; find commands coming through `'nix-integration' or `direnv' and
 ;; similar tools
 (defun +advised-apheleia--run-formatter-process (fn command &rest args)
-  (let ((exe (executable-find (car command)))
-        (argv (cdr command)))
+  (let* ((command (if (symbolp (car command)) (cdr command) command))
+         (exe (executable-find (car command)))
+         (argv (cdr command)))
     (apply fn `((,exe ,@argv) ,@args))))
 
 (advice-add 'apheleia--run-formatter-process :around #'+advised-apheleia--run-formatter-process)
