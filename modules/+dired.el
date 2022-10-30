@@ -25,6 +25,8 @@
 (require '+lib)
 
 (+install! dired-subtree)
+(+install! diredfl)
+(+install! fd-dired)
 
 (+set-defaults!
   dired-recursive-copies 'always
@@ -44,7 +46,8 @@
 
 (+after! dired
   (add-hook 'dired-mode-hook #'dired-hide-details-mode)
-  (add-hook 'dired-mode-hook #'hl-line-mode))
+  (add-hook 'dired-mode-hook #'hl-line-mode)
+  (add-hook 'dired-mode-hook #'diredfl-mode))
 
 (+after! dired-aux
   (add-to-list 'dired-compress-file-suffixes
@@ -54,6 +57,8 @@
   dired-subtree
   (dired-mode-map ((kbd "<tab>") #'dired-subtree-toggle)
                   ((kbd "<backtab>") #'dired-subtree-remove)))
+
+(global-set-key [remap find-dired] #'fd-dired)
 
 (+define-keys!
   dired-hist

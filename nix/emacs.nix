@@ -16,6 +16,7 @@
 , hunspellDicts
 , hunspellWithDicts
 , proselint
+, fd
 , jre
 , languagetool
 , mu
@@ -44,6 +45,7 @@ let
     let
       hunspell = hunspellWithDicts (with hunspellDicts; [ hu-hu en-us ]);
       binaries = [
+        fd
         hunspell
         proselint
         jre
