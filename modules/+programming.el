@@ -82,6 +82,10 @@
 
 (advice-add 'eglot--cmd :around #'+advised-eglot--cmd)
 
+;;;; Haskell
+(+install! haskell-mode)
+(add-hook 'haskell-mode-hook #'eglot-ensure)
+
 ;;;; OCaml
 (+install! dune)
 (+install! tuareg)
