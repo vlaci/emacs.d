@@ -86,6 +86,12 @@
 (+install! haskell-mode)
 (add-hook 'haskell-mode-hook #'eglot-ensure)
 
+;;;; Julia
+(+install! eglot-jl)
+(+install! julia-mode)
+(+install! julia-repl)
+(add-hook 'julia-mode-hook #'eglot-ensure)
+
 ;;;; OCaml
 (+install! dune)
 (+install! tuareg)
