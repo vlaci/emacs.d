@@ -25,6 +25,7 @@
 (require '+lib)
 
 (+install! dired-subtree)
+(+install! dired-narrow)
 (+install! diredfl)
 (+install! fd-dired)
 
@@ -64,6 +65,9 @@
   dired-hist
   (dired-mode-map ("l" #'dired-hist-go-back)
                   ("r" #'dired-hist-go-forward)))
+(+define-keys!
+  dired-narrow
+  (dired-mode-map ("/" #'dired-narrow)))
 
 (add-hook 'after-init #'dired-hist-mode)
 
