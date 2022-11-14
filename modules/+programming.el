@@ -59,11 +59,11 @@
 ;;;; LSP
 
 (+install! eglot)
-(+install! eglot-x)
+;; (+install! eglot-x)
 (+install! consult-eglot)
 
-(+after! eglot
-  (require 'eglot-x))
+;; (+after! eglot
+;;   (require 'eglot-x))
 
 (+define-keys! eglot
   (eglot-mode-map
@@ -131,6 +131,23 @@
   "Tab completion in pdb prompt."
   (add-to-list 'completion-at-point-functions #'pdb-capf))
 
+;;;; Rust
+(+install! rust-mode)
+(+install! rustic)
+
+(+set-defaults!
+ rust-indent-method-chain t
+ rustic-lsp-client 'eglot)
+
+(+after! eglot
+    (add-to-list 'eglot-server-programs
+               '(rustic-mode .
+                             ("rust-analyzer"
+                              :initializationOptions
+                              (:checkOnSave (:command "clippy"))))))
+
+(advice-add 'rustic-setup-eglot :override (lambda ()))
+
 (+install! realgud)
 
 (+install! direnv)
@@ -142,8 +159,6 @@
 (+install! just-mode)
 (+install! lua-mode)
 (+install! nix-mode)
-(+install! rust-mode)
-(+install! rustic)
 (+install! typescript-mode)
 (+install! web-mode)
 (+install! yaml-mode)
