@@ -124,7 +124,7 @@ let
 
   init_d = impure.init_d or (runCommand "emacs.d"
     {
-      src = builtins.path { path = ../.; filter = path: type: type == "directory" || builtins.any (suffix: lib.hasSuffix suffix path) [ ".el" ".eld" ".png" ]; };
+      src = builtins.path { name = "init.d"; path = ../.; filter = path: type: type == "directory" || builtins.any (suffix: lib.hasSuffix suffix path) [ ".el" ".eld" ".png" ]; };
       buildInputs = [ emacsStage2 ];
     } ''
     cp -r $src/* .
