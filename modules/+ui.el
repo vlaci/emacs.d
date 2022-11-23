@@ -49,6 +49,12 @@
                (slot . 0)
                (window-height . 16)))
 (add-to-list 'display-buffer-alist
+             '("\\`\\*\\(rustic\\|carg\\)"
+               (display-buffer-reuse-window display-buffer-in-previous-window display-buffer-in-side-window)
+               (side . right)
+               (slot . 0)
+               (window-width . 0.4)))
+(add-to-list 'display-buffer-alist
              '("\\*\\(Calendar\\|Bookmark Annotation\\).*"
                (display-buffer-reuse-mode-window display-buffer-below-selected)
                (window-height . fit-window-to-buffer)))
@@ -79,6 +85,7 @@
  '("\\`\\*\\(Messages\\|Backtrace\\|Warnings\\|Output\\|Flymake\\|eldoc\\|Help\\)\\*\\'"
    "\\`\\*Embark"
    "\\`\\*eshell\\*\\'"
+   "\\`\\*\\(rustic\\|cargo\\)"
    "\\`\\*helpful"))
 
 ;;;; Assets
