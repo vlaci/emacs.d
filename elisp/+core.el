@@ -123,7 +123,7 @@ Require PKG during byte-compoilation unless NO-REQUIRE is set."
           (t window))))
 
 (defun +advised-executable-find (executable-find-fn &rest args)
-  (let ((exec-path (append +extra-exec-path exec-path)))
+  (let ((exec-path (append exec-path +extra-exec-path)))
     (setenv "PATH" (mapconcat #'identity exec-path path-separator))
     (apply executable-find-fn args)))
 

@@ -395,7 +395,6 @@
 (add-hook 'embark-collect-mode-hook #'+embark-live-vertico)
 
 (+install! corfu)
-(+install! corfu-doc)
 (autoload 'corfu-insert-separator "corfu")
 
 (+set-defaults!
@@ -406,7 +405,8 @@
 
 (defun +setup-corfu-mode ()
   (global-corfu-mode)
-  (corfu-history-mode))
+  (corfu-history-mode)
+  (corfu-popupinfo-mode))
 
 (add-hook 'after-init-hook #'+setup-corfu-mode)
 
@@ -428,14 +428,8 @@
     (apply #'consult-completion-in-region completion-in-region--data)))
 
 (+after! corfu
-  (add-hook 'corfu-mode-hook #'corfu-doc-mode)
-  (define-key corfu-map (kbd "M-d") #'corfu-doc-toggle)
   (define-key corfu-map (kbd "M-m") #'+corfu-move-to-minibuffer)
   (define-key corfu-map (kbd "SPC") #'corfu-insert-separator))
-
-(+after! corfu-doc
-  (define-key corfu-map (kbd "M-p") #'corfu-doc-scroll-down)
-  (define-key corfu-map (kbd "M-n") #'corfu-doc-scroll-up))
 
 (+install! cape)
 
