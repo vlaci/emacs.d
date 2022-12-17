@@ -148,7 +148,7 @@
  modus-themes-mixed-fonts t
  modus-themes-org-blocks 'gray-background
  modus-themes-syntax '(faint alt-syntax)
- modus-themes-lang-checkers '(straight-underline background)
+ modus-themes-lang-checkers '(straight-underline)
  modus-themes-headings '((1 . (rainbow background overline))
                          (2 . (background overline))
                          (3 . (background overline))
