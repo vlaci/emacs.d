@@ -4,7 +4,7 @@ final: prev:
 let
   eo = inputs.emacs-overlay.overlay final prev;
   customEmacsPackages = final.callPackage ./customEmacsPackages.nix { inherit inputs; };
-  emacs = final.emacsPgtkNativeComp;
+  emacs = final.emacsPgtk;
   fromElisp = (import "${inputs.fromElisp}") { pkgs = final; };
 in
 eo // fromElisp // {
