@@ -35,7 +35,6 @@
  display-line-numbers-width 3
  display-line-numbers-widen t
  comment-empty-lines t
- electric-pair-inhibit-predicate #'electric-pair-conservative-inhibit
  eldoc-echo-area-display-truncation-message nil
  eldoc-echo-area-use-multiline-p 3
  eldoc-echo-area-prefer-doc-buffer t
