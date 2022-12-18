@@ -89,6 +89,8 @@
 (+install! julia-mode)
 (+install! julia-repl)
 (add-hook 'julia-mode-hook #'eglot-ensure)
+(+after! eglot
+  (eglot-jl-init))
 
 ;;;; OCaml
 (+install! dune)
