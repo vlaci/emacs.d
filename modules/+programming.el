@@ -26,7 +26,6 @@
 (+install! flymake)
 (defun +setup-prog-mode ()
   (display-line-numbers-mode)
-  (flymake-mode)
   (electric-pair-mode))
 
 (add-hook 'prog-mode-hook #'+setup-prog-mode)
