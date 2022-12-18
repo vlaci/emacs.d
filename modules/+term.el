@@ -23,6 +23,16 @@
 
 (+set-defaults! vterm-max-scrollback 50000
                 vterm-kill-buffer-on-exit t)
+
+(+install! eat)
+
+;; For `eat-eshell-mode'.
+(add-hook 'eshell-load-hook #'eat-eshell-mode)
+
+;; For `eat-eshell-visual-command-mode'.
+(add-hook 'eshell-load-hook #'eat-eshell-visual-command-mode)
+
+
 (provide '+term)
 
 ;;; +term.el ends here

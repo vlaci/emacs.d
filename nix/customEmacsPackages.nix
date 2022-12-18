@@ -51,4 +51,5 @@ in
   explain-pause-mode = build { pname = "explain-pause-mode"; };
   bitwarden = build { pname = "bitwarden"; };
   inherit (final.melpaPackages) apheleia;
+  inherit (final.nongnuPackages) eat;
 }
