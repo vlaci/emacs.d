@@ -80,6 +80,10 @@
 
 (advice-add 'eglot--cmd :around #'+advised-eglot--cmd)
 
+(+set-defaults!
+ eglot-extend-to-xref t
+ eglot-report-progress t)
+
 ;;;; Haskell
 (+install! haskell-mode)
 (add-hook 'haskell-mode-hook #'eglot-ensure)
