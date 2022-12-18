@@ -32,7 +32,6 @@
 (gcmh-mode)
 
 (+install! explain-pause-mode)
-(explain-pause-mode)
 
 ;;;; To organize runtime and config files
 
