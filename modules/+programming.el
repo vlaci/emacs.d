@@ -236,6 +236,8 @@
   (setf (alist-get 'nix-mode apheleia-mode-alist) 'nixpkgs-fmt)
   (setf (alist-get 'python-mode apheleia-mode-alist) '(isort black)))
 
+(+install! cov)
+
 (provide '+programming)
 
 ;;; +programming.el ends here
