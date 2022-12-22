@@ -32,7 +32,8 @@
  vertico-cycle t
  vertico-count 20
  vertico-multiform-categories '((consult-grep buffer))
- vertico-multiform-commands '((consult-imenu buffer indexed))
+ vertico-multiform-commands '((consult-imenu buffer indexed)
+                              (consult-imenu-multi buffer indexed))
  vertico-buffer-display-action '((display-buffer-in-side-window)
                                  (side . right)
                                  (slot . 0)
