@@ -55,12 +55,11 @@
 
 ;;;; LSP
 
-(+install! eglot)
-;; (+install! eglot-x)
+(+install! eglot-x)
 (+install! consult-eglot)
 
-;; (+after! eglot
-;;   (require 'eglot-x))
+(+after! eglot
+  (require 'eglot-x))
 
 (+define-keys! eglot
   (eglot-mode-map
