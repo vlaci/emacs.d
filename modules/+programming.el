@@ -111,14 +111,10 @@
 (+install! python-docstring)
 (+install! poetry)
 (+install! pippel)
-(+install! python-pytest)
 (+install! pdb-capf)
 
 (+set-defaults!
- pyvenv-default-virtual-env-name ".venv"
- python-pytest-executable "python -m pytest")
-
-(+define-key! python-mode python-mode-map (kbd "C-c t")  #'python-pytest-dispatch)
+ pyvenv-default-virtual-env-name ".venv")
 
 (add-hook 'python-mode-hook #'+setup-python-mode)
 (add-hook 'pdb-mode-hook #'+setup-pdb-capf)
