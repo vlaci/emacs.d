@@ -19,6 +19,8 @@
     explain-pause-mode.flake = false;
     bitwarden.url = "github:seanfarley/emacs-bitwarden";
     bitwarden.flake = false;
+    grammatical-edit.url = "github:manateelazycat/grammatical-edit";
+    grammatical-edit.flake = false;
   };
 
   outputs = { self, nixpkgs, flake-utils, ... }@inputs:
