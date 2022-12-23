@@ -250,6 +250,7 @@
 
 (+set-defaults!
  initial-buffer-choice #'+go-to-dashboard
+ dashboard-projects-backend 'project-el
  dashboard-center-content t
  dashboard-set-heading-icons t
  dashboard-set-file-icons t
