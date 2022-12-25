@@ -127,7 +127,7 @@
  tab-bar-close-button-show nil
  tab-bar-tab-name-truncated-max 14
  tab-bar-new-tab-choice #'+go-to-dashboard
- tab-bar-tab-name-function #'+tab-bar-tab-name)
+ tab-bar-tab-name-function 'tab-bar-tab-name-all)
 
 (tab-bar-mode)
 (tab-bar-history-mode)

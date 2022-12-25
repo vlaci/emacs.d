@@ -161,6 +161,7 @@
 
 (require '+editing)
 (require '+completion)
+(require '+workspace)
 
 ;;;; Programming
 (require '+grammatical-edit)

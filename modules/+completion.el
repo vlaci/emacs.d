@@ -226,7 +226,6 @@
    '(consult--source-hidden-buffer
      consult--source-modified-buffer
      consult--source-buffer
-     consult--source-project-buffer
      consult--source-project-recent-file
      +consult-source-project-file
      +consult-source-project
