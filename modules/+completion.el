@@ -209,7 +209,7 @@
    consult-buffer :sort nil
    consult--source-buffer :hidden t
    consult--source-project-buffer :hidden nil
-   consult--source-recent-file :narrow '(?r . "Recent File") :hidden t
+   consult--source-recent-file :narrow '(?r . "Recent File")
    consult--source-project-buffer :narrow '(?B . "Project Buffer")
    consult--source-project-recent-file :narrow '(?R . "Project Recent File"))
 
@@ -219,10 +219,10 @@
      consult--source-modified-buffer
      consult--source-buffer
      consult--source-project-buffer
-     consult--source-recent-file
      consult--source-project-recent-file
      +consult-source-project-file
      +consult-source-project
+     consult--source-recent-file
      consult--source-bookmark)))
 
 (+after! xref
