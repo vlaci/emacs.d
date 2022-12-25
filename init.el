@@ -85,12 +85,8 @@
 ;; Enable savehist-mode for an command history
 (savehist-mode)
 (save-place-mode)
-(+set-defaults!
- desktop-restore-eager 0
- desktop-lazy-idle-delay 1)
 
-(add-hook 'desktop-after-read-hook #'+setup-recentf-mode)
-(desktop-save-mode)
+(add-hook 'after-init-hook #'+setup-recentf-mode)
 
 (require 'recentf)
 (defun +setup-recentf-mode ()
