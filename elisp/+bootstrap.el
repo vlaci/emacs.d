@@ -53,7 +53,7 @@
 
 (setq user-emacs-directory (expand-file-name "emacs" (xdg-config-home))
       package-user-dir (expand-file-name "emacs/package" (xdg-data-home))
-      native-comp-deferred-compilation nil ;;t
+      inhibit-automatic-native-compilation t
       package-enable-at-startup (not +nix-build?))
 
 (require 'nix-integration)
