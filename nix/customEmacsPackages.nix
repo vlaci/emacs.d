@@ -40,12 +40,6 @@ let
     } // removeAttrs args [ "files" ]);
 in
 {
-  lsp-mode = prev.lsp-mode.overrideAttrs (super: {
-    postPatch = ''
-      substituteInPlace lsp-protocol.el \
-        --replace '(getenv "LSP_USE_PLISTS")' 't'
-    '';
-  });
   ligature = build { pname = "ligature"; };
   eglot-x = build { pname = "eglot-x"; };
   explain-pause-mode = build { pname = "explain-pause-mode"; };
