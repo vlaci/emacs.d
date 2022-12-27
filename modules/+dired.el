@@ -54,20 +54,16 @@
   (add-to-list 'dired-compress-file-suffixes
                  '("\\.zip\\'" ".zip" "unzip")))
 
-(+define-keys!
-  dired-subtree
-  (dired-mode-map ((kbd "<tab>") #'dired-subtree-toggle)
-                  ((kbd "<backtab>") #'dired-subtree-remove)))
+(general-define-key
+  :keymaps 'dired-mode-map
+  "<tab>" #'dired-subtree-toggle
+  "<backtab>" #'dired-subtree-remove
+  "l" #'dired-hist-go-back
+  "r" #'dired-hist-go-forward
+  "/" #'dired-narrow)
 
-(global-set-key [remap find-dired] #'fd-dired)
 
-(+define-keys!
-  dired-hist
-  (dired-mode-map ("l" #'dired-hist-go-back)
-                  ("r" #'dired-hist-go-forward)))
-(+define-keys!
-  dired-narrow
-  (dired-mode-map ("/" #'dired-narrow)))
+(general-define-key [remap find-dired] #'fd-dired)
 
 (add-hook 'after-init #'dired-hist-mode)
 

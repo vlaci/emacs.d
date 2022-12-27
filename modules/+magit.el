@@ -86,10 +86,12 @@
  magit-bury-buffer-function #'magit-restore-window-configuration)
 
 (defvar +magit-map (make-keymap))
-(+define-keys! magit
-  (+magit-map ("g" #'magit-status)
-              ("l" #'magit-log)
-              ("b" #'magit-blame)))
+
+(general-define-key
+ :keymaps '+magit-map
+ "g" #'magit-status
+ "l" #'magit-log
+ "b" #'magit-blame)
 
 (+after! meow
   (meow-leader-define-key (cons "g" +magit-map)))

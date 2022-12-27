@@ -105,16 +105,28 @@
 ;; Make shebang (#!) file executable when saved
 (add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
 
+;; Bindings
+(+install! which-key)
+(+set-defaults!
+ which-key-ellipsis "︙"
+ which-key-sort-order 'which-key-prefix-then-key-order
+ which-key-sort-uppercase-first nil
+ which-key-max-display-columns 5)
+(add-hook 'after-init-hook #'which-key-mode)
+
+(+install! general)
+
 ;;;; To improve help
 (+install! helpful)
 (+install! elisp-demos)
 
-(global-set-key [remap describe-command] #'helpful-command)
-(global-set-key [remap describe-function] #'helpful-callable)
-(global-set-key [remap describe-macro] #'helpful-macro)
-(global-set-key [remap describe-key] #'helpful-key)
-(global-set-key [remap describe-symbol] #'helpful-symbol)
-(global-set-key [remap describe-variable] #'helpful-variable)
+(general-define-key
+ [remap describe-command] #'helpful-command
+ [remap describe-function] #'helpful-callable
+ [remap describe-macro] #'helpful-macro
+ [remap describe-key] #'helpful-key
+ [remap describe-symbol] #'helpful-symbol
+ [remap describe-variable] #'helpful-variable)
 
 (advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update)
 (add-hook 'helpful-mode-hook #'visual-line-mode)

@@ -50,33 +50,33 @@
                #'typescript-mode-hook))
   (add-hook hook (lambda () (grammatical-edit-mode 1))))
 
-(+define-keys! grammatical-edit
-  (grammatical-edit-mode-map
-    ((kbd "(") #'grammatical-edit-open-round)
-    ((kbd "[") #'grammatical-edit-open-bracket)
-    ((kbd "{") #'grammatical-edit-open-curly)
-    ((kbd ")") #'grammatical-edit-close-round)
-    ((kbd "]") #'grammatical-edit-close-bracket)
-    ((kbd "}") #'grammatical-edit-close-curly)
-    ((kbd "=") #'grammatical-edit-equal)
-    ((kbd "%") #'grammatical-edit-match-paren)
-    ((kbd "\"") #'grammatical-edit-double-quote)
-    ((kbd "'") #'grammatical-edit-single-quote)
-    ((kbd "SPC") #'grammatical-edit-space)
-    ((kbd "RET") #'grammatical-edit-newline)
-    ((kbd "M-o") #'grammatical-edit-backward-delete)
-    ((kbd "C-d") #'grammatical-edit-forward-delete)
-    ((kbd "C-k") #'grammatical-edit-kill)
-    ((kbd "M-\"") #'grammatical-edit-wrap-double-quote)
-    ((kbd "M-'") #'grammatical-edit-wrap-single-quote)
-    ((kbd "M-[") #'grammatical-edit-wrap-bracket)
-    ((kbd "M-{") #'grammatical-edit-wrap-curly)
-    ((kbd "M-(") #'grammatical-edit-wrap-round)
-    ((kbd "M-)") #'grammatical-edit-unwrap)
-    ((kbd "M-p") #'grammatical-edit-jump-right)
-    ((kbd "M-n") #'grammatical-edit-jump-left)
-    ((kbd "M-:") #'grammatical-edit-jump-out-pair-and-newline)
-    ((kbd "C-j") #'grammatical-edit-jump-up)))
+(general-define-key
+ :keymaps 'grammatical-edit-mode-map
+ "(" #'grammatical-edit-open-round
+ "[" #'grammatical-edit-open-bracket
+ "{" #'grammatical-edit-open-curly
+ "" #'grammatical-edit-close-round
+ "]" #'grammatical-edit-close-bracket
+ "}" #'grammatical-edit-close-curly
+ "=" #'grammatical-edit-equal
+ "%" #'grammatical-edit-match-paren
+ "\"" #'grammatical-edit-double-quote
+ "'" #'grammatical-edit-single-quote
+ "SPC" #'grammatical-edit-space
+ "RET" #'grammatical-edit-newline
+ "M-o" #'grammatical-edit-backward-delete
+ "C-d" #'grammatical-edit-forward-delete
+ "C-k" #'grammatical-edit-kill
+ "M-\"" #'grammatical-edit-wrap-double-quote
+ "M-'" #'grammatical-edit-wrap-single-quote
+ "M-[" #'grammatical-edit-wrap-bracket
+ "M-{" #'grammatical-edit-wrap-curly
+ "M-(" #'grammatical-edit-wrap-round
+ "M-" #'grammatical-edit-unwrap
+ "M-p" #'grammatical-edit-jump-right
+ "M-n" #'grammatical-edit-jump-left
+ "M-:" #'grammatical-edit-jump-out-pair-and-newline
+ "C-j" #'grammatical-edit-jump-up)
 
 (provide '+grammatical-edit)
 

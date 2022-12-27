@@ -38,10 +38,10 @@
  eldoc-echo-area-prefer-doc-buffer t
  elisp-flymake-byte-compile-load-path load-path)
 
-(+define-keys! flymake
-  (flymake-mode-map
-   ((kbd "C-c ! n") #'flymake-goto-next-error)
-   ((kbd "C-c ! p") #'flymake-goto-prev-error)))
+(general-define-key
+ :keymaps 'flymake-mode-map
+ "C-c ! n" #'flymake-goto-next-error
+ "C-c ! p" #'flymake-goto-prev-error)
 
 (+install! tree-sitter)
 (+install! tree-sitter-langs)
@@ -61,15 +61,15 @@
 (+after! eglot
   (require 'eglot-x))
 
-(+define-keys! eglot
-  (eglot-mode-map
-    ((kbd "C-c C-l r") #'eglot-rename)
-    ((kbd "C-c C-l a") #'eglot-code-actions)
-    ((kbd "C-c C-l f") #'eglot-format)
-    ((kbd "C-c C-l C-f d") #'eglot-find-declaration)
-    ((kbd "C-c C-l C-f i") #'eglot-find-implementation)
-    ((kbd "C-c C-l C-f t") #'eglot-find-typeDefinition)))
-(+define-key! consult-eglot eglot-mode-map (kbd "M-g s") #'consult-eglot-symbols)
+(general-define-key
+ :keymaps 'eglot-mode-map
+ "C-c C-l r" #'eglot-rename
+ "C-c C-l a" #'eglot-code-actions
+ "C-c C-l f" #'eglot-format
+ "C-c C-l C-f d" #'eglot-find-declaration
+ "C-c C-l C-f i" #'eglot-find-implementation
+ "C-c C-l C-f t" #'eglot-find-typeDefinition
+ "M-g s" #'consult-eglot-symbols)
 
 (defun +advised-eglot--cmd (eglot--cmd-fn contact)
   (let ((cmd (executable-find (car contact)))

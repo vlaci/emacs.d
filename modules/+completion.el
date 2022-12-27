@@ -89,58 +89,66 @@
 (+set-defaults!
  meow-goto-line-function #'consult-goto-line)
 
-(+define-keys! consult
-  (mode-specific-map
-   ((kbd "h") #'consult-history)
-   ((kbd "m") #'consult-mode-command)
-   ((kbd "C-k") #'consult-kmacro))
-  (ctl-x-map
-   ((kbd "M-:") #'consult-complex-command)     ;; orig. repeat-complex-command
-   ((kbd "b") #'consult-buffer)                ;; orig. switch-to-buffer
-   ((kbd "C-b") #'consult-buffer)              ;; orig. buffer-menu
-   ((kbd "4 b") #'consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
-   ((kbd "5 b") #'consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
-   ((kbd "r b") #'consult-bookmark)            ;; orig. bookmark-jump
-   ((kbd "p b") #'consult-project-buffer)      ;; orig. project-switch-to-buffer
-   ((kbd "C-r") #'consult-recent-file))        ;; orig. find-file-read-only
-  (global-map
-   ((kbd "M-#") #'consult-register-load)
-   ((kbd "M-'") #'consult-register-store)      ;; orig. abbrev-prefix-mark (unrelated)
-   ((kbd "C-M-#") #'consult-register)
-   ((kbd "M-y") #'consult-yank-pop)            ;; orig. yank-pop
-   ((kbd "<help> a") #'consult-apropos))       ;; orig. apropos-command
-  (goto-map ;; M-g
-   ((kbd "e") #'consult-compile-error)
-   ((kbd "f") #'consult-flymake)               ;; Alternative: consult-flycheck
-   ((kbd "g") #'consult-goto-line)             ;; orig. goto-line
-   ((kbd "M-g") #'consult-goto-line)           ;; orig. goto-line
-   ((kbd "o") #'consult-outline)               ;; Alternative: consult-org-heading
-   ((kbd "m") #'consult-mark)
-   ((kbd "k") #'consult-global-mark)
-   ((kbd "i") #'consult-imenu)
-   ((kbd "I") #'consult-imenu-multi))
-  (search-map ;; M-s
-   ((kbd "d") #'consult-find)
-   ((kbd "D") #'consult-locate)
-   ((kbd "g") #'consult-grep)
-   ((kbd "G") #'consult-git-grep)
-   ((kbd "r") #'consult-ripgrep)
-   ((kbd "l") #'consult-line)
-   ((kbd "L") #'consult-line-multi)
-   ((kbd "m") #'consult-multi-occur)
-   ((kbd "k") #'consult-keep-lines)
-   ((kbd "u") #'consult-focus-lines)
-   ((kbd "e") #'consult-isearch-history))
-  (isearch-mode-map
-   ((kbd "M-e") #'consult-isearch-history)     ;; orig. isearch-edit-string
-   ((kbd "M-s e") #'consult-isearch-history)   ;; orig. isearch-edit-string
-   ((kbd "M-s l") #'consult-line)              ;; needed by consult-line to detect isearch
-   ((kbd "M-s L") #'consult-line-multi))       ;; needed by consult-line to detect isearch
-  (minibuffer-local-map
-   ((kbd "M-s") #'consult-history)             ;; orig. next-matching-history-element
-   ((kbd "M-r") #'consult-history))            ;; orig. previous-matching-history-element
-  (consult-narrow-map
-   ((kbd "?") #'consult-narrow-help)))
+(general-define-key
+ :keymaps 'mode-specific-map
+ "h" #'consult-history
+ "m" #'consult-mode-command
+ "C-k" #'consult-kmacro)
+
+(general-define-key
+ :keymaps 'ctl-x-map
+ "M-:" #'consult-complex-command     ;; orig. repeat-complex-command
+ "b" #'consult-buffer                ;; orig. switch-to-buffer
+ "C-b" #'consult-buffer              ;; orig. buffer-menu
+ "4 b" #'consult-buffer-other-window ;; orig. switch-to-buffer-other-window
+ "5 b" #'consult-buffer-other-frame  ;; orig. switch-to-buffer-other-frame
+ "r b" #'consult-bookmark            ;; orig. bookmark-jump
+ "p b" #'consult-project-buffer      ;; orig. project-switch-to-buffer
+ "C-r" #'consult-recent-file)        ;; orig. find-file-read-only
+(general-define-key
+ :keymaps 'global-map
+ "M-#" #'consult-register-load
+ "M-'" #'consult-register-store      ;; orig. abbrev-prefix-mark (unrelated)
+ "C-M-#" #'consult-register
+ "M-y" #'consult-yank-pop            ;; orig. yank-pop
+ "<help> a" #'consult-apropos)       ;; orig. apropos-command
+(general-define-key
+ :keymaps 'goto-map ;; M-g
+ "e" #'consult-compile-error
+ "f" #'consult-flymake               ;; Alternative: consult-flycheck
+ "g" #'consult-goto-line             ;; orig. goto-line
+ "M-g" #'consult-goto-line           ;; orig. goto-line
+ "o" #'consult-outline               ;; Alternative: consult-org-heading
+ "m" #'consult-mark
+ "k" #'consult-global-mark
+ "i" #'consult-imenu
+ "I" #'consult-imenu-multi)
+(general-define-key
+ :keymaps 'search-map ;; M-s
+ "d" #'consult-find
+ "D" #'consult-locate
+ "g" #'consult-grep
+ "G" #'consult-git-grep
+ "r" #'consult-ripgrep
+ "l" #'consult-line
+ "L" #'consult-line-multi
+ "m" #'consult-multi-occur
+ "k" #'consult-keep-lines
+ "u" #'consult-focus-lines
+ "e" #'consult-isearch-history)
+(general-define-key
+ :keymaps 'isearch-mode-map
+ "M-e" #'consult-isearch-history     ;; orig. isearch-edit-string
+ "M-s e" #'consult-isearch-history   ;; orig. isearch-edit-string
+ "M-s l" #'consult-line              ;; needed by consult-line to detect isearch
+ "M-s L" #'consult-line-multi)       ;; needed by consult-line to detect isearch
+(general-define-key
+ :keymaps 'minibuffer-local-map
+ "M-s" #'consult-history             ;; orig. next-matching-history-element
+ "M-r" #'consult-history)            ;; orig. previous-matching-history-element
+(general-define-key
+ :keymaps 'consult-narrow-map
+ "?" #'consult-narrow-help)
 
 (defvar +consult-project-history nil)
 

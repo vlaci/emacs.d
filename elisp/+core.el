@@ -50,33 +50,6 @@ Require PKG during byte-compoilation unless NO-REQUIRE is set."
      `(eval-and-compile (require ',pkg nil 'noerror)))))
 
 ;;;###autoload
-(defmacro +define-key! (pkg keymap key def &optional remove)
-  (list
-   #'progn
-   `(unless (fboundp ,def)
-      (autoload ,def ,(symbol-name pkg) nil t))
-   `(eval-when-compile
-      (declare-function ,def ,(symbol-name pkg)))
-   `(if (boundp ',keymap)
-        (progn
-          (defvar ,keymap)
-          (define-key ,keymap ,key ,def ,remove))
-      (eval-after-load
-          ',pkg
-        '(define-key ,keymap ,key ,def ,remove)))))
-
-;;;###autoload
-(defmacro +define-keys! (pkg &rest definitions)
-  (declare (indent defun)(debug t))
-  (let (forms)
-    (dolist (bind-specs definitions)
-      (let ((keymap (car bind-specs))
-            (defs (cdr bind-specs)))
-        (dolist (bind-spec defs)
-          (push `(+define-key! ,pkg ,keymap ,@bind-spec) forms))))
-    `(progn ,@(reverse forms))))
-
-;;;###autoload
 (defmacro +after! (feature &rest body)
   (declare (indent defun)(debug t))
   (when (bound-and-true-p byte-compile-current-file)

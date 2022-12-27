@@ -121,11 +121,11 @@
  org-agenda-restore-windows-after-quit t
  org-roam-v2-ack t)
 
-(+define-keys! org
-  (global-map
-   ((kbd "C-c a") #'org-agenda)
-   ((kbd "C-c c") #'org-capture)
-   ((kbd "C-c l") #'org-store-link)))
+(general-define-key
+ :keymaps 'global-map
+ "C-c a" #'org-agenda
+ "C-c c" #'org-capture
+ "C-c l" #'org-store-link)
 
 (add-hook 'org-mode-hook #'org-indent-mode)
 (add-hook 'org-mode-hook #'org-modern-mode)
