@@ -137,30 +137,38 @@
 (+install! ef-themes)
 ;; workaround undeclared 'ef-light-palette issue for `ef-themes-with-colors'
 (require 'ef-light-theme)
+(require 'modus-themes)
 
 (+set-defaults!
  modus-themes-italic-constructs t
  modus-themes-bold-constructs t
- modus-themes-mode-line '(borderless)
- modus-themes-tabs-accented t
  modus-themes-prompts '(background)
- modus-themes-region '(accented bg-only no-extend)
  modus-themes-mixed-fonts t
  modus-themes-org-blocks 'gray-background
- modus-themes-syntax '(faint alt-syntax)
- modus-themes-lang-checkers '(straight-underline)
- modus-themes-headings '((1 . (rainbow background overline))
-                         (2 . (background overline))
-                         (3 . (background overline))
-                         (4 . (background overline))
-                         (5 . (overline))
-                         (t . (no-bold)))
- modus-themes-scale-headings t
- modus-themes-scale-1 1.2
- modus-themes-scale-2 1.3
- modus-themes-scale-3 1.4
- modus-themes-scale-4 1.5
- modus-themes-scale-title 2.0
+ modus-themes-headings '((0 . (2.0))
+                         (1 . (rainbow background overline 1.5))
+                         (2 . (background overline 1.4))
+                         (3 . (background overline 1.3))
+                         (4 . (background overline 1.2))
+                         (5 . (overline 1.2))
+                         (t . (no-bold 1.1)))
+ modus-themes-common-palette-overrides
+      `((border-mode-line-active unspecified)
+        (border-mode-line-inactive unspecified)
+        ,@modus-themes-preset-overrides-faint
+        (builtin magenta)
+        (comment fg-dim)
+        (constant magenta-cooler)
+        (docstring magenta-faint)
+        (docmarkup green-faint)
+        (fnname magenta-warmer)
+        (keyword cyan)
+        (preprocessor cyan-cooler)
+        (string red-cooler)
+        (type magenta-cooler)
+        (variable blue-warmer)
+        (rx-construct magenta-warmer)
+        (rx-backslash blue-cooler))
  x-gtk-use-system-tooltips nil
  tooltip-frame-parameters '((name . "tooltip")
                             (internal-border-width . 3)
