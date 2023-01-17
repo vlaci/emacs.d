@@ -336,10 +336,6 @@
 (global-set-key (kbd "C-.") #'embark-act)
 (global-set-key (kbd "C-;") #'embark-dwim)
 
-(+after! meow
-  (meow-normal-define-key
-   '("/" . embark-act)))
-
 (setq prefix-help-command #'embark-prefix-help-command)
 
 (defmacro +embark-ace-action (fn)
