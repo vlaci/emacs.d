@@ -47,4 +47,5 @@ in
   grammatical-edit = build { pname = "grammatical-edit"; };
   inherit (final.melpaPackages) apheleia;
   inherit (final.nongnuPackages) eat;
+  eglot = null;
 }

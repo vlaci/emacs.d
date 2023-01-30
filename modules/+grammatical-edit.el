@@ -34,7 +34,7 @@
                #'sh-mode-hook
                #'makefile-gmake-mode-hook
                #'php-mode-hook
-               #'python-mode-hook
+               #'python-ts-mode-hook
                #'js-mode-hook
                #'go-mode-hook
                #'qml-mode-hook

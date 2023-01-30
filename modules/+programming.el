@@ -43,15 +43,8 @@
  "C-c ! n" #'flymake-goto-next-error
  "C-c ! p" #'flymake-goto-prev-error)
 
-(+install! tree-sitter)
-(+install! tree-sitter-langs)
-
-(defun +setup-tree-sitter-mode ()
-  (global-tree-sitter-mode)
-  (require 'tree-sitter-langs))
-
-(add-hook 'after-init-hook #'+setup-tree-sitter-mode)
-(add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
+(+install! treesit-auto)
+(add-hook 'after-init-hook #'global-treesit-auto-mode)
 
 ;;;; LSP
 
@@ -114,7 +107,7 @@
 (+set-defaults!
  pyvenv-default-virtual-env-name ".venv")
 
-(add-hook 'python-mode-hook #'+setup-python-mode)
+(add-hook 'python-base-mode-hook #'+setup-python-mode)
 (add-hook 'pdb-mode-hook #'+setup-pdb-capf)
 (add-hook 'pdb-track-mode-hook #'+setup-pdb-capf)
 (add-hook 'python-pytest-mode-hook #'+setup-pdb-capf)
@@ -170,17 +163,39 @@
  rustic-lsp-client 'eglot)
 
 (add-hook 'after-init-hook #'direnv-mode)
-(add-hook 'c++-mode-hook #'eglot-ensure)
-(add-hook 'c-mode-hook #'eglot-ensure)
-(add-hook 'css-mode-hook #'eglot-ensure)
-(add-hook 'dockerfile-mode-hook #'eglot-ensure)
-(add-hook 'js-mode-hook #'eglot-ensure)
-(add-hook 'lua-mode-hook #'eglot-ensure)
-(add-hook 'nix-mode-hook #'eglot-ensure)
-(add-hook 'python-mode-hook #'eglot-ensure)
-(add-hook 'sh-mode-hook #'eglot-ensure)
-(add-hook 'typescript-mode-hook #'eglot-ensure)
-(add-hook 'zig-mode-hook #'eglot-ensure)
+
+(dolist (hook (list
+               #'python-ts-mode-hook
+               #'python-mode-hook
+               #'js-ts-mode-hook
+               #'js-mode-hook
+               #'json-mode-hook
+               #'json-ts-mode-hook
+               #'typescript-ts-mode-hook
+               #'typescript-mode-hook
+               #'tsx-ts-mode-hook
+               #'bash-ts-mode-hook
+               #'bash-mode-hook
+               #'sh-mode-hook
+               #'c-ts-mode-hook
+               #'c-mode-hook
+               #'c++-ts-mode-hook
+               #'c++-mode-hook
+               #'haskell-mode-hook
+               #'caml-mode-hook
+               #'tuareg-mode-hook
+               #'yaml-ts-mode-hook
+               #'yaml-mode-hook
+               #'nix-mode-hook
+               #'lua-mode-hook
+               #'zig-mode-hook
+               #'css-ts-mode-hook
+               #'css-mode-hook
+               #'html-mode-hook
+               #'dockerfile-ts-mode-hook
+               #'dockerfile-mode-hook
+               #'markdown-mode-hook))
+  (add-hook hook #'eglot-ensure))
 
 (defun +flymake-json-mode-setup ()
   (add-hook 'flymake-diagnostic-functions #'flymake-collection-jsonlint nil t))
@@ -228,7 +243,8 @@
 (+after! apheleia
   (setf (alist-get 'nixpkgs-fmt apheleia-formatters) (list "nixpkgs-fmt"))
   (setf (alist-get 'nix-mode apheleia-mode-alist) 'nixpkgs-fmt)
-  (setf (alist-get 'python-mode apheleia-mode-alist) '(isort black)))
+  (setf (alist-get 'python-mode apheleia-mode-alist) '(isort black))
+  (setf (alist-get 'python-ts-mode apheleia-mode-alist) '(isort black)))
 
 (+install! cov)
 

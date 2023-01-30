@@ -1,4 +1,4 @@
-python-mode
+python-base-mode
 
 (lambda "lambda" (unless (string= "" arg) " ") (p "" arg) ": " r)
 (def "def " (p "function") "(" p ")" (unless (string= "" rtype) " -> ") (p "" rtype) ":" n> (p "..."))
