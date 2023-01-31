@@ -164,7 +164,6 @@
 (require '+workspace)
 
 ;;;; Programming
-(require '+grammatical-edit)
 (require '+programming)
 (require '+writing)
 (require '+magit)

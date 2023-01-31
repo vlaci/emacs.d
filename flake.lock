@@ -102,22 +102,6 @@
         "type": "github"
       }
     },
-    "grammatical-edit": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1668174771,
-        "narHash": "sha256-IUVDKFqQ86X+CgIcfDr7KJA+Ko6SFWBNj/UnRohQIis=",
-        "owner": "manateelazycat",
-        "repo": "grammatical-edit",
-        "rev": "56eaf28f79679a91fbf4d61452003340479b3d35",
-        "type": "github"
-      },
-      "original": {
-        "owner": "manateelazycat",
-        "repo": "grammatical-edit",
-        "type": "github"
-      }
-    },
     "ligature": {
       "flake": false,
       "locked": {
@@ -158,7 +142,6 @@
         "explain-pause-mode": "explain-pause-mode",
         "flake-utils": "flake-utils",
         "fromElisp": "fromElisp",
-        "grammatical-edit": "grammatical-edit",
         "ligature": "ligature",
         "nixpkgs": "nixpkgs"
       }

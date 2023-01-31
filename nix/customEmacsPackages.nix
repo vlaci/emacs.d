@@ -44,7 +44,6 @@ in
   eglot-x = build { pname = "eglot-x"; };
   explain-pause-mode = build { pname = "explain-pause-mode"; };
   bitwarden = build { pname = "bitwarden"; };
-  grammatical-edit = build { pname = "grammatical-edit"; };
   inherit (final.melpaPackages) apheleia;
   inherit (final.nongnuPackages) eat;
   eglot = null;
