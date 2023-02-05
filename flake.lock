@@ -16,6 +16,22 @@
         "type": "github"
       }
     },
+    "combobulate": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1675417829,
+        "narHash": "sha256-AZjN42DO6r10YVKCD4Xr16u0chx5SjcqK6YOIcu++b0=",
+        "owner": "mickeynp",
+        "repo": "combobulate",
+        "rev": "2e11f429349a4ac1f211dd612d8686081bc7c320",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mickeynp",
+        "repo": "combobulate",
+        "type": "github"
+      }
+    },
     "eglot-x": {
       "flake": false,
       "locked": {
@@ -137,6 +153,7 @@
     "root": {
       "inputs": {
         "bitwarden": "bitwarden",
+        "combobulate": "combobulate",
         "eglot-x": "eglot-x",
         "emacs-overlay": "emacs-overlay",
         "explain-pause-mode": "explain-pause-mode",

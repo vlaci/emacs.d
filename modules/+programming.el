@@ -197,6 +197,17 @@
                #'markdown-mode-hook))
   (add-hook hook #'eglot-ensure))
 
+(+install! combobulate)
+(autoload #'combobulate-mode "combobulate" nil t)
+(dolist  (hook (list
+                'python-ts-mode-hook
+                'js-ts-mode-hook
+                'css-ts-mode-hook
+                'yaml-ts-mode-hook
+                'typescript-ts-mode-hook
+                'tsx-ts-mode-hook))
+  (add-hook hook #'combobulate-mode))
+
 (defun +flymake-json-mode-setup ()
   (add-hook 'flymake-diagnostic-functions #'flymake-collection-jsonlint nil t))
 

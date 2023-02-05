@@ -19,6 +19,8 @@
     explain-pause-mode.flake = false;
     bitwarden.url = "github:seanfarley/emacs-bitwarden";
     bitwarden.flake = false;
+    combobulate.url = "github:mickeynp/combobulate";
+    combobulate.flake = false;
   };
 
   outputs = { self, nixpkgs, flake-utils, ... }@inputs:
