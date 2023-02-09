@@ -108,15 +108,6 @@
   (propertize (concat " " (tab-bar-tab-name-format-default tab i) " ")
               'face (funcall tab-bar-tab-face-function tab)))
 
-(declare-function project-root "project")
-
-(defun +tab-bar-tab-name ()
-  "Use project/directory as tab name."
-  (let ((dir (if-let ((proj (project-current)))
-                 (project-root proj)
-               default-directory)))
-    (file-name-base (directory-file-name dir))))
-
 (+set-defaults!
  tab-bar-tab-name-format-function #'+tab-bar-tab-name-format-comfortable
  tab-bar-format '(+tab-bar-format-menu-bar
@@ -126,8 +117,7 @@
                   tab-bar-format-add-tab)
  tab-bar-close-button-show nil
  tab-bar-tab-name-truncated-max 14
- tab-bar-new-tab-choice #'+go-to-dashboard
- tab-bar-tab-name-function 'tab-bar-tab-name-all)
+ tab-bar-new-tab-choice #'+go-to-dashboard)
 
 (tab-bar-mode)
 (tab-bar-history-mode)
