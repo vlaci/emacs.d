@@ -1,4 +1,5 @@
 { lib
+, pkgs
 , inputs
 , autoPatchelfHook
 , emacsPackagesFor
@@ -41,6 +42,8 @@
 }:
 
 let
+
+  parse = pkgs.callPackage "${inputs.emacs-overlay}/parse.nix" { };
   emacs-nix-integration =
     let
       hunspell = hunspellWithDicts (with hunspellDicts; [ hu-hu en-us ]);
@@ -79,25 +82,7 @@ let
       };
     };
 
-  src = impure.init_d or ../.;
-
-  parsePackages = configText:
-    let
-      name = builtins.head;
-      recurse = item:
-        if builtins.isList item && item != [ ] then
-          let
-            head = builtins.head item;
-            tail = builtins.tail item;
-          in
-          if head == "+install!" then
-            name tail
-          else
-            map recurse item
-        else
-          [ ];
-    in
-    lib.flatten (map recurse (fromElisp configText));
+  src = impure.init_d or builtins.path { name = "init.d"; path = ../.; };
 
   packages =
     let
@@ -106,9 +91,9 @@ let
     lib.flatten (map
       (f:
         let
-          text = builtins.readFile f;
+          configText = builtins.readFile f;
         in
-        parsePackages text)
+          parse.parsePackagesFromUsePackage { inherit configText; alwaysEnsure = true; })
       files);
 
   emacsPackages = emacsPackagesFor emacs;

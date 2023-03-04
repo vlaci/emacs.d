@@ -23,14 +23,14 @@
 ;;; Code:
 (require '+lib)
 
-(+install! org)
-(+install! org-cliplink)
-(+install! org-modern)
-(+install! org-appear)
-(+install! orgit)
-(+install! org-roam)
-(+install! org-roam-ui)
-(+install! git-auto-commit-mode)
+(use-package org)
+(use-package org-cliplink)
+(use-package org-modern)
+(use-package org-appear)
+(use-package orgit)
+(use-package org-roam)
+(use-package org-roam-ui)
+(use-package git-auto-commit-mode)
 
 (+set-defaults!
  org-M-RET-may-split-line '((default . nil))

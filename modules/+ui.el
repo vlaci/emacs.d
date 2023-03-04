@@ -25,7 +25,7 @@
 
 ;;;; Window management
 
-(+install! ace-window)
+(use-package ace-window)
 
 (+set-defaults! av-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
 
@@ -59,7 +59,7 @@
                (display-buffer-reuse-mode-window display-buffer-below-selected)
                (window-height . fit-window-to-buffer)))
 
-(+install! popper)
+(use-package popper)
 
 (general-define-key
  :keymaps 'popper-mode-map
@@ -89,7 +89,7 @@
    "\\`\\*helpful"))
 
 ;;;; Assets
-(+install! all-the-icons)
+(use-package all-the-icons)
 (autoload #'all-the-icons-fileicon "all-the-icons")
 
 ;;;; Tabs
@@ -123,8 +123,8 @@
 (tab-bar-history-mode)
 
 ;;;; Theme
-(+install! modus-themes)
-(+install! ef-themes)
+(use-package modus-themes)
+(use-package ef-themes)
 ;; workaround undeclared 'ef-light-palette issue for `ef-themes-with-colors'
 (require 'ef-light-theme)
 (require 'modus-themes)
@@ -217,7 +217,7 @@
                                      (+save-current-theme)))
 
 ;;;; Modeline
-(+install! doom-modeline)
+(use-package doom-modeline)
 (add-hook 'after-init-hook #'doom-modeline-mode)
 (+set-defaults!
  doom-modeline-height 15
@@ -229,19 +229,19 @@
 (add-hook 'after-init-hook #'column-number-mode)
 
 ;;;; Current line highlighting
-(+install! pulsar)
+(use-package pulsar)
 
 (add-hook 'after-init-hook #'pulsar-global-mode)
 
-(+install! lin)
+(use-package lin)
 
 (add-hook 'after-init-hook #'lin-global-mode)
 
-(+install! hyperbole 'no-require)
+(use-package hyperbole :disabled)
 
 ;;;; Dashboard
 
-(+install! dashboard)
+(use-package dashboard)
 
 (defun +go-to-dashboard ()
   (get-buffer-create "*dashboard*"))

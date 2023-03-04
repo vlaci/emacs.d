@@ -24,7 +24,7 @@
 (require '+lib)
 
 ;;;; Spell and language checking
-(+install! flymake-collection)
+(use-package flymake-collection)
 
 (+set-defaults!
  ispell-dictionary "en_US,hu_HU")
@@ -42,13 +42,12 @@
   (flymake-mode))
 
 ;;;; Editing
-(+install! olivetti)
-
-(+set-defaults!
- olivetti-body-width 120)
-
-(add-hook 'markdown-mode-hook #'olivetti-mode)
-(add-hook 'org-mode-hook #'olivetti-mode)
+(use-package olivetti
+  :hook ((markdown-mode . #'olivetti-mode)
+         (org-mode . #'olivetti-mode))
+  :init
+  (+set-defaults!
+   olivetti-body-width 120))
 
 ;; Misc
 (+set-defaults!
@@ -57,10 +56,10 @@
  outline-minor-mode-use-buttons nil)
 
 ;;;; Markdown mode
-(+install! markdown-mode)
-
-(+set-defaults!
- markdown-fontify-code-blocks-natively t)
+(use-package markdown-mode
+  :init
+  (+set-defaults!
+   markdown-fontify-code-blocks-natively t))
 
 (defun +flymake-markdown-mode-setup ()
   (add-hook 'flymake-diagnostic-functions #'flymake-collection-markdownlint nil t)

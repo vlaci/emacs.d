@@ -18,10 +18,10 @@
 
 ;;; Code:
 (require '+lib)
-(+install! eshell-vterm)
-(+install! eshell-syntax-highlighting)
-(+install! eshell-fringe-status)
-(+install! eshell-prompt-extras)
+(use-package eshell-vterm)
+(use-package eshell-syntax-highlighting)
+(use-package eshell-fringe-status)
+(use-package eshell-prompt-extras)
 
 (add-hook 'eshell-mode-hook #'eshell-fringe-status-mode)
 (add-hook 'eshell-mode-hook #'eshell-syntax-highlighting-mode)
