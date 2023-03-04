@@ -24,9 +24,9 @@
 
 (require '+lib)
 
-(+install! magit)
-(+install! magit-tbdiff)
-(+install! magit-lfs)
+(use-package magit)
+(use-package magit-tbdiff)
+(use-package magit-lfs)
 
 (defun +magit-display-buffer (buffer)
   (let* ((buffer-mode (buffer-local-value 'major-mode buffer)))

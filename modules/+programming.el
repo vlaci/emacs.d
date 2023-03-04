@@ -23,7 +23,6 @@
 ;;; Code:
 (require '+lib)
 
-(+install! flymake)
 (defun +setup-prog-mode ()
   (display-line-numbers-mode))
 
@@ -43,16 +42,16 @@
  "C-c ! n" #'flymake-goto-next-error
  "C-c ! p" #'flymake-goto-prev-error)
 
-(+install! treesit-auto)
-(add-hook 'after-init-hook #'global-treesit-auto-mode)
+(use-package treesit-auto
+  :config
+  (global-treesit-auto-mode))
 
 ;;;; LSP
 
-(+install! eglot-x)
-(+install! consult-eglot)
+(use-package eglot-x
+  :after eglot)
 
-(+after! eglot
-  (require 'eglot-x))
+(use-package consult-eglot)
 
 (general-define-key
  :keymaps 'eglot-mode-map
@@ -76,33 +75,31 @@
  eglot-report-progress t)
 
 ;;;; Haskell
-(+install! haskell-mode)
-(add-hook 'haskell-mode-hook #'eglot-ensure)
+(use-package haskell-mode
+  :hook (haskell-mode . eglot-ensure))
 
 ;;;; Julia
-(+install! eglot-jl)
-(+install! julia-mode)
-(+install! julia-repl)
-(add-hook 'julia-mode-hook #'eglot-ensure)
-(+after! eglot
+(use-package eglot-jl
+  :after eglot
+  :config
   (eglot-jl-init))
+(use-package julia-mode
+  :hook (julia-mode . eglot-ensure))
+
+(use-package julia-repl)
 
 ;;;; OCaml
-(+install! dune)
-(+install! tuareg)
-(+install! utop)
-
-(add-hook 'tuareg-mode-hook #'+setup-tuareg-mode)
-
-(defun +setup-tuareg-mode ()
-  (eglot-ensure))
+(use-package dune)
+(use-package utop)
+(use-package tuareg
+  :hook (tuareg-mode . eglot-ensure))
 
 ;;;; Python
-(+install! pyvenv)
-(+install! python-docstring)
-(+install! poetry)
-(+install! pippel)
-(+install! pdb-capf)
+(use-package pyvenv)
+(use-package python-docstring)
+(use-package poetry)
+(use-package pippel)
+(use-package pdb-capf)
 
 (+set-defaults!
  pyvenv-default-virtual-env-name ".venv")
@@ -123,8 +120,8 @@
   (add-to-list 'completion-at-point-functions #'pdb-capf))
 
 ;;;; Rust
-(+install! rust-mode)
-(+install! rustic)
+(use-package rust-mode)
+(use-package rustic)
 
 (+set-defaults!
  rust-indent-method-chain t
@@ -139,21 +136,21 @@
 
 (advice-add 'rustic-setup-eglot :override (lambda ()))
 
-(+install! realgud)
+(use-package realgud)
 
-(+install! direnv)
-(+install! docker)
-(+install! dockerfile-mode)
-(+install! gitlab-ci-mode)
-(+install! graphql-mode)
-(+install! json-mode)
-(+install! just-mode)
-(+install! lua-mode)
-(+install! nix-mode)
-(+install! typescript-mode)
-(+install! web-mode)
-(+install! yaml-mode)
-(+install! zig-mode)
+(use-package direnv)
+(use-package docker)
+(use-package dockerfile-mode)
+(use-package gitlab-ci-mode)
+(use-package graphql-mode)
+(use-package json-mode)
+(use-package just-mode)
+(use-package lua-mode)
+(use-package nix-mode)
+(use-package typescript-mode)
+(use-package web-mode)
+(use-package yaml-mode)
+(use-package zig-mode)
 
 (+set-defaults!
  eglot-autoshutdown t
@@ -197,7 +194,7 @@
                #'markdown-mode-hook))
   (add-hook hook #'eglot-ensure))
 
-(+install! combobulate)
+(use-package combobulate)
 (autoload #'combobulate-mode "combobulate" nil t)
 (dolist  (hook (list
                 'python-ts-mode-hook
@@ -223,7 +220,7 @@
 
 (add-hook 'yaml-mode-hook #'+flymake-yaml-mode-setup)
 
-(+install! dumb-jump)
+(use-package dumb-jump)
 (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
 (defun +dumb-jump-nix-derivation-root (filepath)
   "Predicate returning when FILEPATH is inside a nix derivation's root directory."
@@ -235,10 +232,8 @@
 
 
 ;;;; Apheleia
-(+install! apheleia)
-
-(autoload #'apheleia-global-mode "apheleia" nil t)
-(add-hook 'after-init-hook #'apheleia-global-mode)
+(use-package apheleia
+  :hook (after-init . apheleia-global-mode))
 
 ;; resolve formatter commands through `executable-find' to be able to
 ;; find commands coming through `'nix-integration' or `direnv' and
@@ -257,7 +252,7 @@
   (setf (alist-get 'python-mode apheleia-mode-alist) '(isort black))
   (setf (alist-get 'python-ts-mode apheleia-mode-alist) '(isort black)))
 
-(+install! cov)
+(use-package cov)
 
 (provide '+programming)
 

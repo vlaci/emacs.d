@@ -24,10 +24,10 @@
 
 (require '+lib)
 
-(+install! dired-subtree)
-(+install! dired-narrow)
-(+install! diredfl)
-(+install! fd-dired)
+(use-package dired-subtree)
+(use-package dired-narrow)
+(use-package diredfl)
+(use-package fd-dired)
 
 (+set-defaults!
   dired-recursive-copies 'always

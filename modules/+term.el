@@ -18,13 +18,13 @@
 
 ;;; Code:
 (require '+lib)
-(+install! vterm)
-(+install! multi-vterm)
+(use-package vterm)
+(use-package multi-vterm)
 
 (+set-defaults! vterm-max-scrollback 50000
                 vterm-kill-buffer-on-exit t)
 
-(+install! eat)
+(use-package eat)
 
 ;; For `eat-eshell-mode'.
 (add-hook 'eshell-load-hook #'eat-eshell-mode)

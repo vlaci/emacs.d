@@ -23,26 +23,29 @@
 ;;; Code:
 (require '+lib)
 
-(+install! gcmh)
+(+set-defaults! use-package-always-defer t)
 
-(+set-defaults! gcmh-idle-delay 'auto
-                gcmh-auto-idle-delay-factor 10
-                gcmh-high-cons-threshold (* 32 1024 1024))
+(use-package gcmh
+  :init
+  (+set-defaults! gcmh-idle-delay 'auto
+                  gcmh-auto-idle-delay-factor 10
+                  gcmh-high-cons-threshold (* 32 1024 1024))
+  (gcmh-mode))
 
-(gcmh-mode)
 
-(+install! explain-pause-mode)
+(use-package explain-pause-mode)
 
 ;;;; To organize runtime and config files
 
-(+install! no-littering 'no-require)
+(use-package no-littering
+  :defer t
+  :init
+  (setq custom-file (expand-file-name "etc/settings.el" user-emacs-directory))
 
-(setq custom-file (expand-file-name "etc/settings.el" user-emacs-directory))
-
-(when (not (bound-and-true-p byte-compile-current-file))
-  (defvar no-littering-etc-directory)
-  (defvar no-littering-var-directory)
-  (require 'no-littering))
+  (when (not (bound-and-true-p byte-compile-current-file))
+    (defvar no-littering-etc-directory)
+    (defvar no-littering-var-directory)
+    (require 'no-littering)))
 
 ;;; Defaults
 (+set-defaults!
@@ -106,19 +109,20 @@
 (add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
 
 ;; Bindings
-(+install! which-key)
-(+set-defaults!
- which-key-ellipsis "︙"
- which-key-sort-order 'which-key-prefix-then-key-order
- which-key-sort-uppercase-first nil
- which-key-max-display-columns 5)
-(add-hook 'after-init-hook #'which-key-mode)
+(use-package which-key
+  :init
+  (+set-defaults!
+   which-key-ellipsis "︙"
+   which-key-sort-order 'which-key-prefix-then-key-order
+   which-key-sort-uppercase-first nil
+   which-key-max-display-columns 5)
+  (add-hook 'after-init-hook #'which-key-mode))
 
-(+install! general)
+(use-package general)
 
 ;;;; To improve help
-(+install! helpful)
-(+install! elisp-demos)
+(use-package helpful)
+(use-package elisp-demos)
 
 (general-define-key
  [remap describe-command] #'helpful-command
@@ -143,21 +147,20 @@
 (set-face-attribute 'variable-pitch nil :font (font-spec :name "Iosevka Comfy Duo" :size 14))
 ;;(set-face-attribute 'fixed-pitch nil :font (font-spec :name "Iosevka Comfy" :size 14))
 
-(+install! ligature)
-
-(+after! ligature
+(use-package ligature
+  :hook (after-init . global-ligature-mode)
+  :init
   (ligature-set-ligatures 'prog-mode '("<---" "<--"  "<<-" "<-" "->" "-->" "--->" "<->" "<-->" "<--->" "<---->" "<!--"
                                        "<==" "<===" "<=" "=>" "=>>" "==>" "===>" ">=" "<=>" "<==>" "<===>" "<====>" "<!---"
                                        "<~~" "<~" "~>" "~~>" "::" ":::" "==" "!=" "===" "!=="
                                        ":=" ":-" ":+" "<*" "<*>" "*>" "<|" "<|>" "|>" "+:" "-:" "=:" "<******>" "++" "+++")))
 
-(add-hook 'after-init-hook #'global-ligature-mode)
+(use-package mixed-pitch
+  :hook (text-mode . mixed-pitch-mode))
 
-(+install! mixed-pitch)
-(add-hook 'text-mode-hook #'mixed-pitch-mode)
-
-(+install! bitwarden)
-(bitwarden-auth-source-enable)
+(use-package bitwarden
+  :init
+  (bitwarden-auth-source-enable))
 
 (require '+editing)
 (require '+completion)

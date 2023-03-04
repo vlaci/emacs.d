@@ -23,28 +23,30 @@
 ;;; Code:
 (require '+lib)
 
-(+install! vertico)
-(+install! recursion-indicator)
+(use-package recursion-indicator
+  :after vertico
+  :config
+  (recursion-indicator-mode))
 
-(add-hook 'after-init-hook #'vertico-mode)
-
-(+set-defaults!
- vertico-cycle t
- vertico-count 20
- vertico-multiform-categories '((consult-grep buffer))
- vertico-multiform-commands '((consult-imenu buffer indexed)
-                              (consult-imenu-multi buffer indexed))
- vertico-buffer-display-action '((display-buffer-in-side-window)
-                                 (side . right)
-                                 (slot . 0)
-                                 (window-width . 100)))
-
-(+after! vertico
-  (define-key vertico-map (kbd "RET") #'vertico-directory-enter)
-  (define-key vertico-map (kbd "DEL") #'vertico-directory-delete-char)
-  (define-key vertico-map (kbd "M-DEL") #'vertico-directory-delete-word)
+(use-package vertico
+  :hook (after-init . vertico-mode)
+  :init
+  (+set-defaults!
+   vertico-cycle t
+   vertico-count 20
+   vertico-multiform-categories '((consult-grep buffer))
+   vertico-multiform-commands '((consult-imenu buffer indexed)
+                                (consult-imenu-multi buffer indexed))
+   vertico-buffer-display-action '((display-buffer-in-side-window)
+                                   (side . right)
+                                   (slot . 0)
+                                   (window-width . 100)))
+  :bind (:map vertico-map
+         ("RET" . vertico-directory-enter)
+         ("DEL" . vertico-directory-delete-char)
+         ("M-DEL" . vertico-directory-delete-word))
+  :config
   (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
-
   (minibuffer-electric-default-mode)
   ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
   ;; Vertico commands are hidden in normal buffers.
@@ -53,7 +55,6 @@
 
   (vertico-multiform-mode)
   (setq enable-recursive-minibuffers t)
-  (recursion-indicator-mode)
   (setq-default
    mode-line-modes
    (seq-filter (lambda (s)
@@ -79,118 +80,116 @@
 (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
 
-(+install! marginalia)
-(add-hook 'after-init-hook #'marginalia-mode)
-(define-key minibuffer-local-map "\M-a" #'marginalia-cycle)
+(use-package marginalia
+  :hook (after-init . marginalia-mode)
+  :bind (:map minibuffer-local-map ("M-a" . marginalia-cycle)))
 
-(+install! consult)
+(use-package consult
+  :init
+  (+set-defaults!
+   meow-goto-line-function #'consult-goto-line)
 
-;;(+define-key! consult consult-narrow-map (kbd "?") consult-narrow-help)
-(+set-defaults!
- meow-goto-line-function #'consult-goto-line)
+  (general-define-key
+   :keymaps 'mode-specific-map
+   "h" #'consult-history
+   "m" #'consult-mode-command
+   "C-k" #'consult-kmacro)
 
-(general-define-key
- :keymaps 'mode-specific-map
- "h" #'consult-history
- "m" #'consult-mode-command
- "C-k" #'consult-kmacro)
+  (general-define-key
+   :keymaps 'ctl-x-map
+   "M-:" #'consult-complex-command     ;; orig. repeat-complex-command
+   "b" #'consult-buffer                ;; orig. switch-to-buffer
+   "C-b" #'consult-buffer              ;; orig. buffer-menu
+   "4 b" #'consult-buffer-other-window ;; orig. switch-to-buffer-other-window
+   "5 b" #'consult-buffer-other-frame  ;; orig. switch-to-buffer-other-frame
+   "r b" #'consult-bookmark            ;; orig. bookmark-jump
+   "p b" #'consult-project-buffer      ;; orig. project-switch-to-buffer
+   "C-r" #'consult-recent-file)        ;; orig. find-file-read-only
+  (general-define-key
+   :keymaps 'global-map
+   "M-#" #'consult-register-load
+   "M-'" #'consult-register-store      ;; orig. abbrev-prefix-mark (unrelated)
+   "C-M-#" #'consult-register
+   "M-y" #'consult-yank-pop            ;; orig. yank-pop
+   "<help> a" #'consult-apropos)       ;; orig. apropos-command
+  (general-define-key
+   :keymaps 'goto-map ;; M-g
+   "e" #'consult-compile-error
+   "f" #'consult-flymake               ;; Alternative: consult-flycheck
+   "g" #'consult-goto-line             ;; orig. goto-line
+   "M-g" #'consult-goto-line           ;; orig. goto-line
+   "o" #'consult-outline               ;; Alternative: consult-org-heading
+   "m" #'consult-mark
+   "k" #'consult-global-mark
+   "i" #'consult-imenu
+   "I" #'consult-imenu-multi)
+  (general-define-key
+   :keymaps 'search-map ;; M-s
+   "d" #'consult-find
+   "D" #'consult-locate
+   "g" #'consult-grep
+   "G" #'consult-git-grep
+   "r" #'consult-ripgrep
+   "l" #'consult-line
+   "L" #'consult-line-multi
+   "m" #'consult-multi-occur
+   "k" #'consult-keep-lines
+   "u" #'consult-focus-lines
+   "e" #'consult-isearch-history)
+  (general-define-key
+   :keymaps 'isearch-mode-map
+   "M-e" #'consult-isearch-history     ;; orig. isearch-edit-string
+   "M-s e" #'consult-isearch-history   ;; orig. isearch-edit-string
+   "M-s l" #'consult-line              ;; needed by consult-line to detect isearch
+   "M-s L" #'consult-line-multi)       ;; needed by consult-line to detect isearch
+  (general-define-key
+   :keymaps 'minibuffer-local-map
+   "M-s" #'consult-history             ;; orig. next-matching-history-element
+   "M-r" #'consult-history)            ;; orig. previous-matching-history-element
+  (general-define-key
+   :keymaps 'consult-narrow-map
+   "?" #'consult-narrow-help)
 
-(general-define-key
- :keymaps 'ctl-x-map
- "M-:" #'consult-complex-command     ;; orig. repeat-complex-command
- "b" #'consult-buffer                ;; orig. switch-to-buffer
- "C-b" #'consult-buffer              ;; orig. buffer-menu
- "4 b" #'consult-buffer-other-window ;; orig. switch-to-buffer-other-window
- "5 b" #'consult-buffer-other-frame  ;; orig. switch-to-buffer-other-frame
- "r b" #'consult-bookmark            ;; orig. bookmark-jump
- "p b" #'consult-project-buffer      ;; orig. project-switch-to-buffer
- "C-r" #'consult-recent-file)        ;; orig. find-file-read-only
-(general-define-key
- :keymaps 'global-map
- "M-#" #'consult-register-load
- "M-'" #'consult-register-store      ;; orig. abbrev-prefix-mark (unrelated)
- "C-M-#" #'consult-register
- "M-y" #'consult-yank-pop            ;; orig. yank-pop
- "<help> a" #'consult-apropos)       ;; orig. apropos-command
-(general-define-key
- :keymaps 'goto-map ;; M-g
- "e" #'consult-compile-error
- "f" #'consult-flymake               ;; Alternative: consult-flycheck
- "g" #'consult-goto-line             ;; orig. goto-line
- "M-g" #'consult-goto-line           ;; orig. goto-line
- "o" #'consult-outline               ;; Alternative: consult-org-heading
- "m" #'consult-mark
- "k" #'consult-global-mark
- "i" #'consult-imenu
- "I" #'consult-imenu-multi)
-(general-define-key
- :keymaps 'search-map ;; M-s
- "d" #'consult-find
- "D" #'consult-locate
- "g" #'consult-grep
- "G" #'consult-git-grep
- "r" #'consult-ripgrep
- "l" #'consult-line
- "L" #'consult-line-multi
- "m" #'consult-multi-occur
- "k" #'consult-keep-lines
- "u" #'consult-focus-lines
- "e" #'consult-isearch-history)
-(general-define-key
- :keymaps 'isearch-mode-map
- "M-e" #'consult-isearch-history     ;; orig. isearch-edit-string
- "M-s e" #'consult-isearch-history   ;; orig. isearch-edit-string
- "M-s l" #'consult-line              ;; needed by consult-line to detect isearch
- "M-s L" #'consult-line-multi)       ;; needed by consult-line to detect isearch
-(general-define-key
- :keymaps 'minibuffer-local-map
- "M-s" #'consult-history             ;; orig. next-matching-history-element
- "M-r" #'consult-history)            ;; orig. previous-matching-history-element
-(general-define-key
- :keymaps 'consult-narrow-map
- "?" #'consult-narrow-help)
+  (defvar +consult-project-history nil)
 
-(defvar +consult-project-history nil)
+  (defvar +consult-source-project
+    `( :name "Known Project"
+       :narrow    (?p . "Project")
+       :category  'consult-project-extra-project
+       :face      consult-file
+       :history   +consult-project-history
+       :annotate  ,(lambda (dir) dir)
+       :action    ,#'project-switch-project
+       :items     ,(lambda ()
+                     (let ((projects (project-known-project-roots)))
+                       (mapcar (lambda (project)
+                                 (let ((dir (file-name-nondirectory (directory-file-name project))))
+                                   (put-text-property 0 (length dir) 'multi-category `(file . ,project) dir)
+                                   dir))
+                               projects)))))
 
-(defvar +consult-source-project
-  `( :name "Known Project"
-     :narrow    (?p . "Project")
-     :category  'consult-project-extra-project
-     :face      consult-file
-     :history   +consult-project-history
-     :annotate  ,(lambda (dir) dir)
-     :action    ,#'project-switch-project
-     :items     ,(lambda ()
-                   (let ((projects (project-known-project-roots)))
-                     (mapcar (lambda (project)
-                               (let ((dir (file-name-nondirectory (directory-file-name project))))
-                                 (put-text-property 0 (length dir) 'multi-category `(file . ,project) dir)
-                                 dir))
-                             projects)))))
-
-(defvar +consult-source-project-file
-  `( :name "Project File"
-     :narrow    (?f . "Project File")
-     :category  file
-     :face      consult-file
-     :history   file-name-history
-     :action    ,#'consult--file-action
-     :enabled   ,(lambda () consult-project-function)
-     :items
-     ,(lambda ()
-        (when-let* ((root (consult--project-root))
-                    (buffers (consult--buffer-file-hash))
-                    (project (project--find-in-directory root)))
-          (mapcar (lambda (file)
-                    (let ((root-part (substring file (length root))))
-                      (when (string= root-part "")
-                        (setq root-part "./"))
-                      (put-text-property 0 (length root-part) 'multi-category `(file . , file) root-part)
-                      root-part))
-                  (seq-filter (lambda (file) (not (gethash file buffers)))
-                              (project-files project)))))))
-
-(+after! consult
+  (defvar +consult-source-project-file
+    `( :name "Project File"
+       :narrow    (?f . "Project File")
+       :category  file
+       :face      consult-file
+       :history   file-name-history
+       :action    ,#'consult--file-action
+       :enabled   ,(lambda () consult-project-function)
+       :items
+       ,(lambda ()
+          (when-let* ((root (consult--project-root))
+                      (buffers (consult--buffer-file-hash))
+                      (project (project--find-in-directory root)))
+            (mapcar (lambda (file)
+                      (let ((root-part (substring file (length root))))
+                        (when (string= root-part "")
+                          (setq root-part "./"))
+                        (put-text-property 0 (length root-part) 'multi-category `(file . , file) root-part)
+                        root-part))
+                    (seq-filter (lambda (file) (not (gethash file buffers)))
+                                (project-files project)))))))
+  :config
   (dolist
       (pattern (list
                 "\\`\\*Messages\\*\\'"
@@ -230,128 +229,128 @@
      +consult-source-project-file
      +consult-source-project
      consult--source-recent-file
-     consult--source-bookmark)))
+     consult--source-bookmark))
 
-(+after! xref
-  (setq xref-show-xrefs-function #'consult-xref
-        xref-show-definitions-function #'consult-xref))
+  (+after! xref
+    (setq xref-show-xrefs-function #'consult-xref
+          xref-show-definitions-function #'consult-xref)))
 
-(+install! consult-dir)
+(use-package consult-dir
+  :after vertico
+  :bind (("C-x C-d" . consult-dir)
+         :map vertico-map
+         ("C-x C-d" . consult-dir)
+         ("C-x C-j" . consult-dir-jump-file)))
 
-(+after! vertico
-  (define-key vertico-map (kbd "C-x C-d") #'consult-dir)
-  (define-key vertico-map (kbd "C-x C-j") #'consult-dir-jump-file))
 
-(global-set-key (kbd "C-x C-d") #'consult-dir)
+(use-package orderless
+  :after (:any vertico consult)
+  :demand t
+  :init
+  (defun +orderless--suffix-regexp ()
+    (if (and (boundp 'consult--tofu-char) (boundp 'consult--tofu-range))
+        (format "[%c-%c]*$"
+                consult--tofu-char
+                (+ consult--tofu-char consult--tofu-range -1))
+      "$"))
 
-(+install! orderless)
+  (defvar +orderless-dispatch-alist
+    '((?% . char-fold-to-regexp)
+      (?! . orderless-without-literal)
+      (?` . orderless-initialism)
+      (?= . orderless-literal)
+      (?~ . orderless-flex)))
 
-(defun +orderless--suffix-regexp ()
-  (if (and (boundp 'consult--tofu-char) (boundp 'consult--tofu-range))
-      (format "[%c-%c]*$"
-              consult--tofu-char
-              (+ consult--tofu-char consult--tofu-range -1))
-    "$"))
+  ;; Recognizes the following patterns:
+  ;; * ~flex flex~
+  ;; * =literal literal=
+  ;; * %char-fold char-fold%
+  ;; * `initialism initialism`
+  ;; * !without-literal without-literal!
+  ;; * .ext (file extension)
+  ;; * regexp$ (regexp matching at end)
+  (defun +orderless-dispatch (word _index _total)
+    (cond
+     ;; Ensure that $ works with Consult commands, which add disambiguation suffixes
+     ((string-suffix-p "$" word)
+      `(orderless-regexp . ,(concat (substring word 0 -1) (+orderless--suffix-regexp))))
+     ;; File extensions
+     ((and (or minibuffer-completing-file-name
+               (derived-mode-p 'eshell-mode))
+           (string-match-p "\\`\\.." word))
+      `(orderless-regexp . ,(concat "\\." (substring word 1) (+orderless--suffix-regexp))))
+     ;; Ignore single !
+     ((equal "!" word) `(orderless-literal . ""))
+     ;; Prefix and suffix
+     ((if-let (x (assq (aref word 0) +orderless-dispatch-alist))
+          (cons (cdr x) (substring word 1))
+        (when-let (x (assq (aref word (1- (length word))) +orderless-dispatch-alist))
+          (cons (cdr x) (substring word 0 -1)))))))
+  :config
+  ;; Define orderless style with initialism by default
+  (orderless-define-completion-style +orderless-with-initialism
+    (orderless-matching-styles '(orderless-initialism orderless-literal orderless-regexp)))
 
-(defvar +orderless-dispatch-alist
-  '((?% . char-fold-to-regexp)
-    (?! . orderless-without-literal)
-    (?` . orderless-initialism)
-    (?= . orderless-literal)
-    (?~ . orderless-flex)))
+  ;; You may want to combine the `orderless` style with `substring` and/or `basic`.
+  ;; There are many details to consider, but the following configurations all work well.
+  ;; Personally I (@minad) use option 3 currently. Also note that you may want to configure
+  ;; special styles for special completion categories, e.g., partial-completion for files.
+  ;;
+  ;; 1. (setq completion-styles '(orderless))
+  ;; This configuration results in a very coherent completion experience,
+  ;; since orderless is used always and exclusively. But it may not work
+  ;; in all scenarios. Prefix expansion with TAB is not possible.
+  ;;
+  ;; 2. (setq completion-styles '(substring orderless))
+  ;; By trying substring before orderless, TAB expansion is possible.
+  ;; The downside is that you can observe the switch from substring to orderless
+  ;; during completion, less coherent.
+  ;;
+  ;; 3. (setq completion-styles '(orderless basic))
+  ;; Certain dynamic completion tables (completion-table-dynamic)
+  ;; do not work properly with orderless. One can add basic as a fallback.
+  ;; Basic will only be used when orderless fails, which happens only for
+  ;; these special tables.
+  ;;
+  ;; 4. (setq completion-styles '(substring orderless basic))
+  ;; Combine substring, orderless and basic.
+  ;;
+  (setq completion-styles '(orderless basic)
+        completion-category-defaults nil
+            ;;; Enable partial-completion for files.
+            ;;; Either give orderless precedence or partial-completion.
+            ;;; Note that completion-category-overrides is not really an override,
+            ;;; but rather prepended to the default completion-styles.
+        ;; completion-category-overrides '((file (styles orderless partial-completion))) ;; orderless is tried first
+        completion-category-overrides '((file (styles partial-completion)) ;; partial-completion is tried first
+                                        ;; enable initialism by default for symbols
+                                        (command (styles +orderless-with-initialism))
+                                        (variable (styles +orderless-with-initialism))
+                                        (symbol (styles +orderless-with-initialism)))
+        orderless-component-separator #'orderless-escapable-split-on-space ;; allow escaping space with backslash!
+        orderless-style-dispatchers '(+orderless-dispatch)))
 
-;; Recognizes the following patterns:
-;; * ~flex flex~
-;; * =literal literal=
-;; * %char-fold char-fold%
-;; * `initialism initialism`
-;; * !without-literal without-literal!
-;; * .ext (file extension)
-;; * regexp$ (regexp matching at end)
-(defun +orderless-dispatch (word _index _total)
-  (cond
-   ;; Ensure that $ works with Consult commands, which add disambiguation suffixes
-   ((string-suffix-p "$" word)
-    `(orderless-regexp . ,(concat (substring word 0 -1) (+orderless--suffix-regexp))))
-   ;; File extensions
-   ((and (or minibuffer-completing-file-name
-             (derived-mode-p 'eshell-mode))
-         (string-match-p "\\`\\.." word))
-    `(orderless-regexp . ,(concat "\\." (substring word 1) (+orderless--suffix-regexp))))
-   ;; Ignore single !
-   ((equal "!" word) `(orderless-literal . ""))
-   ;; Prefix and suffix
-   ((if-let (x (assq (aref word 0) +orderless-dispatch-alist))
-        (cons (cdr x) (substring word 1))
-      (when-let (x (assq (aref word (1- (length word))) +orderless-dispatch-alist))
-        (cons (cdr x) (substring word 0 -1)))))))
+(use-package embark-consult)
+(use-package embark
+  :bind (([remap describe-bindings] . embark-bindings)
+         ("C-." . #'embark-act)
+         ("C-;" . #'embark-dwim))
+  :init
+  (setq prefix-help-command #'embark-prefix-help-command)
 
-(require 'orderless)
-;; Define orderless style with initialism by default
-(orderless-define-completion-style +orderless-with-initialism
-  (orderless-matching-styles '(orderless-initialism orderless-literal orderless-regexp)))
+  (defmacro +embark-ace-action (fn)
+    `(defun ,(intern (concat "+embark-ace-" (symbol-name fn))) ()
+       (interactive)
+       (with-demoted-errors "%s"
+         (let ((aw-dispatch-always t))
+           (aw-switch-to-window (aw-select nil))
+           (call-interactively (symbol-function ',fn))))))
 
-;; You may want to combine the `orderless` style with `substring` and/or `basic`.
-;; There are many details to consider, but the following configurations all work well.
-;; Personally I (@minad) use option 3 currently. Also note that you may want to configure
-;; special styles for special completion categories, e.g., partial-completion for files.
-;;
-;; 1. (setq completion-styles '(orderless))
-;; This configuration results in a very coherent completion experience,
-;; since orderless is used always and exclusively. But it may not work
-;; in all scenarios. Prefix expansion with TAB is not possible.
-;;
-;; 2. (setq completion-styles '(substring orderless))
-;; By trying substring before orderless, TAB expansion is possible.
-;; The downside is that you can observe the switch from substring to orderless
-;; during completion, less coherent.
-;;
-;; 3. (setq completion-styles '(orderless basic))
-;; Certain dynamic completion tables (completion-table-dynamic)
-;; do not work properly with orderless. One can add basic as a fallback.
-;; Basic will only be used when orderless fails, which happens only for
-;; these special tables.
-;;
-;; 4. (setq completion-styles '(substring orderless basic))
-;; Combine substring, orderless and basic.
-;;
-(setq completion-styles '(orderless basic)
-      completion-category-defaults nil
-          ;;; Enable partial-completion for files.
-          ;;; Either give orderless precedence or partial-completion.
-          ;;; Note that completion-category-overrides is not really an override,
-          ;;; but rather prepended to the default completion-styles.
-      ;; completion-category-overrides '((file (styles orderless partial-completion))) ;; orderless is tried first
-      completion-category-overrides '((file (styles partial-completion)) ;; partial-completion is tried first
-                                      ;; enable initialism by default for symbols
-                                      (command (styles +orderless-with-initialism))
-                                      (variable (styles +orderless-with-initialism))
-                                      (symbol (styles +orderless-with-initialism)))
-      orderless-component-separator #'orderless-escapable-split-on-space ;; allow escaping space with backslash!
-      orderless-style-dispatchers '(+orderless-dispatch))
-
-(+install! embark)
-(+install! embark-consult)
-(global-set-key [remap describe-bindings] #'embark-bindings)
-(global-set-key (kbd "C-.") #'embark-act)
-(global-set-key (kbd "C-;") #'embark-dwim)
-
-(setq prefix-help-command #'embark-prefix-help-command)
-
-(defmacro +embark-ace-action (fn)
-  `(defun ,(intern (concat "+embark-ace-" (symbol-name fn))) ()
-     (interactive)
-     (with-demoted-errors "%s"
-       (let ((aw-dispatch-always t))
-         (aw-switch-to-window (aw-select nil))
-         (call-interactively (symbol-function ',fn))))))
-
-(+set-defaults!
- embark-indicators '(embark-minimal-indicator
-                     embark-highlight-indicator
-                     embark-isearch-highlight-indicator))
-
-(+after! embark
+  (+set-defaults!
+   embark-indicators '(embark-minimal-indicator
+                       embark-highlight-indicator
+                       embark-isearch-highlight-indicator))
+  :config
   (require 'embark-consult)
   (require 'ace-window)
   (+after! ace-window
@@ -398,55 +397,51 @@
 
 (add-hook 'embark-collect-mode-hook #'+embark-live-vertico)
 
-(+install! corfu)
-(autoload 'corfu-insert-separator "corfu")
+;;(autoload 'corfu-insert-separator "corfu")
+(use-package corfu
+  :init
+  (+set-defaults!
+   tab-always-indent 'complete
+   tab-fir 'word-or-paran-or-punct
+   corfu-cycle t
+   corfu-echo-documentation 0.3)
 
-(+set-defaults!
- tab-always-indent 'complete
- tab-fir 'word-or-paran-or-punct
- corfu-cycle t
- corfu-echo-documentation 0.3)
+  (defun +setup-corfu-mode ()
+    (global-corfu-mode)
+    (corfu-history-mode)
+    (corfu-popupinfo-mode))
+  (defun +corfu-enable-always-in-minibuffer ()
+    "Enable Corfu in the minibuffer if Vertico/Mct are not active."
+    (unless (bound-and-true-p vertico--input)
+    (corfu-mode 1)))
 
-(defun +setup-corfu-mode ()
-  (global-corfu-mode)
-  (corfu-history-mode)
-  (corfu-popupinfo-mode))
-
-(add-hook 'after-init-hook #'+setup-corfu-mode)
-
-(add-hook 'eshell-mode-hook
+  (defun +corfu-move-to-minibuffer ()
+    (interactive)
+    (let ((completion-extra-properties corfu--extra)
+          completion-cycle-threshold completion-cycling)
+      (apply #'consult-completion-in-region completion-in-region--data)))
+  :hook ((after-init . +setup-corfu-mode)
+         (eshell-mode .
           (lambda () (setq-local corfu-quit-at-boundary t
                                  corfu-quit-no-match t)
             (corfu-mode)))
+         (minibuffer-setup . +corfu-enable-always-in-minibuffer))
+  :bind (:map corfu-map
+         ("M-m" . +corfu-move-to-minibuffer)
+         ("SPC" . corfu-insert-separator)))
 
-(defun +corfu-enable-always-in-minibuffer ()
-  "Enable Corfu in the minibuffer if Vertico/Mct are not active."
-  (unless (bound-and-true-p vertico--input)
-    (corfu-mode 1)))
-(add-hook 'minibuffer-setup-hook #'+corfu-enable-always-in-minibuffer 1)
+(use-package cape
+  :init
+  (dolist (backend (list #'cape-symbol #'cape-keyword #'cape-file #'cape-dabbrev))
+    (add-to-list 'completion-at-point-functions backend))
 
-(defun +corfu-move-to-minibuffer ()
-  (interactive)
-  (let ((completion-extra-properties corfu--extra)
-        completion-cycle-threshold completion-cycling)
-    (apply #'consult-completion-in-region completion-in-region--data)))
+  ;; Silence the pcomplete capf, no errors or messages!
+  ;; Important for corfu
+  (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-silent)
 
-(+after! corfu
-  (define-key corfu-map (kbd "M-m") #'+corfu-move-to-minibuffer)
-  (define-key corfu-map (kbd "SPC") #'corfu-insert-separator))
-
-(+install! cape)
-
-(dolist (backend (list #'cape-symbol #'cape-keyword #'cape-file #'cape-dabbrev))
-  (add-to-list 'completion-at-point-functions backend))
-
-;; Silence the pcomplete capf, no errors or messages!
-;; Important for corfu
-(advice-add 'pcomplete-completions-at-point :around #'cape-wrap-silent)
-
-;; Ensure that pcomplete does not write to the buffer
-;; and behaves as a pure `completion-at-point-function'.
-(advice-add 'pcomplete-completions-at-point :around #'cape-wrap-purify)
+  ;; Ensure that pcomplete does not write to the buffer
+  ;; and behaves as a pure `completion-at-point-function'.
+  (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-purify))
 
 ;;;; Project
 
