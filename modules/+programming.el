@@ -255,6 +255,8 @@
 
 (use-package cov)
 
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+
 (provide '+programming)
 
 ;;; +programming.el ends here
