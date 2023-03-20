@@ -102,7 +102,8 @@
 (use-package pdb-capf)
 
 (+set-defaults!
- pyvenv-default-virtual-env-name ".venv")
+ pyvenv-default-virtual-env-name ".venv"
+ python-indent-def-block-scale 1)
 
 (add-hook 'python-base-mode-hook #'+setup-python-mode)
 (add-hook 'pdb-mode-hook #'+setup-pdb-capf)
