@@ -143,9 +143,28 @@
                (window-width . 0.3)))
 
 ;;;; Fonts
-(set-face-attribute 'default nil :font (font-spec :name "Iosevka Comfy" :size 14))
-(set-face-attribute 'variable-pitch nil :font (font-spec :name "Iosevka Comfy Duo" :size 14))
-;;(set-face-attribute 'fixed-pitch nil :font (font-spec :name "Iosevka Comfy" :size 14))
+
+(set-face-attribute
+ 'default
+ nil
+ :font
+ (font-spec
+  :name
+  (if (member "Berkeley Mono" (font-family-list))
+      "Berkeley Mono"
+    "Iosevka Comfy")
+  :size 14))
+
+(set-face-attribute
+ 'variable-pitch
+ nil
+ :font
+ (font-spec
+  :name
+  (if (member "Berkeley Mono Variable" (font-family-list))
+      "Berkeley Mono Variable"
+    "Iosevka Comfy Duo")
+  :size 14))
 
 (use-package ligature
   :hook (after-init . global-ligature-mode)
