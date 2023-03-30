@@ -15,7 +15,6 @@
 , graphviz
 , vscode-extensions
 , hunspellDicts
-, hunspellWithDicts
 , proselint
 , fd
 , jre
@@ -44,12 +43,11 @@
 let
 
   parse = pkgs.callPackage "${inputs.emacs-overlay}/parse.nix" { };
+  dicts = with hunspellDicts; [ hu-hu en-us-large ];
   emacs-nix-integration =
     let
-      hunspell = hunspellWithDicts (with hunspellDicts; [ hu-hu en-us ]);
       binaries = [
         fd
-        hunspell
         proselint
         jre
         languagetool
@@ -145,10 +143,14 @@ let
     in
     extra
   );
+
+  dictSearchPath = lib.makeSearchPath "share/hunspell" dicts;
 in
 emacsStage2.overrideAttrs (super: {
   buildCommand = super.buildCommand + ''
-    wrapProgram $out/bin/emacs --append-flags "--init-directory ${toString init_d}"
+    wrapProgram $out/bin/emacs \
+                --append-flags "--init-directory ${toString init_d}" \
+                --prefix DICPATH : ${lib.escapeShellArg dictSearchPath}
   '';
   passthru = { inherit init_d emacs-nix-integration; };
 })

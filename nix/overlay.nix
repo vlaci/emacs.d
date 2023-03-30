@@ -46,4 +46,5 @@ in
 eo // fromElisp // {
   emacsPackagesFor = emacs: (eo.emacsPackagesFor emacs).overrideScope' customEmacsPackages;
   emacsVlaci = final.callPackage ./emacs.nix { inherit emacs inputs; };
+  nuspell = prev.nuspell.overrideAttrs (super: { propagatedBuildInputs = super.buildInputs; });
 }

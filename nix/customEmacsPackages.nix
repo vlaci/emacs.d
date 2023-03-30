@@ -1,4 +1,4 @@
-{ lib, mu, fetchpatch, writeText, inputs }:
+{ lib, enchant, fetchpatch, writeText, inputs }:
 
 final: prev:
 let
@@ -57,4 +57,14 @@ in
   inherit (final.melpaPackages) apheleia;
   inherit (final.nongnuPackages) eat;
   eglot = null;
+
+  jinx = prev.jinx.overrideAttrs (super: {
+    buildInputs = [ enchant ];
+    preBuild = ''
+      cc -I -O2 -Wall -Wextra -fPIC -shared -I${enchant.dev}/include/enchant-2 -lenchant-2 -o $NIX_BUILD_TOP/jinx-mod.so jinx-mod.c
+    '';
+    postInstall = ''
+      install -m 444 jinx-mod.so $out/share/emacs/site-lisp/elpa/jinx-*
+    '';
+  });
 }

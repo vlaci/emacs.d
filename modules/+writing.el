@@ -29,17 +29,16 @@
 (+set-defaults!
  ispell-dictionary "en_US,hu_HU")
 
-(add-hook 'text-mode-hook #'flyspell-mode)
 (add-hook 'text-mode-hook #'+flymake-text-mode-setup)
-
-(+after! ispell
-  (unless (bound-and-true-p byte-compile-current-file)
-    (ispell-set-spellchecker-params)
-    (ispell-hunspell-add-multi-dic ispell-dictionary)))
 
 (defun +flymake-text-mode-setup ()
   (add-hook 'flymake-diagnostic-functions #'flymake-collection-proselint nil t)
   (flymake-mode))
+
+(use-package jinx
+  :hook (emacs-startup . global-jinx-mode)
+  :bind ([remap ispell-word] . jinx-correct)
+  :init (setq jinx-languages (list "en_US" "hu_HU")))
 
 ;;;; Editing
 (use-package olivetti
