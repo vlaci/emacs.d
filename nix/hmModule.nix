@@ -49,7 +49,6 @@ in
   config = mkIf cfg.enable {
     fonts.fontconfig.enable = true;
     home.packages = with pkgs; [
-      cfg.package
       emacs-all-the-icons-fonts
       iosevka-comfy.comfy
       iosevka-comfy.comfy-duo
@@ -59,6 +58,17 @@ in
     ];
     emacsVlaci.settings."mu4e-maildir" = config.accounts.email.maildirBasePath;
     emacsVlaci.extraPackages = with pkgs; (_: [ mu ]);
+
+    programs.emacs = {
+      enable = true;
+      inherit (cfg) package;
+    };
+
+    services.emacs = {
+      enable = true;
+      client.enable = true;
+      socketActivation.enable = true;
+    };
 
     xdg.configFile."emacs/etc/nix-settings.el".text = ''
       ${cfg.extraConfig}
