@@ -1,4 +1,4 @@
-{ lib, mu, writeText, inputs }:
+{ lib, mu, fetchpatch, writeText, inputs }:
 
 final: prev:
 let
@@ -45,6 +45,15 @@ in
   explain-pause-mode = build { pname = "explain-pause-mode"; };
   bitwarden = build { pname = "bitwarden"; };
   combobulate = build { pname = "combobulate"; };
+  rustic = prev.rustic.overrideAttrs (_: {
+    patches = [
+      (fetchpatch {
+        name = "rustic-ts-mode.patch";
+        url = "https://github.com/brotzeit/rustic/commit/a8f20a51e48222ff037f262c33dddfc5ef386def.patch";
+        hash = "sha256-bBRXM2IHNKDEhTVNaBeEQ9l7W+YNJ6C7E2NMcZ7X5O0";
+      })
+    ];
+  });
   inherit (final.melpaPackages) apheleia;
   inherit (final.nongnuPackages) eat;
   eglot = null;
