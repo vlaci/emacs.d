@@ -110,8 +110,7 @@
    "M-#" #'consult-register-load
    "M-'" #'consult-register-store      ;; orig. abbrev-prefix-mark (unrelated)
    "C-M-#" #'consult-register
-   "M-y" #'consult-yank-pop            ;; orig. yank-pop
-   "<help> a" #'consult-apropos)       ;; orig. apropos-command
+   "M-y" #'consult-yank-pop)           ;; orig. yank-pop
   (general-define-key
    :keymaps 'goto-map ;; M-g
    "e" #'consult-compile-error
