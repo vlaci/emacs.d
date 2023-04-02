@@ -40,6 +40,12 @@ let
       tree-sitter-yaml
       tree-sitter-zig
     ];
+  }).overrideAttrs (_: {
+    src = final.fetchFromSavannah {
+      repo = "emacs";
+      rev = "a8c9283e1702af06fb6ad598ae32a2c124860af1";
+      hash = "sha256-tImHRMQXtlWbfgienaSmxMzKG3J8+LFeoOyMTLEcOSs=";
+    };
   });
   fromElisp = (import "${inputs.fromElisp}") { pkgs = final; };
 in
