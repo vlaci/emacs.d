@@ -21,11 +21,9 @@
 , languagetool
 , mu
 , msmtp
-, haskell
 , nodejs-slim
 , nodePackages
 , ocamlformat
-, ocamlPackages
 , sumneko-lua-language-server
 , pyright
 , rnix-lsp
@@ -54,8 +52,6 @@ let
         mu
         msmtp
         # lsp
-        haskell.packages.ghc942.haskell-language-server
-        ocamlPackages.ocaml-lsp
         pyright
         rnix-lsp
         rust-analyzer
