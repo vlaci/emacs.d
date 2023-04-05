@@ -33,9 +33,9 @@
                (window-height . 0.3)
                (dedicated . t)))
 
-(+set-defaults! eshell-where-to-jump 'begin
-                eshell-review-quick-commands nil
-                eshell-smart-space-goes-to-end t)
+;; (+set-defaults! eshell-where-to-jump 'begin
+;;                 eshell-review-quick-commands nil
+;;                 eshell-smart-space-goes-to-end t)
 
 (+after! eshell
   (add-to-list 'eshell-modules-list 'eshell-smart))

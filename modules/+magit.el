@@ -84,17 +84,6 @@
  magit-display-buffer-function #'+magit-display-buffer
  magit-bury-buffer-function #'magit-restore-window-configuration)
 
-(defvar +magit-map (make-keymap))
-
-(general-define-key
- :keymaps '+magit-map
- "g" #'magit-status
- "l" #'magit-log
- "b" #'magit-blame)
-
-(+after! meow
-  (meow-leader-define-key (cons "g" +magit-map)))
-
 (+after! magit
   (transient-append-suffix 'magit-pull "-r"
   '("-a" "Autostash" "--autostash")))
