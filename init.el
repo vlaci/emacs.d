@@ -146,17 +146,27 @@
 (let ((hook (if (daemonp)
                 'server-after-make-frame-hook
               'after-init-hook)))
+  (create-fontset-from-fontset-spec
+   (font-xlfd-name
+    (font-spec
+     :registry "fontset-nerdfont")))
+  (set-fontset-font "fontset-nerdfont" '(#x0e000 . #x0f8ff) "MesloLGS NF")
+  (set-fontset-font t nil "Iosevka Comfy")
   (add-hook hook
             (defun +setup-font ()
+              (let ((fixed-width (if (member "Berkeley Mono" (font-family-list))
+                       "Berkeley Mono"
+                     "Iosevka Comfy"))
+      (variable-width (if (member "Berkeley Mono Variable" (font-family-list))
+                          "Berkeley Mono Variable"
+                        "Iosevka Comfy Duo")))
+
               (set-face-attribute
                'default
                nil
                :font
                (font-spec
-                :name
-                (if (member "Berkeley Mono" (font-family-list))
-                    "Berkeley Mono"
-                  "Iosevka Comfy")
+                :name fixed-width
                 :size 14))
 
               (set-face-attribute
@@ -164,11 +174,9 @@
                nil
                :font
                (font-spec
-                :name
-                (if (member "Berkeley Mono Variable" (font-family-list))
-                    "Berkeley Mono Variable"
-                  "Iosevka Comfy Duo")
-                :size 14)))))
+                :name variable-width
+                :size 14))
+              ))))
 
 (use-package ligature
   :hook (after-init . global-ligature-mode)

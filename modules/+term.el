@@ -18,13 +18,23 @@
 
 ;;; Code:
 (require '+lib)
-(use-package vterm)
+(use-package vterm
+  :hook
+  (vterm-mode . (lambda ()
+                  (setq-local buffer-face-mode-face '+vterm-font)
+                  (buffer-face-mode)))
+  :init
+  (+set-defaults! vterm-max-scrollback 50000
+                  vterm-kill-buffer-on-exit t)
+  (defface +vterm-font '((t)) "Font for vterm" :group 'vterm)
+  (set-face-attribute '+vterm-font nil :fontset "fontset-nerdfont"))
+
 (use-package multi-vterm)
 
-(+set-defaults! vterm-max-scrollback 50000
-                vterm-kill-buffer-on-exit t)
+(use-package eat
+  :config
+  (set-face-attribute 'eat-term-font-default nil :fontset "fontset-nerdfont"))
 
-(use-package eat)
 
 ;; For `eat-eshell-mode'.
 (add-hook 'eshell-load-hook #'eat-eshell-mode)
