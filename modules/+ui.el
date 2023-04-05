@@ -166,6 +166,10 @@
 
 (defvar +after-load-theme-hook nil)
 (advice-add 'load-theme :after (lambda (&rest _) (run-hooks '+after-load-theme-hook)))
+(let ((hook (if (daemonp)
+                'server-after-make-frame-hook
+              'after-init-hook)))
+  (add-hook hook (lambda () (run-hooks '+after-load-theme-hook))))
 
 (defmacro +meow-prot-themes-custom-faces (theme)
   "Common face override for `modus' and `ef' THEMEs."

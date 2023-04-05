@@ -24,6 +24,11 @@
   :init
   (defun meow-setup ()
     (setq meow-cheatsheet-layout meow-cheatsheet-layout-colemak-dh)
+    (+set-defaults! meow-replace-state-name-list '((normal . "🅽")
+                                                   (beacon . "🅱")
+                                                   (insert . "🅸")
+                                                   (keypad . "🅺")
+                                                   (motion . "🅼")))
     (meow-motion-overwrite-define-key
      ;; Use e to move up, n to move down.
      ;; Since special modes usually use n to move down, we only overwrite e here.
@@ -105,14 +110,6 @@
      '("z" . meow-pop-selection)
      '("'" . repeat)
      '("<escape>" . ignore)))
-
-  (when window-system
-    (setq meow-replace-state-name-list
-          '((normal . "🅽")
-            (beacon . "🅱")
-            (insert . "🅸")
-            (motion . "🅼")
-            (keypad . "🅺"))))
   :config
   (meow-setup)
   (meow-global-mode))
