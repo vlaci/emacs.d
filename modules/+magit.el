@@ -86,7 +86,10 @@
 
 (+after! magit
   (transient-append-suffix 'magit-pull "-r"
-  '("-a" "Autostash" "--autostash")))
+    '("-a" "Autostash" "--autostash"))
+  (transient-replace-suffix 'magit-commit 'magit-commit-autofixup
+    '("x" "Absorb changes" magit-commit-absorb))
+  (setq transient-levels '((magit-commit (magit-commit-absorb . 1)))))
 
 (+after! project
   (define-key project-prefix-map "m" #'magit-project-status)
