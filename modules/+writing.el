@@ -26,9 +26,6 @@
 ;;;; Spell and language checking
 (use-package flymake-collection)
 
-(+set-defaults!
- ispell-dictionary "en_US,hu_HU")
-
 (add-hook 'text-mode-hook #'+flymake-text-mode-setup)
 
 (defun +flymake-text-mode-setup ()
@@ -38,7 +35,7 @@
 (use-package jinx
   :hook (emacs-startup . global-jinx-mode)
   :bind ([remap ispell-word] . jinx-correct)
-  :init (setq jinx-languages (list "en_US" "hu_HU")))
+  :init (setq jinx-languages "en_US hu_HU"))
 
 ;;;; Editing
 (use-package olivetti
