@@ -354,7 +354,12 @@
   (+after! ace-window
     (define-key embark-file-map     (kbd "o") (+embark-ace-action find-file))
     (define-key embark-buffer-map   (kbd "o") (+embark-ace-action switch-to-buffer))
-    (define-key embark-bookmark-map (kbd "o") (+embark-ace-action bookmark-jump))))
+    (define-key embark-bookmark-map (kbd "o") (+embark-ace-action bookmark-jump)))
+
+  (general-def embark-general-map "y" #'kill-new)
+  (general-def embark-symbol-map "h" #'helpful-symbol)
+  (general-def embark-command-map "h" #'helpful-command)
+  (general-def embark-variable-map "h" #'helpful-variable))
 
 
 (add-to-list 'display-buffer-alist
