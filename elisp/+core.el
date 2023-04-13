@@ -38,6 +38,19 @@
     `(set-defaults ,@pairs)))
 
 ;;;###autoload
+(defmacro +after-gui! (&rest body)
+  "Run BODY once after the first GUI frame is created."
+  (declare (indent 0) (debug t))
+  `(let ((hook (if (daemonp)
+                   'server-after-make-frame-hook
+                 'after-init-hook)))
+     (general-add-hook hook
+                       (lambda () ,@body)
+                       nil
+                       nil
+                       t)))
+
+;;;###autoload
 (defmacro +after! (feature &rest body)
   (declare (indent defun)(debug t))
   (when (bound-and-true-p byte-compile-current-file)
