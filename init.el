@@ -55,7 +55,7 @@
  mouse-yank-at-point t
  indent-tabs-mode nil
  tab-width 4
- global-auto-revert-non-file-buffers t  ;; for dired et al
+ global-auto-revert-non-file-buffers t ;; for dired et al
  recentf-max-saved-items 1000
  kill-do-not-save-duplicates t
  auto-window-vscroll nil

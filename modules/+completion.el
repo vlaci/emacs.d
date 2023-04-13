@@ -97,27 +97,27 @@
 
   (general-define-key
    :keymaps 'ctl-x-map
-   "M-:" #'consult-complex-command     ;; orig. repeat-complex-command
-   "b" #'consult-buffer                ;; orig. switch-to-buffer
-   "C-b" #'consult-buffer              ;; orig. buffer-menu
+   "M-:" #'consult-complex-command ;; orig. repeat-complex-command
+   "b" #'consult-buffer            ;; orig. switch-to-buffer
+   "C-b" #'consult-buffer          ;; orig. buffer-menu
    "4 b" #'consult-buffer-other-window ;; orig. switch-to-buffer-other-window
-   "5 b" #'consult-buffer-other-frame  ;; orig. switch-to-buffer-other-frame
-   "r b" #'consult-bookmark            ;; orig. bookmark-jump
-   "p b" #'consult-project-buffer      ;; orig. project-switch-to-buffer
-   "C-r" #'consult-recent-file)        ;; orig. find-file-read-only
+   "5 b" #'consult-buffer-other-frame ;; orig. switch-to-buffer-other-frame
+   "r b" #'consult-bookmark           ;; orig. bookmark-jump
+   "p b" #'consult-project-buffer ;; orig. project-switch-to-buffer
+   "C-r" #'consult-recent-file)   ;; orig. find-file-read-only
   (general-define-key
    :keymaps 'global-map
    "M-#" #'consult-register-load
-   "M-'" #'consult-register-store      ;; orig. abbrev-prefix-mark (unrelated)
+   "M-'" #'consult-register-store ;; orig. abbrev-prefix-mark (unrelated)
    "C-M-#" #'consult-register
-   "M-y" #'consult-yank-pop)           ;; orig. yank-pop
+   "M-y" #'consult-yank-pop) ;; orig. yank-pop
   (general-define-key
    :keymaps 'goto-map ;; M-g
    "e" #'consult-compile-error
-   "f" #'consult-flymake               ;; Alternative: consult-flycheck
-   "g" #'consult-goto-line             ;; orig. goto-line
-   "M-g" #'consult-goto-line           ;; orig. goto-line
-   "o" #'consult-outline               ;; Alternative: consult-org-heading
+   "f" #'consult-flymake     ;; Alternative: consult-flycheck
+   "g" #'consult-goto-line   ;; orig. goto-line
+   "M-g" #'consult-goto-line ;; orig. goto-line
+   "o" #'consult-outline     ;; Alternative: consult-org-heading
    "m" #'consult-mark
    "k" #'consult-global-mark
    "i" #'consult-imenu
@@ -137,18 +137,18 @@
    "e" #'consult-isearch-history)
   (general-define-key
    :keymaps 'isearch-mode-map
-   "M-e" #'consult-isearch-history     ;; orig. isearch-edit-string
-   "M-s e" #'consult-isearch-history   ;; orig. isearch-edit-string
-   "M-s l" #'consult-line              ;; needed by consult-line to detect isearch
-   "M-s L" #'consult-line-multi)       ;; needed by consult-line to detect isearch
+   "M-e" #'consult-isearch-history   ;; orig. isearch-edit-string
+   "M-s e" #'consult-isearch-history ;; orig. isearch-edit-string
+   "M-s l" #'consult-line ;; needed by consult-line to detect isearch
+   "M-s L" #'consult-line-multi) ;; needed by consult-line to detect isearch
   (general-define-key
    :keymaps 'minibuffer-local-map
-   "M-s" #'consult-history             ;; orig. next-matching-history-element
-   "M-r" #'consult-history)            ;; orig. previous-matching-history-element
+   "M-s" #'consult-history  ;; orig. next-matching-history-element
+   "M-r" #'consult-history) ;; orig. previous-matching-history-element
   (general-define-key
    :keymaps 'consult-narrow-map
    "?" #'consult-narrow-help)
-
+  :init
   (defvar +consult-project-history nil)
 
   (defvar +consult-source-project
