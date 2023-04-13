@@ -151,6 +151,8 @@ compilation via clearing the first two emtpy lines."
 (add-hook 'text-mode-hook #'+setup-whitespace-mode)
 
 ;;;; Undo management
+(use-package undo-fu-session
+  :ghook ('after-init-hook #'undo-fu-session-global-mode))
 
 (use-package vundo
   :after meow
@@ -163,9 +165,6 @@ compilation via clearing the first two emtpy lines."
  undo-limit (* 80 1024 1024)
  undo-strong-limit (* 120 1024 1024)
  undo-strong-limit (* 360 1024 1024))
-
-(use-package undohist
-  :hook (after-init . undohist-initialize))
 
 ;;;; Templating
 (use-package tempel
