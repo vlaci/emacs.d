@@ -24,8 +24,6 @@
 
 (require '+lib)
 
-(use-package dired-subtree)
-(use-package dired-narrow)
 (use-package diredfl)
 (use-package fd-dired)
 
@@ -45,27 +43,23 @@
   dired-clean-up-buffers-too t
   dired-clean-confirm-killing-deleted-buffers t)
 
-(+after! dired
-  (add-hook 'dired-mode-hook #'dired-hide-details-mode)
-  (add-hook 'dired-mode-hook #'hl-line-mode)
-  (add-hook 'dired-mode-hook #'diredfl-mode))
-
 (+after! dired-aux
   (add-to-list 'dired-compress-file-suffixes
                  '("\\.zip\\'" ".zip" "unzip")))
 
-(general-define-key
-  :keymaps 'dired-mode-map
-  "<tab>" #'dired-subtree-toggle
-  "<backtab>" #'dired-subtree-remove
-  "l" #'dired-hist-go-back
-  "r" #'dired-hist-go-forward
-  "/" #'dired-narrow)
-
-
 (general-define-key [remap find-dired] #'fd-dired)
 
-(add-hook 'after-init #'dired-hist-mode)
+(use-package dirvish
+  :gfhook ('after-init-hook #'dirvish-override-dired-mode)
+  :general
+  ('normal "-" #'dired)
+  (general-s "r" #'dirvish)
+  :config
+  (general-setq dirvish-attributes '(all-the-icons file-size vc-state))
+
+
+  ;; find-file preview
+  (dirvish-peek-mode))
 
 (provide '+dired)
 ;;; +dired.el ends here
