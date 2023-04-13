@@ -74,6 +74,8 @@
  system-time-locale "en_US"
  calendar-week-start-day 1)
 
+(use-package general)
+
 (require '+ui)
 
 (load custom-file 'noerror)
@@ -117,8 +119,6 @@
    which-key-sort-uppercase-first nil
    which-key-max-display-columns 5)
   (add-hook 'after-init-hook #'which-key-mode))
-
-(use-package general)
 
 ;;;; To improve help
 (use-package helpful)
