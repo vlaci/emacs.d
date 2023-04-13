@@ -38,18 +38,6 @@
     `(set-defaults ,@pairs)))
 
 ;;;###autoload
-(defmacro +install! (pkg &optional no-require)
-  "Install PKG when used outside of Nix build.
-Require PKG during byte-compoilation unless NO-REQUIRE is set."
-  (list
-   #'progn
-   (unless +nix-build?
-     `(when (not (package-installed-p ',pkg))
-        (package-install ',pkg)))
-   (when (and (not no-require) (or (not +nix-build?) (bound-and-true-p byte-compile-current-file)) (not (featurep pkg)))
-     `(eval-and-compile (require ',pkg nil 'noerror)))))
-
-;;;###autoload
 (defmacro +after! (feature &rest body)
   (declare (indent defun)(debug t))
   (when (bound-and-true-p byte-compile-current-file)
