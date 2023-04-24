@@ -4,7 +4,9 @@ final: prev:
 let
   eo = inputs.emacs-overlay.overlay final prev;
   customEmacsPackages = final.callPackage ./customEmacsPackages.nix { inherit inputs; };
-  emacs = (final.emacsPgtk.override {
+  emacs = ((final.emacsPgtk.overrideAttrs (prev: {
+    postFixup = builtins.replaceStrings [ "/bin/emacs" ] [ "/bin/.emacs-*-wrapped" ] prev.postFixup;
+  })).override {
     treeSitterPlugins = with final.tree-sitter-grammars; [
       tree-sitter-bash
       tree-sitter-beancount
