@@ -181,7 +181,11 @@ compilation via clearing the first two emtpy lines."
   (require 'no-littering)
   (+set-defaults! tempel-path (list (no-littering-expand-var-file-name "templates")
                                     (expand-file-name "templates/*.eld" +emacs-config-root))
-                  auto-save-file-name-transforms `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
+                  auto-save-file-name-transforms `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))
+                  backup-directory-alist
+                  `(("\\`/tmp/" . nil)
+                    ("\\`/dev/shm/" . nil)
+                    ("." . ,(no-littering-expand-var-file-name "backup/")))))
 
 (provide '+editing)
 ;;; +editing.el ends here
