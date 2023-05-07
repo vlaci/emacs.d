@@ -135,8 +135,6 @@
                               :initializationOptions
                               (:checkOnSave (:command "clippy"))))))
 
-(advice-add 'rustic-setup-eglot :override (lambda ()))
-
 (use-package realgud)
 
 (use-package direnv)
