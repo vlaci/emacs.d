@@ -89,8 +89,8 @@
    "\\`\\*helpful"))
 
 ;;;; Assets
-(use-package all-the-icons)
-(autoload #'all-the-icons-fileicon "all-the-icons")
+(use-package nerd-icons
+  :demand t)
 
 ;;;; Tabs
 
