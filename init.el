@@ -215,6 +215,8 @@
   :init
   (bitwarden-auth-source-enable))
 
+(use-package notmuch)
+
 (use-package elfeed)
 
 (require '+editing)
