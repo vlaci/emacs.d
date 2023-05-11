@@ -55,7 +55,7 @@
   ('normal "-" #'dired)
   (general-s "r" #'dirvish)
   :config
-  (general-setq dirvish-attributes '(all-the-icons file-size vc-state))
+  (general-setq dirvish-attributes '(file-size vc-state))
 
 
   ;; find-file preview
