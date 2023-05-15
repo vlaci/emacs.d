@@ -96,12 +96,12 @@
 
 (defun +tab-bar-format-menu-bar ()
   "Produce the Menu button for the tab bar that shows the menu bar."
-  (let* ((icon (all-the-icons-fileicon "emacs"))
+  (let* ((icon (nerd-icons-sucicon "nf-custom-emacs"))
          (props (get-text-property 0 'face icon)))
     (cl-destructuring-bind (&key family &allow-other-keys) props
-      (let ((icon (propertize (concat " " icon " ") 'face `( :inherit tab-bar
-                                                             :family ,family))))
-        `((menu-bar menu-item ,icon
+      (let ((icon (propertize icon 'face `( :inherit tab-bar
+                                            :family ,family))))
+        `((menu-bar menu-item ,(concat " " icon " ")
               tab-bar-menu-bar :help "Menu Bar"))))))
 
 (defun +tab-bar-tab-name-format-comfortable (tab i)
