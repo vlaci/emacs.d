@@ -17,69 +17,35 @@
 ;; commentary
 
 ;;; Code:
-(use-package persp-mode
-  :hook
-  (window-setup . (lambda ()
-                    (persp-mode 1)
-                    (persp-mode-project-bridge-mode 1)))
-
+(use-package tabspaces
+  :hook (after-init . tabspaces-mode)
   :init
-  (+set-defaults!
-   persp-nil-name "None"
-   persp-autokill-buffer-on-remove 'kill
-   persp-set-last-persp-for-new-frames t
-   persp-keymap-prefix (kbd "C-c C-p")
-   persp-mode-project-bridge-persp-name-prefix "🅿 ")
-  (advice-add 'persp-mode-project-bridge-hook-switch
-              :after (defun +persp-mode-project-bridge-hook-switch-advice(&rest args)
-                       (set-persp-parameter 'dont-save-to-file nil (get-current-persp))))
-
-  (add-hook 'persp-before-deactivate-functions
-            (defun +workspaces-save-tab-bar-data-h (_)
-              (when (get-current-persp)
-                (set-persp-parameter
-                 'tab-bar-tabs (tab-bar-tabs)))))
-
-  (add-hook 'persp-activated-functions
-            (defun +workspaces-load-tab-bar-data-h (_)
-              (tab-bar-tabs-set (persp-parameter 'tab-bar-tabs))
-              (tab-bar--update-tab-bar-lines t)))
-
-  (add-hook 'persp-before-saves
-            (defun +workspaces-save-tab-bar-data-to-file-h (&rest _)
-              (when (get-current-persp)
-                (set-persp-parameter 'tab-bar-tabs (frameset-filter-tabs (tab-bar-tabs) nil nil t)))))
-
-  (add-hook 'persp-after-load-state-functions
-            (defun +workspaces-load-state-h (&rest _)
-              (tab-bar-tabs-set (persp-parameter 'tab-bar-tabs))
-              (tab-bar--update-tab-bar-lines t)))
+  (+set-defaults! tabspaces-use-filtered-buffers-as-default t
+    tabspaces-default-tab "Default"
+    tabspaces-remove-to-default t
+    tabspaces-include-buffers '("*scratch*")
+    ;; sessions
+    tabspaces-session t
+    tabspaces-session-auto-restore t)
 
   (+after! consult
-    (defvar consult--source-persp-mode
-      `( :name "Perspective"
-         :narrow   ?s
-         :category buffer
-         :face     consult-buffer
-         :history  buffer-name-history
-         :state    ,#'consult--buffer-state
-         :default  t
-         :items
-         ,(lambda ()
-            (with-persp-buffer-list () (consult--buffer-query :sort 'visibility
-                                                              :as #'buffer-name)))))
+  ;; hide full buffer list (still available with "b" prefix)
+  ;(consult-customize consult--source-buffer :hidden t :default nil)
+  ;; set consult-workspace buffer list
+    (defvar consult--source-workspace
+      (list :name     "Workspace Buffers"
+            :narrow   ?w
+            :history  'buffer-name-history
+            :category 'buffer
+            :state    #'consult--buffer-state
+            :default  t
+            :items    (lambda () (consult--buffer-query
+                                  :predicate #'tabspaces--local-buffer-p
+                                  :sort 'visibility
+                                  :as #'buffer-name)))
 
-    (push consult--source-persp-mode consult-buffer-sources)))
-
-(use-package persp-mode-project-bridge
-  :after persp-mode
-  :hook
-  (persp-mode-project-bridge-mode .
-   (lambda ()
-     (if persp-mode-project-bridge-mode
-         (persp-mode-project-bridge-find-perspectives-for-all-buffers)
-       (persp-mode-project-bridge-kill-perspectives)))))
-
+      "Set workspace buffer list for consult-buffer.")
+    (add-to-list 'consult-buffer-sources 'consult--source-workspace)))
 
 (provide '+workspace)
 
