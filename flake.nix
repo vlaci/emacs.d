@@ -21,6 +21,8 @@
     bitwarden.flake = false;
     combobulate.url = "github:mickeynp/combobulate";
     combobulate.flake = false;
+    nushell-mode.url = "github:dschrempf/emacs-nushell/indent-line-fix";
+    nushell-mode.flake = false;
   };
 
   outputs = { self, nixpkgs, flake-utils, ... }@inputs:

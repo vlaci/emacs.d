@@ -45,9 +45,7 @@ in
   explain-pause-mode = build { pname = "explain-pause-mode"; };
   bitwarden = build { pname = "bitwarden"; };
   combobulate = build { pname = "combobulate"; };
-  inherit (final.melpaPackages) apheleia;
-  inherit (final.nongnuPackages) eat;
-  eglot = null;
+  nushell-mode = build { pname = "nushell-mode"; };
 
   jinx = prev.jinx.overrideAttrs (super: {
     buildInputs = [ enchant ];
@@ -58,4 +56,8 @@ in
       install -m 444 jinx-mod.so $out/share/emacs/site-lisp/elpa/jinx-*
     '';
   });
+
+  inherit (final.melpaPackages) apheleia;
+  inherit (final.nongnuPackages) eat;
+  eglot = null;
 }

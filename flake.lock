@@ -153,6 +153,23 @@
         "type": "github"
       }
     },
+    "nushell-mode": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1684094187,
+        "narHash": "sha256-3s+9gG6JKOmNdY6q1Z7q61mK8jDU7z1pzjCMgn5seqI=",
+        "owner": "dschrempf",
+        "repo": "emacs-nushell",
+        "rev": "dd523650686b5964d8f333fc9a0aa07d1e9c9048",
+        "type": "github"
+      },
+      "original": {
+        "owner": "dschrempf",
+        "ref": "indent-line-fix",
+        "repo": "emacs-nushell",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "bitwarden": "bitwarden",
@@ -163,7 +180,8 @@
         "flake-utils": "flake-utils",
         "fromElisp": "fromElisp",
         "ligature": "ligature",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "nushell-mode": "nushell-mode"
       }
     },
     "systems": {

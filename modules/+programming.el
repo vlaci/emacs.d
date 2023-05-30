@@ -147,6 +147,7 @@
 (use-package just-mode)
 (use-package lua-mode)
 (use-package nix-mode)
+(use-package nushell-mode)
 (use-package typescript-mode)
 (use-package web-mode)
 (use-package yaml-mode)
