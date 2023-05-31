@@ -26,11 +26,21 @@
 ;;;; Spell and language checking
 (use-package flymake-collection)
 
-(add-hook 'text-mode-hook #'+flymake-text-mode-setup)
-
 (defun +flymake-text-mode-setup ()
   (add-hook 'flymake-diagnostic-functions #'flymake-collection-proselint nil t)
   (flymake-mode))
+
+(use-package flymake
+  :ensure nil
+  :hook
+  (text-mode . +flymake-text-mode-setup)
+  :custom-face
+  (flymake-error-echo ((t (:height 0.7))))
+  (flymake-warning-echo ((t (:height 0.7))))
+  (flymake-note-echo ((t (:height 0.7))))
+  :init
+  (setq flymake-show-diagnostics-at-end-of-line t))
+
 
 (use-package jinx
   :hook (emacs-startup . global-jinx-mode)
