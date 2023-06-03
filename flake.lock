@@ -72,6 +72,39 @@
         "type": "github"
       }
     },
+    "evil-quick-diff": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1575189609,
+        "narHash": "sha256-oGzl1ayW9rIuq0haoiFS7RZsS8NFMdEA7K1BSozgnJU=",
+        "owner": "rgrinberg",
+        "repo": "evil-quick-diff",
+        "rev": "69c883720b30a892c63bc89f49d4f0e8b8028908",
+        "type": "github"
+      },
+      "original": {
+        "owner": "rgrinberg",
+        "repo": "evil-quick-diff",
+        "type": "github"
+      }
+    },
+    "evil-textobj-tree-sitter": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1689692553,
+        "narHash": "sha256-g7N7Tjn5dZOv0e/hTwbQddiLyMU/VkI2w0jiiwyTdTU=",
+        "owner": "meain",
+        "repo": "evil-textobj-tree-sitter",
+        "rev": "17490bdd9e20aaaba98a4e33173c9f19bd14d5ff",
+        "type": "github"
+      },
+      "original": {
+        "owner": "meain",
+        "ref": "treesit",
+        "repo": "evil-textobj-tree-sitter",
+        "type": "github"
+      }
+    },
     "explain-pause-mode": {
       "flake": false,
       "locked": {
@@ -247,6 +280,8 @@
         "combobulate": "combobulate",
         "eglot-x": "eglot-x",
         "emacs-overlay": "emacs-overlay",
+        "evil-quick-diff": "evil-quick-diff",
+        "evil-textobj-tree-sitter": "evil-textobj-tree-sitter",
         "explain-pause-mode": "explain-pause-mode",
         "flake-utils": "flake-utils",
         "fromElisp": "fromElisp",

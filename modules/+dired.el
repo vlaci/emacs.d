@@ -55,8 +55,38 @@
   ('normal "-" #'dired)
   (general-s "r" #'dirvish)
   :config
+  (evil-make-overriding-map dirvish-mode-map 'normal)
   (general-setq dirvish-attributes '(file-size vc-state))
 
+  (defun +dirvish-move ()
+    (interactive)
+    (dirvish--yank 'move))
+
+  (defun +dirvish-relalink ()
+    (interactive)
+    (dirvish--yank 'relalink))
+
+  (defun +dirvish-symlink ()
+    (interactive)
+    (dirvish--yank 'symlink))
+
+  (general-def 'normal dirvish-mode-map
+    "a" #'dirvish-dispatch
+    "q" #'dirvish-quit
+
+    "b" #'dirvish-show-history
+
+    "yp" #'dirvish-copy-file-path
+    "yn" #'dirvish-copy-file-name
+    "yd" #'dirvish-copy-file-directory
+
+    "pp" #'dirvish-yank
+    "pm" #'+dirvish-move
+    "pl" #'+dirvish-symlink
+    "pL" #'+dirvish-relalink
+
+    "oo" #'dirvish-quicksort
+    "oO" #'dired-sort-toggle-or-edit)
 
   ;; find-file preview
   (dirvish-peek-mode))

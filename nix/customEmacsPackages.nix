@@ -46,6 +46,11 @@ in
   bitwarden = build { pname = "bitwarden"; };
   combobulate = build { pname = "combobulate"; };
   nushell-mode = build { pname = "nushell-mode"; };
+  evil-quick-diff = build { pname = "evil-quick-diff"; };
+  evil-textobj-tree-sitter = build {
+    pname = "evil-textobj-tree-sitter";
+    files = [ "*.el" "queries" "treesit-queries" ];
+  };
 
   general = prev.general.overrideAttrs (super: {
     patches = [ ./general.patch ];

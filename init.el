@@ -63,7 +63,11 @@
  scroll-conservatively 101
  scroll-margin 0
  scroll-preserve-screen-position t
- savehist-save-minibuffer-history t
+ savehist-additional-variables '(mark-ring
+                                 global-mark-ring
+                                 search-ring
+                                 regexp-search-ring
+                                 extended-command-history)
  history-length 1000
  history-delete-duplicates t
  delete-old-versions t
@@ -74,7 +78,41 @@
  system-time-locale "en_US"
  calendar-week-start-day 1)
 
-(use-package general)
+(use-package general
+  :demand t
+  :init
+  (general-auto-unbind-keys)
+
+  (eval-and-compile
+    (general-create-definer general-leader
+      :states 'normal
+      :keymaps 'override
+      :prefix "SPC")
+
+    (general-create-definer general-t
+      :states 'normal
+      :keymaps 'override
+      :prefix "t")
+
+    (general-create-definer general-r
+      :states '(motion normal)
+      :prefix "r")
+
+    (general-create-definer general-rr
+      :states '(motion normal)
+      :prefix "rr")
+
+    (general-create-definer general-s
+      :keymaps 'normal
+      :prefix "s")
+
+    (general-create-definer general-m
+      :states 'normal
+      :prefix "m")
+
+    (general-create-definer general-comma
+      :states 'normal
+      :prefix ",")))
 
 (require '+ui)
 

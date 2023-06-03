@@ -85,10 +85,20 @@
   :bind (:map minibuffer-local-map ("M-a" . marginalia-cycle)))
 
 (use-package consult
-  :init
-  (+set-defaults!
-   meow-goto-line-function #'consult-goto-line)
-
+  :general
+  (general-def 'normal
+    "g/" #'consult-keep-lines)
+  (general-leader
+    "f" #'consult-buffer
+    "k" #'consult-find
+    "u" (list :def #'consult-outline :jump t)
+    "y" (general-predicate-dispatch #'consult-imenu
+          (eq major-mode 'org-mode)
+          #'consult-org-heading)
+    "/" #'consult-ripgrep)
+  ('normal "/" (list :def #'consult-line
+                     :jump t))
+  (general-t "p" #'consult-yank-from-kill-ring)
   (general-define-key
    :keymaps 'mode-specific-map
    "h" #'consult-history
@@ -330,9 +340,14 @@
 
 (use-package embark-consult)
 (use-package embark
-  :bind (([remap describe-bindings] . embark-bindings)
-         ("C-." . #'embark-act)
-         ("C-;" . #'embark-dwim))
+  :general
+  (general-def
+   [remap describe-bindings] #'embark-bindings
+   "C-;" #'embark-act
+   "C-," #'embark-dwim)
+  (general-t
+    "d" #'embark-dwim
+    "a" #'embark-act)
   :init
   (setq prefix-help-command #'embark-prefix-help-command)
 
