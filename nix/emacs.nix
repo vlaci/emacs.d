@@ -13,7 +13,6 @@
 , lttng-ust
 , writeText
 , graphviz
-, vscode-extensions
 , hunspellDicts
 , proselint
 , fd
