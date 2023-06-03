@@ -171,6 +171,22 @@
               'after-init-hook)))
   (add-hook hook (lambda () (run-hooks '+after-load-theme-hook))))
 
+(defmacro +meow-prot-themes-custom-faces (theme)
+  "Common face override for `modus' and `ef' THEMEs."
+  (let ((theme-name (symbol-name theme)))
+    `(defun ,(intern (concat "+meow-" theme-name "-custom-faces")) ()
+       (+after! meow
+         (eval
+          '(,(intern (concat theme-name "-with-colors"))
+            (set-face-attribute 'meow-beacon-indicator nil :foreground magenta)
+            (set-face-attribute 'meow-insert-indicator nil :foreground red)
+            (set-face-attribute 'meow-keypad-indicator nil :foreground cyan)
+            (set-face-attribute 'meow-motion-indicator nil :foreground fg-dim)
+            (set-face-attribute 'meow-normal-indicator nil :foreground blue)))))))
+
+(add-hook 'modus-themes-after-load-theme-hook (+meow-prot-themes-custom-faces modus-themes))
+(add-hook 'ef-themes-post-load-hook (+meow-prot-themes-custom-faces ef-themes))
+
 (add-hook '+after-load-theme-hook #'+customize-prot-theme)
 
 (defun +customize-prot-theme (&rest _)
