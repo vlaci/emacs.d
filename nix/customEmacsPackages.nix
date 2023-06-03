@@ -47,6 +47,9 @@ in
   combobulate = build { pname = "combobulate"; };
   nushell-mode = build { pname = "nushell-mode"; };
 
+  general = prev.general.overrideAttrs (super: {
+    patches = [ ./general.patch ];
+  });
   jinx = prev.jinx.overrideAttrs (super: {
     buildInputs = [ enchant ];
     preBuild = ''

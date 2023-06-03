@@ -1,0 +1,16 @@
+--- a/general.el	1970-01-01 01:00:01.000000000 +0100
++++ b/general.el	2023-06-03 15:55:11.680792074 +0200
+@@ -1357,13 +1357,6 @@
+         (definer (or wrapping 'general-def)))
+     `(defmacro ,name (&rest args)
+        (declare (indent defun))
+-       ,(let ((print-quoted t))
+-          (format
+-           "A wrapper for `%s'.
+-
+-It has the following defaults:
+-%s"
+-           definer defaults))
+        ;; can still override keywords afterwards (first keyword takes precedence)
+        `(,',definer
+           ,@args ,@',defaults))))
