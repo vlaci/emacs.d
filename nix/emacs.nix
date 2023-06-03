@@ -135,7 +135,45 @@ let
     let
       packagesFun = epkgs:
         map (n: epkgs.${n}) packages;
-      extra = extraPackages epkgs;
+      extra = (extraPackages epkgs) ++ [
+        (epkgs.treesit-grammars.with-grammars (g: with g; [
+          tree-sitter-bash
+          tree-sitter-beancount
+          tree-sitter-c
+          tree-sitter-c-sharp
+          tree-sitter-cmake
+          tree-sitter-cpp
+          tree-sitter-css
+          tree-sitter-dockerfile
+          tree-sitter-elisp
+          tree-sitter-go
+          tree-sitter-gomod
+          tree-sitter-graphql
+          tree-sitter-haskell
+          tree-sitter-html
+          tree-sitter-http
+          tree-sitter-java
+          tree-sitter-javascript
+          tree-sitter-json
+          tree-sitter-julia
+          tree-sitter-lua
+          tree-sitter-make
+          tree-sitter-markdown
+          tree-sitter-nix
+          tree-sitter-nu
+          tree-sitter-ocaml
+          tree-sitter-python
+          tree-sitter-regex
+          tree-sitter-ruby
+          tree-sitter-rust
+          tree-sitter-scala
+          tree-sitter-toml
+          tree-sitter-tsx
+          tree-sitter-typescript
+          tree-sitter-yaml
+          tree-sitter-zig
+        ]))
+      ];
     in
     extra
   );
