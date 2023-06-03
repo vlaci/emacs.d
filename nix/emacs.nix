@@ -19,6 +19,7 @@
 , fd
 , jre
 , languagetool
+, marksman
 , mu
 , msmtp
 , nodejs-slim
@@ -51,6 +52,7 @@ let
         mu
         msmtp
         # lsp
+        marksman
         pyright
         rnix-lsp
         sumneko-lua-language-server
