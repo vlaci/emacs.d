@@ -259,7 +259,7 @@
   :after corfu
   :demand t
   :init
-  (gsetq
+  (general-setq
    kind-icon-default-face 'corfu-default ;; to compute blended backgrounds correctly
    kind-icon-use-icons nil
    kind-icon-mapping
