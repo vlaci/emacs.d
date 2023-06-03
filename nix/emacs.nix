@@ -27,7 +27,6 @@
 , sumneko-lua-language-server
 , pyright
 , rnix-lsp
-, rust-analyzer
 , zls
 , black
 , clang-tools
@@ -54,7 +53,6 @@ let
         # lsp
         pyright
         rnix-lsp
-        rust-analyzer
         sumneko-lua-language-server
         zls
         # formatters for apheleia
@@ -87,7 +85,7 @@ let
         let
           configText = builtins.readFile f;
         in
-          parse.parsePackagesFromUsePackage { inherit configText; alwaysEnsure = true; })
+        parse.parsePackagesFromUsePackage { inherit configText; alwaysEnsure = true; })
       files);
 
   emacsPackages = emacsPackagesFor emacs;
