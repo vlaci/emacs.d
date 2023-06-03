@@ -205,13 +205,15 @@
                                      (+save-current-theme)))
 
 ;;;; Modeline
-(use-package doom-modeline)
-(add-hook 'after-init-hook #'doom-modeline-mode)
-(+set-defaults!
- doom-modeline-height 15
- doom-modeline-bar-width 6
- doom-modeline-buffer-encoding 'nondefault
- doom-modeline-buffer-file-name-style 'truncate-upto-project)
+(use-package doom-modeline
+  :hook
+  (after-init . doom-modeline-mode)
+  :init
+  (+set-defaults!
+   doom-modeline-height 15
+   doom-modeline-bar-width 6
+   doom-modeline-buffer-encoding 'nondefault
+   doom-modeline-buffer-file-name-style 'truncate-upto-project))
 
 (add-hook 'after-init-hook #'size-indication-mode)
 (add-hook 'after-init-hook #'column-number-mode)
