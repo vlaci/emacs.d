@@ -23,6 +23,11 @@
 ;;; Code:
 (require '+lib)
 
+(use-package darkman
+  :ghook ('after-init-hook #'darkman-mode)
+  :init
+  (general-setq darkman-themes '(:light modus-operandi-tinted :dark modus-vivendi-tinted)))
+
 ;;;; Window management
 
 (use-package ace-window)
