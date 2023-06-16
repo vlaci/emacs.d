@@ -21,12 +21,12 @@
 , marksman
 , mu
 , msmtp
+, nil
 , nodejs-slim
 , nodePackages
 , ocamlformat
 , sumneko-lua-language-server
 , pyright
-, rnix-lsp
 , zls
 , black
 , clang-tools
@@ -52,8 +52,8 @@ let
         msmtp
         # lsp
         marksman
+        nil
         pyright
-        rnix-lsp
         sumneko-lua-language-server
         zls
         # formatters for apheleia

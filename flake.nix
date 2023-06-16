@@ -23,9 +23,10 @@
     combobulate.flake = false;
     nushell-mode.url = "github:dschrempf/emacs-nushell/indent-line-fix";
     nushell-mode.flake = false;
+    nil.url = "github:oxalica/nil";
   };
 
-  outputs = { self, nixpkgs, flake-utils, ... }@inputs:
+  outputs = { self, nixpkgs, flake-utils, nil, ... }@inputs:
     rec {
       overlay = import ./nix/overlay.nix { inherit inputs; };
       lib.hmModule = import ./nix/hmModule.nix { inherit overlay; };
@@ -34,7 +35,7 @@
       let
         pkgs = import nixpkgs {
           inherit system;
-          overlays = [ self.overlay ];
+          overlays = [ self.overlay nil.overlays.default ];
         };
       in
       {

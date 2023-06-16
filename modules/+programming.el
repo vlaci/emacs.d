@@ -130,7 +130,8 @@
  rustic-lsp-client 'eglot)
 
 (+after! eglot
-    (add-to-list 'eglot-server-programs
+  (add-to-list 'eglot-server-programs '(nix-mode . ("nil")))
+  (add-to-list 'eglot-server-programs
                '(rustic-mode .
                              ("rust-analyzer"
                               :initializationOptions
