@@ -204,7 +204,7 @@
                #'dockerfile-ts-mode-hook
                #'dockerfile-mode-hook
                #'markdown-mode-hook))
-  (add-hook hook #'eglot-ensure))
+  (add-hook hook #'eglot-ensure 50))
 
 (use-package combobulate)
 (autoload #'combobulate-mode "combobulate" nil t)
