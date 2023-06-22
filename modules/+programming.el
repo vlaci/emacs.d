@@ -96,14 +96,24 @@
   :hook (tuareg-mode . eglot-ensure))
 
 ;;;; Python
-(use-package pyvenv)
+(use-package pyvenv
+  :ghook ('python-base-mode-hook #'+pyvenv-autoload))
+
+(cl-defun +pyvenv-autoload ()
+  "Automatically activates pyvenv version if .venv directory exists."
+  (f-traverse-upwards
+   (lambda (path)
+     (let ((venv-path (f-expand ".venv" path)))
+       (when (f-exists? venv-path)
+         (pyvenv-activate venv-path)
+         (cl-return-from +pyvenv-autoload))))))
+
 (use-package python-docstring)
 (use-package poetry)
 (use-package pippel)
 (use-package pdb-capf)
 
 (+set-defaults!
- pyvenv-default-virtual-env-name ".venv"
  python-indent-def-block-scale 1)
 
 (add-hook 'python-base-mode-hook #'+setup-python-mode)
