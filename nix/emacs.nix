@@ -1,18 +1,10 @@
 { lib
 , pkgs
 , inputs
-, autoPatchelfHook
 , emacsPackagesFor
 , emacs
-, fetchFromGitHub
 , runCommand
 , substituteAll
-, stdenv
-, libkrb5
-, zlib
-, lttng-ust
-, writeText
-, graphviz
 , hunspellDicts
 , proselint
 , fd
@@ -22,7 +14,6 @@
 , mu
 , msmtp
 , nil
-, nodejs-slim
 , nodePackages
 , ocamlformat
 , sumneko-lua-language-server
@@ -32,7 +23,6 @@
 , clang-tools
 , isort
 , nixpkgs-fmt
-, fromElisp
 , extraPackages ? (_: [ ])
 , impure ? { }
 }:
