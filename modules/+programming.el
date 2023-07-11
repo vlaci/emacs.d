@@ -266,7 +266,10 @@
 
 (use-package cov)
 
-(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+(setq
+ ediff-keep-variants nil
+ ediff-split-window-function #'split-window-horizontally
+ ediff-window-setup-function #'ediff-setup-windows-plain)
 
 (provide '+programming)
 
