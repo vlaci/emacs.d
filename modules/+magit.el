@@ -78,6 +78,7 @@
       (+magit--kill-diff-buffers-in-current-repo))))
 
 (+set-defaults!
+ magit-prefer-remote-upstream t
  magit-save-repository-buffers nil
  magit-diff-refine-hunk t
  magit-diff-refine-hunk t
