@@ -87,7 +87,8 @@
 
 (+after! magit
   (transient-append-suffix 'magit-pull "-r"
-    '("-a" "Autostash" "--autostash"))
+    '("-a" "Autostash" "--autostash")))
+(+after! magit-commit
   (transient-replace-suffix 'magit-commit 'magit-commit-autofixup
     '("x" "Absorb changes" magit-commit-absorb))
   (setq transient-levels '((magit-commit (magit-commit-absorb . 1)))))
