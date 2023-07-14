@@ -248,7 +248,7 @@
 
 (add-hook 'after-init-hook #'lin-global-mode)
 
-(use-package hyperbole :disabled)
+(use-package hyperbole)
 
 ;;;; Dashboard
 
