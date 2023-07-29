@@ -35,7 +35,7 @@
       let
         pkgs = import nixpkgs {
           inherit system;
-          overlays = [ self.overlay nil.overlays.default ];
+          overlays = [ self.overlay ];
         };
       in
       {

@@ -10,4 +10,5 @@ in
 eo // fromElisp // {
   emacsPackagesFor = emacs: (eo.emacsPackagesFor emacs).overrideScope' customEmacsPackages;
   emacsVlaci = final.callPackage ./emacs.nix { inherit emacs inputs; };
+  nil = inputs.nil.packages.${final.system}.default;
 }
