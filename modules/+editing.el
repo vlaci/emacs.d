@@ -330,6 +330,7 @@
 
 (use-package evil-traces
   :after evil
+  :init (defvaralias 'evil-ex-cmd evil--ex-cmd)
   :hook
   (after-init . (lambda ()
   (evil-traces-mode)
