@@ -26,8 +26,6 @@
     nil.url = "github:oxalica/nil";
     evil-quick-diff.url = "github:rgrinberg/evil-quick-diff";
     evil-quick-diff.flake = false;
-    evil-textobj-tree-sitter.url = "github:meain/evil-textobj-tree-sitter/treesit";
-    evil-textobj-tree-sitter.flake = false;
   };
 
   outputs = { self, nixpkgs, flake-utils, nil, ... }@inputs:
