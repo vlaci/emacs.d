@@ -59,6 +59,7 @@ let
     in
     emacsPackages.trivialBuild {
       pname = "nix-integration";
+      version = "1.0.0";
       src = substituteAll {
         src = ./nix-integration.el;
         inherit extra_exec_path;
