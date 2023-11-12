@@ -17,7 +17,7 @@
 , nodePackages
 , ocamlformat
 , sumneko-lua-language-server
-, pyright
+, python3
 , zls
 , black
 , clang-tools
@@ -31,6 +31,20 @@ let
 
   parse = pkgs.callPackage "${inputs.emacs-overlay}/parse.nix" { };
   dicts = with hunspellDicts; [ hu-hu en-us-large ];
+  python3' = python3.override {
+    packageOverrides = final: prev: {
+      python-lsp-server = prev.python-lsp-server.overridePythonAttrs (super: {
+        patches = [ ./python-lsp-server.patch ];
+      });
+    };
+  };
+
+  python-env = python3'.withPackages (ps: with ps; [
+    python-lsp-server
+    python-lsp-ruff
+    pylsp-rope
+    pylsp-mypy
+  ]);
   emacs-nix-integration =
     let
       binaries = [
@@ -43,7 +57,7 @@ let
         # lsp
         marksman
         nil
-        pyright
+        python-env
         sumneko-lua-language-server
         zls
         # formatters for apheleia

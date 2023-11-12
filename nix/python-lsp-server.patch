@@ -1,0 +1,11 @@
+--- a/pylsp/python_lsp.py
++++ b/pylsp/python_lsp.py
+@@ -858,7 +858,7 @@
+                 if doc_uri not in changed_py_files:
+                     self.lint(doc_uri, is_saved=False)
+ 
+-    def m_workspace__execute_command(self, command=None, arguments=None):
++    def m_workspace__execute_command(self, command=None, arguments=None, **_kwargs):
+         return self.execute_command(command, arguments)
+ 
+ 
