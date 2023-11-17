@@ -1,4 +1,2 @@
-*.*~
-auto-save-list/
-straight/
 /.direnv/
+/org/org-roam.db

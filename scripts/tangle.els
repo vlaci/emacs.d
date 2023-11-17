@@ -1,0 +1,21 @@
+#! /usr/bin/env nix
+#! nix shell .#emacs -c emacs --script
+
+(require 'org-roam)
+(require 'project)
+
+(setq org-roam-directory (expand-file-name "./org"))
+(setq org-roam-db-location (expand-file-name "./org/org-roam.db"))
+
+(defun +organized-entanglement ()
+  (interactive)
+  (let (contents
+        (export-file (concat (project-root (project-current)) (make-temp-name ".entangle.") ".org"))
+        (files (org-roam-list-files)))
+    (dolist (file files)
+      (when (file-regular-p file)
+        (push (with-temp-buffer (insert-file-contents file) (buffer-string))
+              contents)))
+    (write-region (mapconcat #'identity contents "\n") nil export-file)
+    (org-babel-tangle-file export-file)
+    (delete-file export-file)))

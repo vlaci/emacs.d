@@ -1,0 +1,77 @@
+* Boilerplates
+
+#+begin_src emacs-lisp
+;;; -*- lexical-binding: t -*-
+#+end_src
+
+** Custom
+#+begin_src emacs-lisp
+  (setq custom-file (expand-file-name "etc/settings.el" user-emacs-directory))
+  (load custom-file 'noerror)
+#+end_src
+
+** Setup.el
+
+#+begin_src emacs-lisp :noweb no-export
+;; test <<ref>>
+#+end_src
+
+#+begin_src emacs-lisp :noweb-ref ref
+;; reference
+#+end_src
+
+#+begin_src emacs-lisp
+(eval-when-compile
+  (require 'setup)
+  (require 'cl-lib)
+  (defmacro defsetup (name signature &rest body)
+    "Shorthand for `setup-define'.
+NAME is the name of the local macro.  SIGNATURE is used as the
+argument list for FN.  If BODY starts with a string, use this as
+the value for :documentation.  Any following keywords are passed
+as OPTS to `setup-define'."
+    (declare (debug defun))
+    (let (opts)
+      (when (stringp (car body))
+        (setq opts (nconc (list :documentation (pop body))
+                          opts)))
+      (while (keywordp (car body))
+        (let* ((prop (pop body))
+               (val `',(pop body)))
+          (setq opts (nconc (list prop val) opts))))
+      `(setup-define ,name
+                     (cl-function (lambda ,signature ,@body))
+                     ,@opts))))
+#+end_src
+
+Do not install packages, let Nix handle it
+#+begin_src emacs-lisp
+(eval-when-compile
+ (defsetup :package (package)
+    "Fake installation of PACKAGE."
+    :repeatable t
+    :shorthand cadr))
+#+end_src
+
+#+begin_src emacs-lisp
+(eval-when-compile
+  (defsetup
+   :set (&rest args)
+   "Set the default values of variables."
+   `(setq-default ,@args)))
+#+end_src
+
+#+begin_src emacs-lisp
+  (message "FOOO %s" (package-installed-p 'gcmh))
+  (setup (:package gcmh)
+         (:hook-into after-init-hook)
+           (:set gcmh-verbose init-file-debug
+                 gcmh-high-cons-threshold (* 128 1024 1024)))
+#+end_src
+
+#+begin_src emacs-lisp
+(setup autorevert
+       (:set auto-revert-avoid-polling t)
+       (:with-mode global-auto-revert-mode
+                   (:hook-into after-init-hook)))
+#+end_src

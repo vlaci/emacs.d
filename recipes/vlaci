@@ -1,0 +1,1 @@
+(vlaci :fetcher github :repo "akirak/trivial-elisps" :files ("elisp/*.el"))
