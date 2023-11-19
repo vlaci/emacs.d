@@ -30,11 +30,10 @@
             initDirectory = ./emacs.d;
             extraPackages = [ "setup" ];
             localPackages = {
-              vlaci = { src = ./elisp/vlaci.el; };
+              vlaci = { src = ./elisp; };
             };
           };
           packages.default = config.vl-emacs;
-
         };
       }
     );

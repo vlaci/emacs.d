@@ -33,11 +33,41 @@ let
                   emacs-with-packages = (emacsPackages cfg.localPackages).emacsWithPackages (
                     epkgs: map (ename: epkgs.${ename}) (detectedPackages.elispPackages ++ cfg.extraPackages)
                   );
+
                 in
                 emacs-with-packages.overrideAttrs (super: {
-                  buildCommand = super.buildCommand + ''
+                  deps = super.deps.overrideAttrs (dsuper:
+                    let
+                      genAutoloadsCommand = ''
+                        echo "-- Generating autoloads..."
+                        autoloads=$out/share/emacs/site-lisp/autoloads.el
+                        for pkg in "''${requires[@]}"; do
+                          autoload=("$pkg"/share/emacs/site-lisp/*/*/*-autoloads.el)
+                          if [[ -e "$autoload" ]]; then
+                            cat "$autoload" >> "$autoloads"
+                          fi
+                        done
+                        echo "(load \"''$autoloads\")" >> "$siteStart"
+
+                        # Byte-compiling improves start-up time only slightly, but costs nothing.
+                        $emacs/bin/emacs --batch -f batch-byte-compile "$autoloads" "$siteStart"
+
+                        $emacs/bin/emacs --batch \
+                          --eval "(add-to-list 'native-comp-eln-load-path \"$out/share/emacs/native-lisp/\")" \
+                          -f batch-native-compile "$autoloads" "$siteStart"
+                      '';
+                    in
+                    {
+                      buildCommand = ''
+                        ${dsuper.buildCommand}
+                        ${genAutoloadsCommand}
+                      '';
+                    });
+                  buildCommand = ''
+                    ${super.buildCommand}
                     wrapProgram $out/bin/emacs \
                                 --append-flags "--init-directory ${toString cfg.initDirectory}"
+
                   '';
                 });
 
