@@ -111,7 +111,7 @@ let
         in
         final.melpaBuild ({
           inherit version src;
-          commit = src.rev or inputs.self.sourceInfo.rev or inputs.self.sourceInfo.dirtyRev;
+          commit = src.rev or inputs.self.sourceInfo.rev or (lib.traceValSeq inputs.self.sourceInfo).dirtyRev;
           recipe = pkgs.writeText "recipe" ''
             (${pname}
             :fetcher git

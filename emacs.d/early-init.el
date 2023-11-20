@@ -16,3 +16,6 @@
              (setq file-name-handler-alist ',file-name-handler-alist))
           0)
 (setq file-name-handler-alist nil)
+
+(require 'xdg)
+(setq user-emacs-directory (expand-file-name "emacs" (xdg-config-home)))

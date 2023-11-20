@@ -23,15 +23,26 @@ as OPTS to `setup-define'."
                      ,@opts))))
 
 (eval-when-compile
- (define-setup-macro :package (package)
-    "Fake installation of PACKAGE."
-    :repeatable t
-    :shorthand cadr))
+  (define-setup-macro :package (package)
+                      "Fake installation of PACKAGE."
+                      :repeatable t
+                      :shorthand cadr))
 
 (eval-when-compile
   (define-setup-macro
    :set (&rest args)
    "Set the default values of variables."
    `(setq-default ,@args)))
+
+(eval-when-compile
+(setup-define :after-gui
+  (lambda (&rest body)
+    `(let ((hook (if (daemonp)
+                     'server-after-make-frame-hook
+                   'after-init-hook)))
+       (add-hook hook (lambda () ,@body))))
+  :documentation "Run BODY once after the first GUI frame is created."
+  :debug '(setup)
+  :indendt 0))
 
 (provide 'vl-setup)
