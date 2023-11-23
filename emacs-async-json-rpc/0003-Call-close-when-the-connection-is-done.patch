@@ -1,0 +1,24 @@
+From bad8cbc3714a81acdc5cb9b2c3499af5715b5cb4 Mon Sep 17 00:00:00 2001
+From: Ivan Yonchovski <yyoncho@gmail.com>
+Date: Wed, 9 Nov 2022 07:53:59 +0200
+Subject: [PATCH 03/13] Call close when the connection is done
+
+---
+ src/json.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/json.c b/src/json.c
+index bce4be18a79..c87f156432c 100644
+--- a/src/json.c
++++ b/src/json.c
+@@ -1317,6 +1317,7 @@ DEFUN ("json-rpc", Fjson_rpc, Sjson_rpc, 1, MANY,
+       }
+     }
+   CALLN (Ffuncall, callback, Qnil, Qnil, Qt);
++  param->handle->close(param->handle);
+   return Qnil;
+ }
+ 
+-- 
+2.42.0
+

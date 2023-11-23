@@ -16,7 +16,8 @@ let
               package = mkOption { type = types.package; };
               initDirectory = mkOption { type = types.path; };
               extraPackages = mkOption { type = with types; listOf str; default = [ ]; };
-              localPackages = mkOption { type = with types; attrsOf unspecified; default = { }; };
+              localPackages = mkOption { type = with types; unspecified; default = _: { }; };
+              overrides = mkOption { type = types.unspecified; default = _: _: { }; };
 
               _wrapper = mkOption { type = types.package; internal = true; };
               name = mkOption { type = types.str; internal = true; };
@@ -33,7 +34,6 @@ let
                   emacs-with-packages = (emacsPackages cfg.localPackages).emacsWithPackages (
                     epkgs: map (ename: epkgs.${ename}) (detectedPackages.elispPackages ++ cfg.extraPackages)
                   );
-
                 in
                 emacs-with-packages.overrideAttrs (super: {
                   deps = super.deps.overrideAttrs (dsuper:
@@ -63,11 +63,15 @@ let
                         ${genAutoloadsCommand}
                       '';
                     });
-                  buildCommand = ''
+                  buildCommand = let
+                      dicts = with pkgs.hunspellDicts; [ hu-hu en-us-large ];
+                      dictSearchPath = lib.makeSearchPath "share/hunspell" dicts;
+                  in ''
                     ${super.buildCommand}
                     wrapProgram $out/bin/emacs \
-                                --append-flags "--init-directory ${toString cfg.initDirectory}"
-
+                                --append-flags "--init-directory ${toString cfg.initDirectory}" \
+                                --suffix PATH : ${with lib; pipe detectedPackages.nixPackages [(map (name: pkgs.${name})) makeBinPath escapeShellArg]} \
+                                --prefix DICPATH : ${lib.escapeShellArg dictSearchPath}
                   '';
                 });
 
@@ -111,7 +115,7 @@ let
         in
         final.melpaBuild ({
           inherit version src;
-          commit = src.rev or inputs.self.sourceInfo.rev or (lib.traceValSeq inputs.self.sourceInfo).dirtyRev;
+          commit = src.rev or inputs.self.sourceInfo.rev or inputs.self.sourceInfo.dirtyRev;
           recipe = pkgs.writeText "recipe" ''
             (${pname}
             :fetcher git
@@ -125,7 +129,8 @@ let
         builtins.attrValues
       ]);
     })
-    (final: prev: lib.mapAttrs (pname: value: final.mkPackage ({ inherit pname; } // value)) extraEmacsPackages)
+    (final: prev: lib.mapAttrs (pname: value: final.mkPackage ({ inherit pname; } // value)) (extraEmacsPackages final))
+    cfg.overrides
   ]);
 
 

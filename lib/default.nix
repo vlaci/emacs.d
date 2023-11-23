@@ -60,14 +60,10 @@
         lib.unique
       ];
     
-      systemPackages =
-        if isString nixpkgsKeyword
-        then
-        lib.pipe (collect nixpkgsKeyword setups) [
+      nixPackages = lib.pipe (collect nixpkgsKeyword setups) [
           lib.concatLists
           lib.unique
-        ]
-        else [];
+        ];
       }
     ;
 } // lib

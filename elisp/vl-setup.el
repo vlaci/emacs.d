@@ -1,4 +1,5 @@
-;; -*- lexical-binding: t -*-
+;;; vl-setup.el --- setup.el extensions -*- lexical-binding: t -*-
+;; Package-Requires: ((setup "1.3.2"))
 
 (eval-when-compile
   (require 'setup)
@@ -29,6 +30,10 @@ as OPTS to `setup-define'."
                       :shorthand cadr))
 
 (eval-when-compile
+  (define-setup-macro :nixpkgs (&rest nixpkgs)
+                      "Fake installation of packages from NIXPKGS for executables."))
+
+(eval-when-compile
   (define-setup-macro
    :set (&rest args)
    "Set the default values of variables."
@@ -45,4 +50,14 @@ as OPTS to `setup-define'."
   :debug '(setup)
   :indendt 0))
 
+(eval-when-compile
+  (setup-define :load-after
+    (lambda (&rest features)
+      (let ((body `(require ',(setup-get 'feature))))
+        (dolist (feature (nreverse features))
+          (setq body `(with-eval-after-load ',feature ,body)))
+        body))
+  :documentation "Load the current feature after FEATURES."))
+
 (provide 'vl-setup)
+;;; vl-setup.el ends here

@@ -1,0 +1,27 @@
+From 1fd95541fe4d351e15a3a9d1a2bf7f1fb397268b Mon Sep 17 00:00:00 2001
+From: Sebastian Sturm <s.sturm@arkona-technologies.de>
+Date: Thu, 8 Dec 2022 20:42:26 +0100
+Subject: [PATCH 06/13] Initialize state->done within json-rpc-connection
+
+previously, state->done would randomly evaluate to
+true, causing freshly spawned language servers to
+exit immediately
+---
+ src/json.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/json.c b/src/json.c
+index f8133265fb7..c6dcf92fc34 100644
+--- a/src/json.c
++++ b/src/json.c
+@@ -1092,6 +1092,7 @@ DEFUN ("json-rpc-connection", Fjson_rpc_connection, Sjson_rpc_connection, 1, MAN
+       pthread_mutex_init (&state->handle_mx, NULL);
+       /* TODO: mutex_init could fail */
+       state->handle = handle;
++      state->done = false;
+       SAFE_FREE ();
+       return make_user_ptr (json_rpc_state_free, state);
+     }
+-- 
+2.42.0
+

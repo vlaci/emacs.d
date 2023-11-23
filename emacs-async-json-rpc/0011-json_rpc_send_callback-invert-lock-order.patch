@@ -1,0 +1,43 @@
+From ffdb996fedf937c4a438b341ba3dc6c91566447d Mon Sep 17 00:00:00 2001
+From: Sebastian Sturm <s.sturm@arkona-technologies.de>
+Date: Sun, 26 Feb 2023 21:36:16 +0100
+Subject: [PATCH 11/13] json_rpc_send_callback: invert lock order
+
+not sure what I'm doing here but AFAIU @yyoncho
+thinks the global lock should be released first,
+the handle mutex locked thereafter
+---
+ src/json.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/src/json.c b/src/json.c
+index c3c189a6906..186d970f6ab 100644
+--- a/src/json.c
++++ b/src/json.c
+@@ -1112,11 +1112,10 @@ json_rpc_send_callback (void *arg)
+   // into this yet, so for now I'll just leave the order as it was
+   struct timespec timeout = {.tv_sec = 0, .tv_nsec = 5000000};
+   param->res = -1;
++  release_global_lock ();
++  sys_thread_yield ();
+   if (can_use_handle (state, &timeout))
+     {
+-      release_global_lock ();
+-      sys_thread_yield ();
+-
+       char *string = json_dumps (message, JSON_COMPACT | JSON_ENCODE_ANY);
+       /* TODO: no point in copying whole message */
+       size_t size = strlen (string);
+@@ -1134,8 +1133,8 @@ json_rpc_send_callback (void *arg)
+       end_using_handle (state);
+       free (msg);
+       free (string);
+-      acquire_global_lock (self);
+     }
++  acquire_global_lock (self);
+ }
+ 
+ static struct json_rpc_state *
+-- 
+2.42.0
+
