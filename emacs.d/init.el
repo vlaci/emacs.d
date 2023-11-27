@@ -4,8 +4,12 @@
 (setup (:package vl-setup))
 
 (setup (:package no-littering)
-  (:set custom-file (expand-file-name "etc/settings.el" user-emacs-directory))
-  (:require no-littering))
+  (:require no-littering)
+  (:set custom-file (expand-file-name "etc/settings.el" user-emacs-directory)
+        auto-save-file-name-transforms `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))
+        backup-directory-alist `(("\\`/tmp/" . nil)
+                                 ("\\`/dev/shm/" . nil)
+                                 ("." . ,(no-littering-expand-var-file-name "backup/")))))
 
 (setup (:package gcmh)
   (:hook-into after-init-hook)
@@ -13,13 +17,18 @@
         gcmh-high-cons-threshold (* 128 1024 1024)))
 
 (setup autorevert
-  (:set auto-revert-avoid-polling t)
+  (:set auto-revert-avoid-polling t
+        global-auto-revert-non-file-buffers t
+        auto-revert-verbose nil)
   (:with-mode global-auto-revert-mode
     (:hook-into after-init-hook)))
 
 (setup recentf
   (:set rencentf-max-saved-items 1000)
   (:hook-into on-first-file-hook))
+
+(setup savehist
+  (:hook-into after-init-hook))
 
 (setup delsel
   (:with-mode delete-selection-mode
@@ -92,10 +101,6 @@
         '(face trailing missing-newline-at-eof tab-mark))
   (:hook-into prog-mode))
 
-
-;;(setup (:package awesome-tray)
-;;  (:hook-into after-init-hook))
-
 ;; Use font from Gsettings from /org/gnome/desktop/interface/
 ;; The keys read are:
 ;;  - ‘font-name’
@@ -139,10 +144,6 @@
 (setup (:package on)
   (:require on))
 
-;; (setup (:package undo-tree)
-;;   (:with-mode global-undo-tree-mode
-;;     (:hook-into on-first-buffer-hook)))
-
 (setup (:package undo-fu)
   (:set undo-limit (* 400 1024)
         undo-tree-strong-limit (* 3 1024 1024)
@@ -167,15 +168,22 @@
 (setup (:package evil evil-collection)
   (:hook-into after-init-hook)
   (:set
+   ;; Will be handled by evil-collections
    evil-want-keybinding nil
    evil-want-C-w-delete t
+   ;; Make `Y` behave like `D`
    evil-want-Y-yank-to-eol t
+   ;; Do not extend visual selection to whole lines for ex commands
    evil-ex-visual-char-range t
+   ;; `*` and `#` selects symbols instead of words
    evil-symbol-word-search t
+   ;; Only highlight in the current window
    evil-ex-interactive-search-highlight 'selected-window
+   ;; Use vim-emulated search implementation
    evil-search-module 'evil-search
-   evil-kbd-macro-supress-motion-error t
-   evil-undo-system 'undo-redo
+   ;; Do not spam with error messages
+   evil-kbd-macro-suppress-motion-error t
+   evil-undo-system 'undo-fu
    evil-want-fine-undo t
    evil-visual-state-cursor 'hollow
    evil-visual-update-x-selection-p nil
@@ -183,6 +191,7 @@
    evil-move-beyond-eol t)
   (:when-loaded
     (:also-load evil-collection)
+    ;;; delay loading evil-collection modules until they are needed
     (dolist (mode evil-collection-mode-list)
       (dolist (req (or (cdr-safe mode) (list mode)))
         (with-eval-after-load req
@@ -190,8 +199,7 @@
           (evil-collection-init (list mode)))))
 
     (evil-collection-init
-     '(
-       help
+     '(help
        (buff-menu "buff-menu")
        calc
        image
@@ -207,7 +215,6 @@
 (setup (:package vl-modeline)
   (:hook-into after-init-hook))
 
-
 (setup (:package vertico vertico-posframe)
   (:with-function '(lambda()
                      (vertico-mode)
@@ -220,14 +227,8 @@
         '((consult-line
            posframe
            (vertico-count . 20)
-           ;; NOTE: This is useful when emacs is used in both in X and
-           ;; terminal, for posframe do not work well in terminal, so
-           ;; vertico-buffer-mode will be used as fallback at the
-           ;; moment.
-           (vertico-posframe-fallback-mode . vertico-buffer-mode))
-          (t
-           posframe
-           (vertico-posframe-fallback-mode . vertico-buffer-mode)))))
+           (t
+            posframe)))))
 
 (setup (:package posframe)
   (:when-loaded
