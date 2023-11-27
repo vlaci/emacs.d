@@ -63,16 +63,18 @@ let
                         ${genAutoloadsCommand}
                       '';
                     });
-                  buildCommand = let
+                  buildCommand =
+                    let
                       dicts = with pkgs.hunspellDicts; [ hu-hu en-us-large ];
                       dictSearchPath = lib.makeSearchPath "share/hunspell" dicts;
-                  in ''
-                    ${super.buildCommand}
-                    wrapProgram $out/bin/emacs \
-                                --append-flags "--init-directory ${toString cfg.initDirectory}" \
-                                --suffix PATH : ${with lib; pipe detectedPackages.nixPackages [(map (name: pkgs.${name})) makeBinPath escapeShellArg]} \
-                                --prefix DICPATH : ${lib.escapeShellArg dictSearchPath}
-                  '';
+                    in
+                    ''
+                      ${super.buildCommand}
+                      wrapProgram $out/bin/emacs \
+                                  --append-flags "--init-directory ${toString cfg.initDirectory}" \
+                                  --suffix PATH : ${with lib; pipe detectedPackages.nixPackages [(map (name: pkgs.${name})) makeBinPath escapeShellArg]} \
+                                  --prefix DICPATH : ${lib.escapeShellArg dictSearchPath}
+                    '';
                 });
 
               inherit (config._wrapper) name type outputName outPath drvPath;
@@ -115,7 +117,7 @@ let
         in
         final.melpaBuild ({
           inherit version src;
-          commit = src.rev or inputs.self.sourceInfo.rev or inputs.self.sourceInfo.dirtyRev;
+          commit = src.rev or inputs.self.sourceInfo.rev or inputs.self.sourceInfo.dirtyRev or "00000000000000000000000000000000";
           recipe = pkgs.writeText "recipe" ''
             (${pname}
             :fetcher git
