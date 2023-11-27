@@ -75,7 +75,10 @@
           (agenda-structure . (variable-pitch light 1.9))
           (t . (variable-pitch 1.1)))))
 
-(setup (:package stimmung-themes))
+(setup (:package stimmung-themes)
+  (let* ((theme-path (locate-library "stimmung-themes"))
+         (package-path (file-name-directory theme-path)))
+    (add-to-list 'custom-theme-load-path package-path)))
 
 (setup (:package breadcrumb)
   (add-hook 'after-init-hook (lambda()
@@ -226,6 +229,13 @@
            posframe
            (vertico-posframe-fallback-mode . vertico-buffer-mode)))))
 
+(setup (:package posframe)
+  (:when-loaded
+    (defun vl/maybe-delete-posframes()
+      (when (not (frame-focus-state))
+        (posframe-delete-all)))
+    (add-function :after after-focus-change-function #'vl/maybe-delete-posframes)))
+
 (setup (:package spacious-padding)
   (:hook-into after-init-hook))
 
@@ -319,3 +329,8 @@
     (:hook-into on-first-buffer-hook))
   (:with-mode diff-hl-dired-mode
     (:hook-into dired-mode-hook)))
+
+(setup (:package magit)
+  (:set magit-display-buffer-function #'magit-display-buffer-fullframe-status-topleft-v1))
+
+(setup (:package yaml-mode))

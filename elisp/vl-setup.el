@@ -20,8 +20,8 @@ as OPTS to `setup-define'."
                (val `',(pop body)))
           (setq opts (nconc (list prop val) opts))))
       `(setup-define ,name
-                     (cl-function (lambda ,signature ,@body))
-                     ,@opts))))
+         (cl-function (lambda ,signature ,@body))
+         ,@opts))))
 
 (eval-when-compile
   (define-setup-macro :package (package)
@@ -40,15 +40,15 @@ as OPTS to `setup-define'."
    `(setq-default ,@args)))
 
 (eval-when-compile
-(setup-define :after-gui
-  (lambda (&rest body)
-    `(let ((hook (if (daemonp)
-                     'server-after-make-frame-hook
-                   'after-init-hook)))
-       (add-hook hook (lambda () ,@body))))
-  :documentation "Run BODY once after the first GUI frame is created."
-  :debug '(setup)
-  :indendt 0))
+  (setup-define :after-gui
+    (lambda (&rest body)
+      `(let ((hook (if (daemonp)
+                       'server-after-make-frame-hook
+                     'after-init-hook)))
+         (add-hook hook (lambda () ,@body))))
+    :documentation "Run BODY once after the first GUI frame is created."
+    :debug '(setup)
+    :indendt 0))
 
 (eval-when-compile
   (setup-define :load-after
@@ -57,7 +57,18 @@ as OPTS to `setup-define'."
         (dolist (feature (nreverse features))
           (setq body `(with-eval-after-load ',feature ,body)))
         body))
-  :documentation "Load the current feature after FEATURES."))
+    :documentation "Load the current feature after FEATURES."))
+
+(setup-define :autoload
+  (lambda (func)
+    (let ((fn (if (memq (car-safe func) '(quote function))
+                  (cadr func)
+                func)))
+      `(unless (fboundp (quote ,fn))
+         (autoload (function ,fn) ,(symbol-name (setup-get 'feature)) nil t))))
+  :documentation "Autoload COMMAND if not already bound."
+  :repeatable t
+  :signature '(FUNC ...))
 
 (provide 'vl-setup)
 ;;; vl-setup.el ends here

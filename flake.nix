@@ -85,6 +85,7 @@
             };
           };
           packages.default = config.vl-emacs;
+          apps.default = { type = "app"; program = "${config.vl-emacs}/bin/emacs"; };
         };
       }
     );
