@@ -96,6 +96,14 @@
                                              '("  "
                                                (:eval (breadcrumb--header-line)))))))
 
+(setup (:package general))
+
+(eval-when-compile
+  (general-create-definer general-leader
+    :states 'normal
+    :keymaps 'override
+    :prefix "SPC"))
+
 (setup whitespace
   (:set whitespace-style
         '(face trailing missing-newline-at-eof tab-mark))
@@ -252,7 +260,16 @@
   ;; /u/s/l for /usr/share/local
   completion-category-overrides '((file (styles basic partial-completion))))
 
-(setup (:package consult consult-dir))
+(setup (:package consult consult-dir consult-lsp)
+  (:set xref-show-xrefs-function #'consult-xref
+        xref-show-definitions-function #'consult-xref)
+  (general-leader
+    "f" #'consult-buffer
+    "s" #'consult-imenu
+    "d" #'consult-flymake
+    "a" #'lsp-execute-code-action
+    "/" #'consult-ripgrep
+    "r" #'lsp-rename))
 
 (setup (:package embark embark-consult))
 
@@ -288,13 +305,15 @@
 
 (setup flymake
   (:package flymake-popon)
-  (:hook-into prog-mode-hook)
+  ;;(:hook-into prog-mode-hook)
   (:with-mode flymake-popon-mode
     (:hook-into flymake-mode-hook))
   (:set flymake-popon-method 'posframe))
 
 (setup (:package lsp-ui)
   (:set lsp-uis-sideline-show-diagnostics nil))
+
+(setup (:package flycheck))
 
 (setup (:package treesit-auto)
   (:require treesit-auto)
@@ -335,3 +354,97 @@
   (:set magit-display-buffer-function #'magit-display-buffer-fullframe-status-topleft-v1))
 
 (setup (:package yaml-mode))
+
+(setup (:package rustic)
+  (:nixpkgs rust-analyzer)
+  (:file-match "\\.rs$"))
+
+(setup (:package tuareg dune utop)
+  (:with-function lsp-deferred
+    (:hook-into tuareg-mode-hook)))
+
+(setup (:package fsharp-mode)
+  (:nixpkgs fsautocomplete)
+  (:set lsp-fsharp-use-dotnet-tool-for-fsac nil)
+  (:with-function lsp-deferred
+    (:hook-into fsharp-mode-hook)))
+
+(setup (:package smartparens)
+  (:set sp-navigate-skip-match nil
+        sp-navigate-consider-sgml-tags nil)
+  (:with-mode smartparens-global-mode
+    (:hook-into on-first-buffer-hook))
+  (:when-loaded
+    (require 'smartparens-config)
+    
+    (let ((unless-list '(sp-point-before-word-p
+                         sp-point-after-word-p
+                         sp-point-before-same-p)))
+      (sp-pair "'"  nil :unless unless-list)
+      (sp-pair "\"" nil :unless unless-list))
+
+    ;; Expand {|} => { | }
+    ;; Expand {|} => {
+    ;;   |
+    ;; }
+    (dolist (brace '("(" "{" "["))
+      (sp-pair brace nil
+               :post-handlers '(("||\n[i]" "RET") ("| " "SPC"))
+               ;; Don't autopair opening braces if before a word character or
+               ;; other opening brace. The rationale: it interferes with manual
+               ;; balancing of braces, and is odd form to have s-exps with no
+               ;; whitespace in between, e.g. ()()(). Insert whitespace if
+               ;; genuinely want to start a new form in the middle of a word.
+               :unless '(sp-point-before-word-p sp-point-before-same-p)))
+
+    ;; In lisps ( should open a new form if before another parenthesis
+    (sp-local-pair sp-lisp-modes "(" ")" :unless '(:rem sp-point-before-same-p))
+
+    ;; Don't do square-bracket space-expansion where it doesn't make sense to
+    (sp-local-pair '(emacs-lisp-mode org-mode markdown-mode gfm-mode)
+                   "[" nil :post-handlers '(:rem ("| " "SPC")))
+
+    (sp-with-modes '(nix-mode)
+      (sp-local-pair
+       "let" "in"
+       :post-handlers '(("||\n[i]" "RET"))
+       :unless '(sp-point-before-word-p sp-point-before-same-p))
+
+      (sp-local-pair
+       "''" "''"
+       :post-handlers '(("||\n[i]" "RET"))
+       :unless '(sp-point-before-word-p sp-point-before-same-p))
+
+      (sp-local-pair
+       "'" nil
+       :actions nil)
+
+      (sp-local-pair
+       "{" "};"
+       :post-handlers '(("||\n[i]" "RET")
+                        ("| " "SPC"))
+       :unless '(sp-point-before-word-p sp-point-before-same-p))
+
+      (sp-local-pair
+       "${" "}"
+       :unless '(sp-point-before-word-p sp-point-before-same-p))
+
+      (sp-local-pair
+       "[" "];"
+       :post-handlers '(("||\n[i]" "RET"))
+       :unless '(sp-point-before-word-p sp-point-before-same-p)))
+
+    ;; Reasonable default pairs for HTML-style comments
+    (sp-local-pair (append sp--html-modes '(markdown-mode gfm-mode))
+                   "<!--" "-->"
+                   :unless '(sp-point-before-word-p sp-point-before-same-p)
+                   :actions '(insert) :post-handlers '(("| " "SPC")))))
+
+;;; binder
+
+;;(load "/home/vlaci/devel/git/git.sr.ht/vlaci/emacs-config/emacs.d/binder.el")
+
+
+;; (bind keymap
+;;   (:keymap my-map
+;;   (:call (message "i"))))
