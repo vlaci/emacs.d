@@ -72,6 +72,22 @@
         "type": "github"
       }
     },
+    "lsp-bridge": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1701349909,
+        "narHash": "sha256-6aFXBLnzmjItE1XVwYslgIjrv50EXypW2cifE6MkOsU=",
+        "owner": "manateelazycat",
+        "repo": "lsp-bridge",
+        "rev": "4150b07410f84cc19f9682af74ea1a6632f85d99",
+        "type": "github"
+      },
+      "original": {
+        "owner": "manateelazycat",
+        "repo": "lsp-bridge",
+        "type": "github"
+      }
+    },
     "nix-filter": {
       "locked": {
         "lastModified": 1694857738,
@@ -174,6 +190,7 @@
         "emacs-overlay": "emacs-overlay",
         "flake-parts": "flake-parts",
         "fromElisp": "fromElisp",
+        "lsp-bridge": "lsp-bridge",
         "nix-filter": "nix-filter",
         "nixpkgs": "nixpkgs_2",
         "on": "on",

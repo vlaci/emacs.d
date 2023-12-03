@@ -267,17 +267,17 @@
     "f" #'consult-buffer
     "s" #'consult-imenu
     "d" #'consult-flymake
-    "a" #'lsp-execute-code-action
+    "a" #'lsp-bridge-code-action
     "/" #'consult-ripgrep
-    "r" #'lsp-rename))
+    "r" #'lsp-bridge-rename))
 
 (setup (:package embark embark-consult))
 
-(setup (:package corfu nerd-icons-corfu)
-  (:with-mode global-corfu-mode
-    (:hook-into on-first-input-hook))
-  (:when-loaded
-    (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter)))
+;; (setup (:package corfu nerd-icons-corfu)
+;;   (:with-mode global-corfu-mode
+;;     (:hook-into on-first-input-hook))
+;;   (:when-loaded
+;;     (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter)))
 
 (setup emacs
   ;; TAB cycle if there are only few candidates
@@ -288,32 +288,34 @@
 
 (setup (:package direnv))
 
-(setup (:package lsp-mode)
-  (:with-function lsp-enable-which-key-integration
-    (:hook-into lsp-mode-hook))
-  (:set read-process-output-max (* 4 1024 1024)
-        lsp-enable-suggest-server-download nil
-        lsp-inlay-hint-enable t
-        lsp-keep-workspace-alive nil
-        lsp-response-timeout 30
-        lsp-diagnostics-provider :flymake
-        lsp-headerline-breadcrumb-enable nil
-        lsp-semantic-tokens-enable t
-        lsp-use-plists t
-        lsp-file-watch-threshold 4000
-        lsp-keymap-prefix "C-C l"))
+;; (setup (:package lsp-mode)
+;;   (:with-function lsp-enable-which-key-integration
+;;     (:hook-into lsp-mode-hook))
+;;   (:set read-process-output-max (* 4 1024 1024)
+;;         lsp-enable-suggest-server-download nil
+;;         lsp-inlay-hint-enable t
+;;         lsp-keep-workspace-alive nil
+;;         lsp-response-timeout 30
+;;         lsp-diagnostics-provider :flymake
+;;         lsp-headerline-breadcrumb-enable nil
+;;         lsp-semantic-tokens-enable t
+;;         lsp-use-plists t
+;;         lsp-file-watch-threshold 4000
+;;         lsp-keymap-prefix "C-C l"))
 
 (setup flymake
   (:package flymake-popon)
-  ;;(:hook-into prog-mode-hook)
+  (:hook-into prog-mode-hook)
   (:with-mode flymake-popon-mode
     (:hook-into flymake-mode-hook))
   (:set flymake-popon-method 'posframe))
 
-(setup (:package lsp-ui)
-  (:set lsp-uis-sideline-show-diagnostics nil))
+;; (setup (:package lsp-ui)
+;;   (:set lsp-uis-sideline-show-diagnostics nil))
 
-(setup (:package flycheck))
+(setup (:package lsp-bridge)
+  (:with-mode global-lsp-bridge-mode
+    (:hook-into after-init-hook)))
 
 (setup (:package treesit-auto)
   (:require treesit-auto)
@@ -323,10 +325,10 @@
 (setup (:package nix-mode)
   (:nixpkgs ("nil" nixpkgs-fmt)))
 
-(setup python-base-mode
-  (:package lsp-pyright)
-  (:when-loaded
-    (:require lsp-pyright)))
+;; (setup python-base-mode
+;;   (:package lsp-pyright)
+;;   (:when-loaded
+;;     (:require lsp-pyright)))
 
 (setup elisp-mode (:package highlight-quoted rainbow-delimiters)
        (:with-mode (outline-minor-mode rainbow-delimiters-mode highlight-quoted-mode)
@@ -357,17 +359,13 @@
 
 (setup (:package rustic)
   (:nixpkgs rust-analyzer)
+  (:set rustic-lsp-client nil)
   (:file-match "\\.rs$"))
 
-(setup (:package tuareg dune utop)
-  (:with-function lsp-deferred
-    (:hook-into tuareg-mode-hook)))
+(setup (:package tuareg dune utop))
 
 (setup (:package fsharp-mode)
-  (:nixpkgs fsautocomplete)
-  (:set lsp-fsharp-use-dotnet-tool-for-fsac nil)
-  (:with-function lsp-deferred
-    (:hook-into fsharp-mode-hook)))
+  (:nixpkgs fsautocomplete))
 
 (setup (:package smartparens)
   (:set sp-navigate-skip-match nil

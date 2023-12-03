@@ -15,6 +15,9 @@
     on.flake = false;
     ws-butler.url = "github:hlissner/ws-butler";
     ws-butler.flake = false;
+
+    lsp-bridge.url = "github:manateelazycat/lsp-bridge";
+    lsp-bridge.flake = false;
   };
   outputs = inputs@{ self, flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } (
@@ -62,6 +65,16 @@
               on = { src = inputs.on; };
               mini-echo = { src = inputs.mini-echo; };
               awesome-tray = { src = inputs.awesome-tray; };
+              lsp-bridge = {
+                inherit (pkgs.emacsPackages.lsp-bridge) patches recipe;
+                src = inputs.lsp-bridge;
+                packageRequires = with epkgs; [ acm markdown-mode ];
+              };
+              acm = {
+                src = inputs.lsp-bridge;
+                inherit (pkgs.emacsPackages.acm) recipe;
+                packageRequires = [ epkgs.yasnippet ];
+              };
             };
             overrides = final: prev: {
               lsp-mode = prev.lsp-mode.overrideAttrs (_: {
