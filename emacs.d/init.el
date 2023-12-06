@@ -94,7 +94,7 @@
                                (require 'breadcrumb)
                                (setq-default header-line-format
                                              '("  "
-                                               (:eval (breadcrumb--header-line)))))))
+                                               (:eval (breadcrumb-project-crumbs)))))))
 
 (setup (:package general))
 
@@ -224,10 +224,7 @@
   (:hook-into after-init-hook))
 
 (setup (:package vertico vertico-posframe)
-  (:with-function '(lambda()
-                     (vertico-mode)
-                     (vertico-posframe-mode)
-                     (vertico-multiform-mode))
+  (:with-mode (vertico-mode vertico-posframe-mode vertico-multiform-mode)
     (:hook-into on-first-input-hook))
   (:set vertico-resize nil
         vertico-posframe-poshandler #'posframe-poshandler-frame-top-center
@@ -438,6 +435,10 @@
                    :unless '(sp-point-before-word-p sp-point-before-same-p)
                    :actions '(insert) :post-handlers '(("| " "SPC")))))
 
+(setup dockerfile-ts-mode
+  (:file-match (concat "[/\\]"
+                       "\\(?:Containerfile\\|Dockerfile\\)"
+                       "\\(?:\\.[^/\\]*\\)?\\'")))
 ;;; binder
 
 ;;(load "/home/vlaci/devel/git/git.sr.ht/vlaci/emacs-config/emacs.d/binder.el")
