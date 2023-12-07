@@ -333,7 +333,11 @@
 
 (setup (:package lsp-bridge)
   (:with-mode global-lsp-bridge-mode
-    (:hook-into after-init-hook)))
+    (:hook-into after-init-hook))
+  (:set lsp-bridge-enable-hover-diagnostic t)
+  (general-def 'motion lsp-bridge-mode-map
+    "gd" #'lsp-bridge-find-def
+    "gr" #'lsp-bridge-find-references))
 
 (setup (:package treesit-auto)
   (:require treesit-auto)
