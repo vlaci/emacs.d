@@ -235,12 +235,6 @@
            (t
             posframe)))))
 
-(setup (:package posframe)
-  (:when-loaded
-    (defun vl/maybe-delete-posframes()
-      (when (not (frame-focus-state))
-        (posframe-delete-all)))
-    (add-function :after after-focus-change-function #'vl/maybe-delete-posframes)))
 
 (setup (:package spacious-padding)
   (:hook-into after-init-hook))
