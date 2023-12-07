@@ -283,7 +283,34 @@
         ;; `completion-at-point' is often bound to M-TAB.
         tab-always-indent t))
 
-(setup (:package direnv))
+(setup (:package envrc)
+  (:with-mode envrc-global-mode
+    (:hook-into on-first-file-hook))
+
+  (defun vl/direnv-init-global-mode-earlier-h ()
+    (let ((fn #'envrc-global-mode-enable-in-buffers))
+      (if (not envrc-global-mode)
+          (remove-hook 'change-major-mode-after-body-hook fn)
+        (remove-hook 'after-change-major-mode-hook fn)
+        (add-hook 'change-major-mode-after-body-hook fn 100))))
+  (add-hook 'envrc-global-mode-hook #'vl/direnv-init-global-mode-earlier-h)
+
+  ;; ...However, the above hack causes envrc to trigger in its own, internal
+  ;; buffers, causing extra direnv errors.
+  (defun vl/direnv--debounce-update-a (&rest _)
+    "Prevent direnv from running multiple times, consecutively in a buffer."
+    (not (string-prefix-p "*envrc" (buffer-name))))
+
+  (advice-add #'vl/direnv--debounce-update-a :before-while #'envrc--update)
+
+  (defun vl/direnv--fail-gracefully-a (&rest _)
+    "Don't try to use direnv if the executable isn't present."
+    (or (executable-find envrc-direnv-executable)
+        (ignore (doom-log "Failed to locate direnv executable; aborting envrc-global-mode"))))
+
+  (advice-add #'vl/direnv--fail-gracefully-a :before-while #'envrc-global-mode)
+
+  )
 
 ;; (setup (:package lsp-mode)
 ;;   (:with-function lsp-enable-which-key-integration
