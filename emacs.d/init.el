@@ -139,7 +139,8 @@
         #'command-completion-default-include-p)
 
   ;; Enable recursive minibuffers
-  (setq enable-recursive-minibuffers t))
+  (setq enable-recursive-minibuffers t)
+  (setq auto-hscroll-mode nil))
 
 (setup mouse
   (:set
@@ -258,17 +259,21 @@
     "f" #'consult-buffer
     "s" #'consult-imenu
     "d" #'consult-flymake
-    "a" #'lsp-bridge-code-action
+    "a" #'lsp-execute-code-action
     "/" #'consult-ripgrep
-    "r" #'lsp-bridge-rename))
+    "r" #'lsp-rename))
+
+(setup xref
+  (:when-loaded
+    (:set xref-prompt-for-identifier (append xref-prompt-for-identifier (list #'xref-find-references)))))
 
 (setup (:package embark embark-consult))
 
-;; (setup (:package corfu nerd-icons-corfu)
-;;   (:with-mode global-corfu-mode
-;;     (:hook-into on-first-input-hook))
-;;   (:when-loaded
-;;     (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter)))
+(setup (:package corfu nerd-icons-corfu)
+  (:with-mode global-corfu-mode
+    (:hook-into on-first-input-hook))
+  (:when-loaded
+    (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter)))
 
 (setup emacs
   ;; TAB cycle if there are only few candidates
@@ -306,20 +311,25 @@
 
   )
 
-;; (setup (:package lsp-mode)
-;;   (:with-function lsp-enable-which-key-integration
-;;     (:hook-into lsp-mode-hook))
-;;   (:set read-process-output-max (* 4 1024 1024)
-;;         lsp-enable-suggest-server-download nil
-;;         lsp-inlay-hint-enable t
-;;         lsp-keep-workspace-alive nil
-;;         lsp-response-timeout 30
-;;         lsp-diagnostics-provider :flymake
-;;         lsp-headerline-breadcrumb-enable nil
-;;         lsp-semantic-tokens-enable t
-;;         lsp-use-plists t
-;;         lsp-file-watch-threshold 4000
-;;         lsp-keymap-prefix "C-C l"))
+(setup (:package lsp-mode)
+  (:with-function lsp-enable-which-key-integration
+    (:hook-into lsp-mode-hook))
+  (:with-function lsp-deferred
+    (:hook-into python-base-mode))
+  (:set read-process-output-max (* 4 1024 1024)
+        lsp-enable-suggest-server-download nil
+        lsp-inlay-hint-enable t
+        lsp-keep-workspace-alive nil
+        lsp-response-timeout 30
+        lsp-diagnostics-provider :flymake
+        lsp-headerline-breadcrumb-enable nil
+        lsp-semantic-tokens-enable t
+        lsp-use-plists t
+        lsp-file-watch-threshold 4000
+        lsp-keymap-prefix "C-C l")
+  (general-def '(motion normal) lsp-mode-map
+    "gd" #'xref-find-definitions
+    "gr" #'xref-find-references))
 
 (setup flymake
   (:package flymake-popon)
@@ -328,16 +338,16 @@
     (:hook-into flymake-mode-hook))
   (:set flymake-popon-method 'posframe))
 
-;; (setup (:package lsp-ui)
-;;   (:set lsp-uis-sideline-show-diagnostics nil))
+(setup (:package lsp-ui)
+  (:set lsp-uis-sideline-show-diagnostics nil))
 
-(setup (:package lsp-bridge)
-  (:with-mode global-lsp-bridge-mode
-    (:hook-into after-init-hook))
-  (:set lsp-bridge-enable-hover-diagnostic t)
-  (general-def 'motion lsp-bridge-mode-map
-    "gd" #'lsp-bridge-find-def
-    "gr" #'lsp-bridge-find-references))
+;; (setup (:package lsp-bridge)
+;;   (:with-mode global-lsp-bridge-mode
+;;     (:hook-into after-init-hook))
+;;   (:set lsp-bridge-enable-hover-diagnostic t)
+;;   (general-def 'motion lsp-bridge-mode-map
+;;     "gd" #'lsp-bridge-find-def
+;;     "gr" #'lsp-bridge-find-references))
 
 (setup (:package treesit-auto)
   (:require treesit-auto)
@@ -347,10 +357,10 @@
 (setup (:package nix-mode)
   (:nixpkgs ("nil" nixpkgs-fmt)))
 
-;; (setup python-base-mode
-;;   (:package lsp-pyright)
-;;   (:when-loaded
-;;     (:require lsp-pyright)))
+(setup python-base-mode
+  (:package lsp-pyright)
+  (:when-loaded
+    (:require lsp-pyright)))
 
 (setup elisp-mode (:package highlight-quoted rainbow-delimiters)
        (:with-mode (outline-minor-mode rainbow-delimiters-mode highlight-quoted-mode)
