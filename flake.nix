@@ -15,9 +15,10 @@
     on.flake = false;
     ws-butler.url = "github:hlissner/ws-butler";
     ws-butler.flake = false;
-
     lsp-bridge.url = "github:manateelazycat/lsp-bridge";
     lsp-bridge.flake = false;
+    explain-pause-mode.url = "github:lastquestion/explain-pause-mode";
+    explain-pause-mode.flake = false;
   };
   outputs = inputs@{ self, flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } (
@@ -75,6 +76,7 @@
                 inherit (pkgs.emacsPackages.acm) recipe;
                 packageRequires = [ epkgs.yasnippet ];
               };
+              explain-pause-mode = { src = inputs.explain-pause-mode; };
             };
             overrides = final: prev: {
               lsp-mode = prev.lsp-mode.overrideAttrs (_: {

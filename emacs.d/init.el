@@ -140,7 +140,8 @@
 
   ;; Enable recursive minibuffers
   (setq enable-recursive-minibuffers t)
-  (setq auto-hscroll-mode nil))
+  (setq auto-hscroll-mode nil)
+  (setq use-short-answers t))
 
 (setup mouse
   (:set
@@ -321,7 +322,7 @@
         lsp-inlay-hint-enable t
         lsp-keep-workspace-alive nil
         lsp-response-timeout 30
-        lsp-diagnostics-provider :flymake
+        lsp-diagnostics-provider :flycheck
         lsp-headerline-breadcrumb-enable nil
         lsp-semantic-tokens-enable t
         lsp-use-plists t
@@ -331,15 +332,30 @@
     "gd" #'xref-find-definitions
     "gr" #'xref-find-references))
 
-(setup flymake
-  (:package flymake-popon)
-  (:hook-into prog-mode-hook)
-  (:with-mode flymake-popon-mode
-    (:hook-into flymake-mode-hook))
-  (:set flymake-popon-method 'posframe))
+(setup (:package flycheck))
+(setup (:package flycheck-popup-tip)
+  (with-eval-after-load 'evil
+    (add-hook 'evil-insert-state-entry-hook #'flycheck-popup-tip-delete-popup)
+    (add-hook 'evil-replace-state-entry-hook #'flycheck-popup-tip-delete-popup)))
+(setup (:package flycheck-posframe)
+  (:set flycheck-posframe-warning-prefix "! "
+        flycheck-posframe-info-prefix "··· "
+        flycheck-posframe-error-prefix "X ")
+  (with-eval-after-load 'evil
+    ;; Don't display popups while in insert or replace mode, as it can affect
+    ;; the cursor's position or cause disruptive input delays.
+    (add-hook 'flycheck-posframe-inhibit-functions #'evil-insert-state-p
+              (add-hook 'flycheck-posframe-inhibit-functions #'evil-replace-state-p))))
 
 (setup (:package lsp-ui)
   (:set lsp-uis-sideline-show-diagnostics nil))
+
+;; (setup flymake
+;;   (:package flymake-popon)
+;;   (:hook-into prog-mode-hook)
+;;   (:with-mode flymake-popon-mode
+;;     (:hook-into flymake-mode-hook))
+;;   (:set flymake-popon-method 'posframe))
 
 ;; (setup (:package lsp-bridge)
 ;;   (:with-mode global-lsp-bridge-mode
@@ -397,7 +413,11 @@
 (setup (:package tuareg dune utop))
 
 (setup (:package fsharp-mode)
-  (:nixpkgs fsautocomplete))
+  (:nixpkgs fsautocomplete)
+  (:set lsp-fsharp-use-dotnet-tool-for-fsac nil)
+  (:hook #'lsp-deferred))
+
+(setup (:package explain-pause-mode))
 
 (setup (:package smartparens)
   (:set sp-navigate-skip-match nil
@@ -406,7 +426,7 @@
     (:hook-into on-first-buffer-hook))
   (:when-loaded
     (require 'smartparens-config)
-    
+
     (let ((unless-list '(sp-point-before-word-p
                          sp-point-after-word-p
                          sp-point-before-same-p)))
@@ -434,6 +454,10 @@
     (sp-local-pair '(emacs-lisp-mode org-mode markdown-mode gfm-mode)
                    "[" nil :post-handlers '(:rem ("| " "SPC")))
 
+    (defun vl/sp-point-followed-by-brace-p (_id action _context)
+      (when (eq action 'insert)
+        (sp--looking-at-p ")\\|]\\|}\\|\"\\|\'")))
+
     (sp-with-modes '(nix-mode)
       (sp-local-pair
        "let" "in"
@@ -453,7 +477,7 @@
        "{" "};"
        :post-handlers '(("||\n[i]" "RET")
                         ("| " "SPC"))
-       :unless '(sp-point-before-word-p sp-point-before-same-p))
+       :unless '(sp-point-before-word-p sp-point-before-same-p vl/sp-point-followed-by-brace-p))
 
       (sp-local-pair
        "${" "}"
@@ -461,7 +485,8 @@
 
       (sp-local-pair
        "[" "];"
-       :post-handlers '(("||\n[i]" "RET"))
+       :post-handlers '(("||\n[i]" "RET")
+                        ("| " "SPC"))
        :unless '(sp-point-before-word-p sp-point-before-same-p)))
 
     ;; Reasonable default pairs for HTML-style comments
@@ -474,6 +499,22 @@
   (:file-match (concat "[/\\]"
                        "\\(?:Containerfile\\|Dockerfile\\)"
                        "\\(?:\\.[^/\\]*\\)?\\'")))
+
+(setup (:package julia-mode)
+  (:with-function lsp-deferred
+    (:hook-into julia-mode-hook)))
+
+(setup (:package julia-repl)
+  (:hook-into julia-mode-hook))
+
+(setup (:package lsp-julia)
+  (:set lsp-julia-package-dir (expand-file-name "lsp-julia" no-littering-var-directory))
+  (:when-loaded
+    (let ((lsp-orig-path (expand-file-name "Project.toml" (expand-file-name "languageserver" lsp-julia--self-path))))
+      (unless (file-exists-p lsp-julia-package-dir)
+        (make-directory lsp-julia-package-dir))
+      (f-write (f-read lsp-orig-path) 'utf-8 (expand-file-name "Project.toml" lsp-julia-package-dir)))))
+
 ;;; binder
 
 ;;(load "/home/vlaci/devel/git/git.sr.ht/vlaci/emacs-config/emacs.d/binder.el")
