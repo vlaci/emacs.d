@@ -1,0 +1,10 @@
+--- a/lisp/progmodes/eglot.el	1970-01-01 01:00:01.000000000 +0100
++++ b/lisp/progmodes/eglot.el	1970-01-01 01:00:01.000000000 +0100
+@@ -874,6 +874,7 @@
+     :documentation "Map ID to list of WATCHES for `didChangeWatchedFiles'."
+     :initform (make-hash-table :test #'equal) :accessor eglot--file-watches)
+    (managed-buffers
++    :initform nil
+     :documentation "List of buffers managed by server."
+     :accessor eglot--managed-buffers)
+    (saved-initargs

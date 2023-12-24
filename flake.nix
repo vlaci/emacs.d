@@ -79,12 +79,7 @@
               explain-pause-mode = { src = inputs.explain-pause-mode; };
             };
             overrides = final: prev: {
-              lsp-mode = prev.lsp-mode.overrideAttrs (_: {
-                postPatch = ''
-                  substituteInPlace lsp-protocol.el \
-                    --replace '(getenv "LSP_USE_PLISTS")' 't'
-                '';
-              });
+              eglot = null;
               jinx = prev.jinx.overrideAttrs (_: {
                 buildInputs = [ pkgs.enchant ];
                 preBuild = ''

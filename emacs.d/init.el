@@ -100,9 +100,10 @@
 
 (eval-when-compile
   (general-create-definer general-leader
-    :states 'normal
+    :states '(insert emacs visual normal)
     :keymaps 'override
-    :prefix "SPC"))
+    :prefix "SPC"
+    :global-prefix "C-SPC"))
 
 (setup whitespace
   (:set whitespace-style
@@ -253,16 +254,16 @@
   ;; /u/s/l for /usr/share/local
   completion-category-overrides '((file (styles basic partial-completion))))
 
-(setup (:package consult consult-dir consult-lsp)
+(setup (:package consult consult-dir consult-eglot)
   (:set xref-show-xrefs-function #'consult-xref
         xref-show-definitions-function #'consult-xref)
   (general-leader
     "f" #'consult-buffer
     "s" #'consult-imenu
     "d" #'consult-flymake
-    "a" #'lsp-execute-code-action
+    "a" #'eglot-code-actions
     "/" #'consult-ripgrep
-    "r" #'lsp-rename))
+    "r" #'eglot-rename))
 
 (setup xref
   (:when-loaded
@@ -312,50 +313,72 @@
 
   )
 
-(setup (:package lsp-mode)
-  (:with-function lsp-enable-which-key-integration
-    (:hook-into lsp-mode-hook))
-  (:with-function lsp-deferred
-    (:hook-into python-base-mode))
-  (:set read-process-output-max (* 4 1024 1024)
-        lsp-enable-suggest-server-download nil
-        lsp-inlay-hint-enable t
-        lsp-keep-workspace-alive nil
-        lsp-response-timeout 30
-        lsp-diagnostics-provider :flycheck
-        lsp-headerline-breadcrumb-enable nil
-        lsp-semantic-tokens-enable t
-        lsp-use-plists t
-        lsp-file-watch-threshold 4000
-        lsp-keymap-prefix "C-C l")
-  (general-def '(motion normal) lsp-mode-map
-    "gd" #'xref-find-definitions
-    "gr" #'xref-find-references))
+;; (setup (:package lsp-mode)
+;;   (:with-function lsp-enable-which-key-integration
+;;     (:hook-into lsp-mode-hook))
+;;   (:set read-process-output-max (* 4 1024 1024)
+;;         lsp-enable-suggest-server-download nil
+;;         lsp-inlay-hint-enable t
+;;         lsp-keep-workspace-alive nil
+;;         lsp-response-timeout 30
+;;         lsp-diagnostics-provider :flycheck
+;;         lsp-headerline-breadcrumb-enable nil
+;;         lsp-semantic-tokens-enable t
+;;         lsp-file-watch-threshold 4000
+;;         lsp-keymap-prefix "C-C l")
+;;   (general-def '(motion normal) lsp-mode-map
+;;     "gd" #'xref-find-definitions
+;;     "gr" #'xref-find-references))
 
-(setup (:package flycheck))
-(setup (:package flycheck-popup-tip)
-  (with-eval-after-load 'evil
-    (add-hook 'evil-insert-state-entry-hook #'flycheck-popup-tip-delete-popup)
-    (add-hook 'evil-replace-state-entry-hook #'flycheck-popup-tip-delete-popup)))
-(setup (:package flycheck-posframe)
-  (:set flycheck-posframe-warning-prefix "! "
-        flycheck-posframe-info-prefix "··· "
-        flycheck-posframe-error-prefix "X ")
-  (with-eval-after-load 'evil
-    ;; Don't display popups while in insert or replace mode, as it can affect
-    ;; the cursor's position or cause disruptive input delays.
-    (add-hook 'flycheck-posframe-inhibit-functions #'evil-insert-state-p
-              (add-hook 'flycheck-posframe-inhibit-functions #'evil-replace-state-p))))
+(setup eglot
+  (:set eglot-extend-to-xref t)
+  ;; (:with-mode eglot-inlay-hints-mode
+  ;;   (:hook-into eglot-managed-mode-hook))
+  (:when-loaded
+    (add-to-list 'eglot-server-programs '(nix-mode . ("nil")))
+    (add-to-list 'eglot-server-programs
+                 '(rustic-mode .
+                               ("rust-analyzer"
+                                :initializationOptions
+                                (:checkOnSave (:command "clippy"))))))
+  (cl-defun eglot--languageId (&optional (server (eglot--current-server-or-lose)))
+    "Compute LSP \\='languageId\\=' string for current buffer.
+Doubles as a predicate telling if SERVER can manage the current
+buffer."
+    (or (cl-loop for (mode . languageid) in
+                 (eglot--languages server)
+                 when (provided-mode-derived-p major-mode mode)
+                 return languageid)
+        "Unknown")))
 
-(setup (:package lsp-ui)
-  (:set lsp-uis-sideline-show-diagnostics nil))
+(setup (:package yasnippet)
+  (:with-mode yas-global-mode
+    (:hook-into on-first-buffer-hook)))
 
-;; (setup flymake
-;;   (:package flymake-popon)
-;;   (:hook-into prog-mode-hook)
-;;   (:with-mode flymake-popon-mode
-;;     (:hook-into flymake-mode-hook))
-;;   (:set flymake-popon-method 'posframe))
+;; (setup (:package flycheck))
+;; (setup (:package flycheck-popup-tip)
+;;   (with-eval-after-load 'evil
+;;     (add-hook 'evil-insert-state-entry-hook #'flycheck-popup-tip-delete-popup)
+;;     (add-hook 'evil-replace-state-entry-hook #'flycheck-popup-tip-delete-popup)))
+;; (setup (:package flycheck-posframe)
+;;   (:set flycheck-posframe-warning-prefix "! "
+;;         flycheck-posframe-info-prefix "··· "
+;;         flycheck-posframe-error-prefix "X ")
+;;   (with-eval-after-load 'evil
+;;     ;; Don't display popups while in insert or replace mode, as it can affect
+;;     ;; the cursor's position or cause disruptive input delays.
+;;     (add-hook 'flycheck-posframe-inhibit-functions #'evil-insert-state-p
+;;               (add-hook 'flycheck-posframe-inhibit-functions #'evil-replace-state-p))))
+
+;; (setup (:package lsp-ui)
+;;   (:set lsp-uis-sideline-show-diagnostics nil))
+
+(setup flymake
+  (:package flymake-popon)
+  (:hook-into prog-mode-hook)
+  (:with-mode flymake-popon-mode
+    (:hook-into flymake-mode-hook))
+  (:set flymake-popon-method 'posframe))
 
 ;; (setup (:package lsp-bridge)
 ;;   (:with-mode global-lsp-bridge-mode
@@ -374,9 +397,8 @@
   (:nixpkgs ("nil" nixpkgs-fmt)))
 
 (setup python-base-mode
-  (:package lsp-pyright)
-  (:when-loaded
-    (:require lsp-pyright)))
+  (:nixpkgs pyright)
+  (:hook #'eglot-ensure))
 
 (setup elisp-mode (:package highlight-quoted rainbow-delimiters)
        (:with-mode (outline-minor-mode rainbow-delimiters-mode highlight-quoted-mode)
@@ -408,14 +430,14 @@
 (setup (:package rustic)
   (:nixpkgs rust-analyzer)
   (:set rustic-lsp-client nil)
+  (:hook #'eglot-ensure)
   (:file-match "\\.rs$"))
 
 (setup (:package tuareg dune utop))
 
 (setup (:package fsharp-mode)
   (:nixpkgs fsautocomplete)
-  (:set lsp-fsharp-use-dotnet-tool-for-fsac nil)
-  (:hook #'lsp-deferred))
+  (:hook #'eglot-ensure))
 
 (setup (:package explain-pause-mode))
 
@@ -500,20 +522,97 @@
                        "\\(?:Containerfile\\|Dockerfile\\)"
                        "\\(?:\\.[^/\\]*\\)?\\'")))
 
-(setup (:package julia-mode)
-  (:with-function lsp-deferred
-    (:hook-into julia-mode-hook)))
+(setup (:package julia-mode eglot-jl)
+  (:when-loaded
+    (:require eglot-jl)
+    (eglot-jl-init))
+  (:hook #'eglot-ensure))
 
 (setup (:package julia-repl)
   (:hook-into julia-mode-hook))
 
-(setup (:package lsp-julia)
-  (:set lsp-julia-package-dir (expand-file-name "lsp-julia" no-littering-var-directory))
+;; (setup (:package lsp-julia)
+;;   (:set lsp-julia-package-dir (expand-file-name "lsp-julia" no-littering-var-directory))
+;;   (:when-loaded
+;;     (let ((lsp-orig-path (expand-file-name "Project.toml" (expand-file-name "languageserver" lsp-julia--self-path))))
+;;       (unless (file-exists-p lsp-julia-package-dir)
+;;         (make-directory lsp-julia-package-dir))
+;;       (f-write (f-read lsp-orig-path) 'utf-8 (expand-file-name "Project.toml" lsp-julia-package-dir)))))
+
+(setup (:package tabspaces)
+  (:hook-into on-first-buffer-hook)
+  (:hook #'+consult-tabspaces-setup)
+  (:set
+   tabspaces-use-filtered-buffers-as-default t
+   tabspaces-initialize-project-with-todo nil
+   tabspaces-default-tab "*default*"
+   tabspaces-include-buffers '("*scratch*")
+   tabspaces-session t)
+  (general-leader :infix "q"
+    "t" #'tabspaces-save-session
+    "T" #'tabspaces-restore-session
+    "p" #'tabspaces-save-current-project-session)
+  (general-leader :infix "TAB"
+    "TAB" '(tabspaces-switch-or-create-workspace :w "Switch or create")
+    "o" '(tabspaces-open-or-create-project-and-workspace :wk "Open or create project")
+    "f" '(tabspaces-project-switch-project-open-file :wk "Switch project & open file")
+    "d" #'tabspaces-close-workspace
+    "b" #'tabspaces-switch-to-buffer
+    "t" #'tabspaces-switch-buffer-and-tab
+    "C" #'tabspaces-clear-buffers
+    "r" #'tabspaces-remove-current-buffer
+    "R" #'tabspaces-remove-selected-buffer
+    "k" #'(tabspaces-kill-buffers-close-workspace :wk "Kill buffers & close WS"))
   (:when-loaded
-    (let ((lsp-orig-path (expand-file-name "Project.toml" (expand-file-name "languageserver" lsp-julia--self-path))))
-      (unless (file-exists-p lsp-julia-package-dir)
-        (make-directory lsp-julia-package-dir))
-      (f-write (f-read lsp-orig-path) 'utf-8 (expand-file-name "Project.toml" lsp-julia-package-dir)))))
+    ;; Rename the first tab to `tabspaces-default-tab'
+    (tab-bar-rename-tab tabspaces-default-tab)
+    ;; Ensure reading project list
+    (require 'project)
+    (project--ensure-read-project-list))
+
+  (defun +consult-tabspaces-setup ()
+    "Deactivate isolated buffers when not using tabspaces."
+    (require 'consult)
+    (cond (tabspaces-mode
+           ;; hide full buffer list (still available with "b")
+           (consult-customize consult--source-buffer :hidden t :default nil)
+           (add-to-list 'consult-buffer-sources '+consult--source-workspace))
+          (t
+           ;; reset consult-buffer to show all buffers
+           (consult-customize consult--source-buffer :hidden nil :default t)
+           (setq consult-buffer-sources (remove #'+consult--source-workspace consult-buffer-sources)))))
+
+  (with-eval-after-load 'consult
+    ;; Hide full buffer list (still available with "b" prefix)
+    (consult-customize consult--source-buffer :hidden t :default nil)
+    ;; Set consult-workspace buffer list
+    (defvar +consult--source-workspace
+      (list :name "Workspace Buffers"
+            :narrow   '(?w . "Workspace")
+            :history  'buffer-name-history
+            :category 'buffer
+            :state    #'consult--buffer-state
+            :default  t
+            :items
+            (lambda ()
+              (consult--buffer-query
+               :predicate #'tabspaces--local-buffer-p
+               :sort      'visibility
+               :as        #'buffer-name))))
+
+    (add-to-list 'consult-buffer-sources '+consult--source-workspace))
+
+  ;; Switch to the scratch buffer after creating a new workspace
+  (advice-add
+   'tabspaces-switch-or-create-workspace :around
+   (defun +tabspaces--switch-to-scratch-after-create-a (origfn &rest workspace)
+     (let ((before-list (tabspaces--list-tabspaces)))
+       (apply origfn workspace)
+       ;; Created a new empty workspace
+       (when-let ((new-ws (cl-set-difference (tabspaces--list-tabspaces) before-list :test #'string=)))
+         (+scratch-open-buffer nil nil 'same-window))))))
+
+
 
 ;;; binder
 

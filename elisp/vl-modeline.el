@@ -478,7 +478,7 @@ than `split-width-threshold'."
 
 (defun vl-modeline/-vc-get-face (key)
   "Get face from KEY in `vl-modeline/-vc-faces'."
-   (alist-get key vl-modeline/-vc-faces 'up-to-date))
+  (alist-get key vl-modeline/-vc-faces 'up-to-date))
 
 (defun vl-modeline/-vc-face (file backend)
   "Return VC state face for FILE with BACKEND."
@@ -528,12 +528,12 @@ TYPE is usually keyword `:error', `:warning' or `:note'."
         (propertize ,indicator 'face 'shadow)
         (propertize count
                     'face ',(or face type)
-                     'mouse-face 'mode-line-highlight
-                     ;; FIXME 2023-07-03: Clicking on the text with
-                     ;; this buffer and a single warning present, the
-                     ;; diagnostics take up the entire frame.  Why?
-                     'local-map vl-modeline/flymake-map
-                     'help-echo "mouse-1: buffer diagnostics\nmouse-3: project diagnostics")))))
+                    'mouse-face 'mode-line-highlight
+                    ;; FIXME 2023-07-03: Clicking on the text with
+                    ;; this buffer and a single warning present, the
+                    ;; diagnostics take up the entire frame.  Why?
+                    'local-map vl-modeline/flymake-map
+                    'help-echo "mouse-1: buffer diagnostics\nmouse-3: project diagnostics")))))
 
 (vl-modeline/flymake-type error "☣")
 (vl-modeline/flymake-type warning "!")
@@ -690,26 +690,27 @@ Specific to the current window's mode line.")
 (defun vl-modeline/-enable-mode ()
   "Enable `vl-modeline/mode'."
   (setq-default mode-line-format
-        '("%e"
-          vl-modeline/kbd-macro
-          vl-modeline/narrow
-          vl-modeline/buffer-status
-          ;; vl-modeline/input-method
-          vl-modeline/evil
-          vl-modeline/buffer-identification
-          "  "
-          vl-modeline/major-mode
-          vl-modeline/process
-          "  "
-          vl-modeline/vc-branch
-          "  "
-          ;; vl-modeline/eglot
-          "  "
-          vl-modeline/flymake
-          "  "
-          ;; vl-modeline/align-right
-          mode-line-format-right-align
-          vl-modeline/misc-info)))
+                '("%e"
+                  vl-modeline/kbd-macro
+                  vl-modeline/narrow
+                  vl-modeline/buffer-status
+                  ;; vl-modeline/input-method
+                  vl-modeline/evil
+                  vl-modeline/buffer-identification
+                  "  "
+                  vl-modeline/major-mode
+                  vl-modeline/process
+                  "  "
+                  vl-modeline/vc-branch
+                  "  "
+                  vl-modeline/eglot
+                  "  "
+                  vl-modeline/flymake
+                  "  "
+                  ;; vl-modeline/align-right
+                  mode-line-format-right-align
+                  eglot-mode-line-format
+                  vl-modeline/misc-info)))
 
 (defun vl-modeline/-disable-mode ()
   "Disable `vl-modeline/mode'."
