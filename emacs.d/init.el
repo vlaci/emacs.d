@@ -141,7 +141,6 @@
 
   ;; Enable recursive minibuffers
   (setq enable-recursive-minibuffers t)
-  (setq auto-hscroll-mode nil)
   (setq use-short-answers t))
 
 (setup mouse
@@ -236,7 +235,11 @@
            posframe
            (vertico-count . 20)
            (t
-            posframe)))))
+            posframe))))
+  (defun vl/no-hscroll-in-minibuffer ()
+    (setq-local auto-hscroll-mode nil))
+  (:with-function vl/no-hscroll-in-minibuffer
+    (:hook-into minibuffer-setup-hook)))
 
 
 (setup (:package spacious-padding)
@@ -254,7 +257,8 @@
   ;; /u/s/l for /usr/share/local
   completion-category-overrides '((file (styles basic partial-completion))))
 
-(setup (:package consult consult-dir consult-eglot)
+
+(setup (:package consult consult-dir consult-eglot consult-project-extra)
   (:set xref-show-xrefs-function #'consult-xref
         xref-show-definitions-function #'consult-xref)
   (general-leader
@@ -263,7 +267,16 @@
     "d" #'consult-flymake
     "a" #'eglot-code-actions
     "/" #'consult-ripgrep
-    "r" #'eglot-rename))
+    "r" #'eglot-rename)
+  (:when-loaded
+    (require 'consult-project-extra)
+    (setq consult-buffer-sources
+          (cl-delete-if (lambda (s)
+                          (memq s '(consult--source-project-buffer-hidden
+                                    consult--source-project-recent-file-hidden)))
+                        (append '(consult-project-extra--source-file
+                                  consult-project-extra--source-project)
+                                consult-buffer-sources)))))
 
 (setup xref
   (:when-loaded
@@ -296,22 +309,14 @@
         (add-hook 'change-major-mode-after-body-hook fn 100))))
   (add-hook 'envrc-global-mode-hook #'vl/direnv-init-global-mode-earlier-h)
 
-  ;; ...However, the above hack causes envrc to trigger in its own, internal
-  ;; buffers, causing extra direnv errors.
-  (defun vl/direnv--debounce-update-a (&rest _)
-    "Prevent direnv from running multiple times, consecutively in a buffer."
-    (not (string-prefix-p "*envrc" (buffer-name))))
+  (defvar vl/orig-exec-path exec-path)
+  (defun vl/envrc--debounce-add-extra-path-a (fn &rest args)
+    "Update only on non internal envrc related buffers keeping original path entries as well"
+    (when (not (string-prefix-p "*envrc" (buffer-name)))
+      (apply fn args)
+      (setq-local exec-path (append exec-path vl/orig-exec-path))))
 
-  (advice-add #'vl/direnv--debounce-update-a :before-while #'envrc--update)
-
-  (defun vl/direnv--fail-gracefully-a (&rest _)
-    "Don't try to use direnv if the executable isn't present."
-    (or (executable-find envrc-direnv-executable)
-        (ignore (doom-log "Failed to locate direnv executable; aborting envrc-global-mode"))))
-
-  (advice-add #'vl/direnv--fail-gracefully-a :before-while #'envrc-global-mode)
-
-  )
+  (advice-add #'envrc--update :around #'vl/envrc--debounce-add-extra-path-a))
 
 ;; (setup (:package lsp-mode)
 ;;   (:with-function lsp-enable-which-key-integration
@@ -394,7 +399,8 @@ buffer."
     (:hook-into after-init-hook)))
 
 (setup (:package nix-mode)
-  (:nixpkgs ("nil" nixpkgs-fmt)))
+  (:nixpkgs ("nil" nixpkgs-fmt))
+  (:hook #'eglot-ensure))
 
 (setup python-base-mode
   (:nixpkgs pyright)
@@ -539,80 +545,113 @@ buffer."
 ;;         (make-directory lsp-julia-package-dir))
 ;;       (f-write (f-read lsp-orig-path) 'utf-8 (expand-file-name "Project.toml" lsp-julia-package-dir)))))
 
-(setup (:package tabspaces)
-  (:hook-into on-first-buffer-hook)
-  (:hook #'+consult-tabspaces-setup)
-  (:set
-   tabspaces-use-filtered-buffers-as-default t
-   tabspaces-initialize-project-with-todo nil
-   tabspaces-default-tab "*default*"
-   tabspaces-include-buffers '("*scratch*")
-   tabspaces-session t)
-  (general-leader :infix "q"
-    "t" #'tabspaces-save-session
-    "T" #'tabspaces-restore-session
-    "p" #'tabspaces-save-current-project-session)
-  (general-leader :infix "TAB"
-    "TAB" '(tabspaces-switch-or-create-workspace :w "Switch or create")
-    "o" '(tabspaces-open-or-create-project-and-workspace :wk "Open or create project")
-    "f" '(tabspaces-project-switch-project-open-file :wk "Switch project & open file")
-    "d" #'tabspaces-close-workspace
-    "b" #'tabspaces-switch-to-buffer
-    "t" #'tabspaces-switch-buffer-and-tab
-    "C" #'tabspaces-clear-buffers
-    "r" #'tabspaces-remove-current-buffer
-    "R" #'tabspaces-remove-selected-buffer
-    "k" #'(tabspaces-kill-buffers-close-workspace :wk "Kill buffers & close WS"))
-  (:when-loaded
-    ;; Rename the first tab to `tabspaces-default-tab'
-    (tab-bar-rename-tab tabspaces-default-tab)
-    ;; Ensure reading project list
-    (require 'project)
-    (project--ensure-read-project-list))
+;; (setup (:package tabspaces)
+;;   (:hook-into on-first-buffer-hook)
+;;   (:hook #'+consult-tabspaces-setup)
+;;   (:set
+;;    tabspaces-use-filtered-buffers-as-default t
+;;    tabspaces-initialize-project-with-todo nil
+;;    tabspaces-default-tab "*default*"
+;;    tabspaces-include-buffers '("*scratch*")
+;;    tabspaces-session t)
+;;   (general-leader :infix "q"
+;;     "t" #'tabspaces-save-session
+;;     "T" #'tabspaces-restore-session
+;;     "p" #'tabspaces-save-current-project-session)
+;;   (general-leader :infix "TAB"
+;;     "TAB" '(tabspaces-switch-or-create-workspace :w "Switch or create")
+;;     "o" '(tabspaces-open-or-create-project-and-workspace :wk "Open or create project")
+;;     "f" '(tabspaces-project-switch-project-open-file :wk "Switch project & open file")
+;;     "d" #'tabspaces-close-workspace
+;;     "b" #'tabspaces-switch-to-buffer
+;;     "t" #'tabspaces-switch-buffer-and-tab
+;;     "C" #'tabspaces-clear-buffers
+;;     "r" #'tabspaces-remove-current-buffer
+;;     "R" #'tabspaces-remove-selected-buffer
+;;     "k" #'(tabspaces-kill-buffers-close-workspace :wk "Kill buffers & close WS"))
+;;   (:when-loaded
+;;     ;; Rename the first tab to `tabspaces-default-tab'
+;;     (tab-bar-rename-tab tabspaces-default-tab)
+;;     ;; Ensure reading project list
+;;     (require 'project)
+;;     (project--ensure-read-project-list))
 
-  (defun +consult-tabspaces-setup ()
-    "Deactivate isolated buffers when not using tabspaces."
-    (require 'consult)
-    (cond (tabspaces-mode
-           ;; hide full buffer list (still available with "b")
-           (consult-customize consult--source-buffer :hidden t :default nil)
-           (add-to-list 'consult-buffer-sources '+consult--source-workspace))
-          (t
-           ;; reset consult-buffer to show all buffers
-           (consult-customize consult--source-buffer :hidden nil :default t)
-           (setq consult-buffer-sources (remove #'+consult--source-workspace consult-buffer-sources)))))
+;;   (defun +consult-tabspaces-setup ()
+;;     "Deactivate isolated buffers when not using tabspaces."
+;;     (require 'consult)
+;;     (cond (tabspaces-mode
+;;            ;; hide full buffer list (still available with "b")
+;;            (consult-customize consult--source-buffer :hidden t :default nil)
+;;            (add-to-list 'consult-buffer-sources '+consult--source-workspace))
+;;           (t
+;;            ;; reset consult-buffer to show all buffers
+;;            (consult-customize consult--source-buffer :hidden nil :default t)
+;;            (setq consult-buffer-sources (remove #'+consult--source-workspace consult-buffer-sources)))))
 
+;;   (with-eval-after-load 'consult
+;;     ;; Hide full buffer list (still available with "b" prefix)
+;;     (consult-customize consult--source-buffer :hidden t :default nil)
+;;     ;; Set consult-workspace buffer list
+;;     (defvar +consult--source-workspace
+;;       (list :name "Workspace Buffers"
+;;             :narrow   '(?w . "Workspace")
+;;             :history  'buffer-name-history
+;;             :category 'buffer
+;;             :state    #'consult--buffer-state
+;;             :default  t
+;;             :items
+;;             (lambda ()
+;;               (consult--buffer-query
+;;                :predicate #'tabspaces--local-buffer-p
+;;                :sort      'visibility
+;;                :as        #'buffer-name))))
+
+;;     (add-to-list 'consult-buffer-sources '+consult--source-workspace))
+
+;;   ;; Switch to the scratch buffer after creating a new workspace
+;;   (advice-add
+;;    'tabspaces-switch-or-create-workspace :around
+;;    (defun +tabspaces--switch-to-scratch-after-create-a (origfn &rest workspace)
+;;      (let ((before-list (tabspaces--list-tabspaces)))
+;;        (apply origfn workspace)
+;;        ;; Created a new empty workspace
+;;        (when-let ((new-ws (cl-set-difference (tabspaces--list-tabspaces) before-list :test #'string=)))
+;;          (+scratch-open-buffer nil nil 'same-window))))))
+
+(setup (:package bufferlo)
+  (:hook-into on-first-input-hook)
   (with-eval-after-load 'consult
-    ;; Hide full buffer list (still available with "b" prefix)
-    (consult-customize consult--source-buffer :hidden t :default nil)
-    ;; Set consult-workspace buffer list
-    (defvar +consult--source-workspace
-      (list :name "Workspace Buffers"
-            :narrow   '(?w . "Workspace")
-            :history  'buffer-name-history
-            :category 'buffer
-            :state    #'consult--buffer-state
-            :default  t
-            :items
-            (lambda ()
-              (consult--buffer-query
-               :predicate #'tabspaces--local-buffer-p
-               :sort      'visibility
-               :as        #'buffer-name))))
+    (require 'bufferlo)
+    (defvar my-consult--source-buffer
+      `(:name "All Buffers"
+              :narrow   ?a
+              :hidden   t
+              :category buffer
+              :face     consult-buffer
+              :history  buffer-name-history
+              :state    ,#'consult--buffer-state
+              :items ,(lambda () (consult--buffer-query
+                                  :sort 'visibility
+                                  :as #'buffer-name)))
+      "All buffer candidate source for `consult-buffer'.")
 
-    (add-to-list 'consult-buffer-sources '+consult--source-workspace))
+    (defvar my-consult--source-local-buffer
+      `(:name "Local buffers"
+              :narrow   ?b
+              :category buffer
+              :face     consult-buffer
+              :history  buffer-name-history
+              :state    ,#'consult--buffer-state
+              :default  t
+              :items ,(lambda () (consult--buffer-query
+                                  :predicate #'bufferlo-local-buffer-p
+                                  :sort 'visibility
+                                  :as #'buffer-name)))
+      "Local buffer candidate source for `consult-buffer'.")
+    (add-to-list 'consult-buffer-sources 'my-consult--source-buffer)
+    (add-to-list 'consult-buffer-sources 'my-consult--source-local-buffer)
 
-  ;; Switch to the scratch buffer after creating a new workspace
-  (advice-add
-   'tabspaces-switch-or-create-workspace :around
-   (defun +tabspaces--switch-to-scratch-after-create-a (origfn &rest workspace)
-     (let ((before-list (tabspaces--list-tabspaces)))
-       (apply origfn workspace)
-       ;; Created a new empty workspace
-       (when-let ((new-ws (cl-set-difference (tabspaces--list-tabspaces) before-list :test #'string=)))
-         (+scratch-open-buffer nil nil 'same-window))))))
-
-
+    (consult-customize consult--source-buffer :hidden t :default nil)))
 
 ;;; binder
 
