@@ -15,8 +15,8 @@
     on.flake = false;
     ws-butler.url = "github:hlissner/ws-butler";
     ws-butler.flake = false;
-    lsp-bridge.url = "github:manateelazycat/lsp-bridge";
-    lsp-bridge.flake = false;
+    emacs-lsp-booster.url = "github:blahgeek/emacs-lsp-booster";
+    emacs-lsp-booster.flake = false;
     explain-pause-mode.url = "github:lastquestion/explain-pause-mode";
     explain-pause-mode.flake = false;
   };
@@ -40,23 +40,7 @@
             ];
           };
           vl-emacs = {
-            package = inputs'.emacs-overlay.packages.emacs-pgtk.overrideAttrs (super: {
-              patches = (super.patches or [ ]) ++ [
-                ./emacs-async-json-rpc/0001-POC-Initial-implementation-of-async-json-rpc.patch
-                ./emacs-async-json-rpc/0002-Add-MacOS-as-well.patch
-                ./emacs-async-json-rpc/0003-Call-close-when-the-connection-is-done.patch
-                ./emacs-async-json-rpc/0004-Add-some-synchronization-when-sending-receiving-noti.patch
-                ./emacs-async-json-rpc/0005-Set-JSON_ALLOW_NUL-in-json_rpc_callback.patch
-                ./emacs-async-json-rpc/0006-Initialize-state-done-within-json-rpc-connection.patch
-                ./emacs-async-json-rpc/0007-Initialize-state-error_buffer_read.patch
-                ./emacs-async-json-rpc/0008-Avoid-potential-deadlock.patch
-                ./emacs-async-json-rpc/0009-Pass-environment-to-language-server.patch
-                ./emacs-async-json-rpc/0010-Use-timeouts-on-all-json-rpc-handle-locks.patch
-                ./emacs-async-json-rpc/0011-json_rpc_send_callback-invert-lock-order.patch
-                ./emacs-async-json-rpc/0012-Elide-some-dynamic-memory-allocations.patch
-                ./emacs-async-json-rpc/0013-Only-emit-a-single-space-after-Content-Length.patch
-              ];
-            });
+            package = inputs'.emacs-overlay.packages.emacs-pgtk;
             withAllTreesitGrammars = true;
             initDirectory = ./emacs.d;
             extraPackages = [ "setup" "vl-setup" ];
@@ -79,6 +63,12 @@
               explain-pause-mode = { src = inputs.explain-pause-mode; };
             };
             overrides = final: prev: {
+              lsp-mode = prev.lsp-mode.overrideAttrs (_: {
+                postPatch = ''
+                  substituteInPlace lsp-protocol.el \
+                    --replace '(getenv "LSP_USE_PLISTS")' 't'
+                '';
+              });
               eglot = null;
               jinx = prev.jinx.overrideAttrs (_: {
                 buildInputs = [ pkgs.enchant ];

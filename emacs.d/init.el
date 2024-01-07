@@ -5,26 +5,34 @@
 
 (setup (:package no-littering)
   (:require no-littering)
-  (:set custom-file (expand-file-name "etc/settings.el" user-emacs-directory)
-        auto-save-file-name-transforms `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))
-        backup-directory-alist `(("\\`/tmp/" . nil)
-                                 ("\\`/dev/shm/" . nil)
-                                 ("." . ,(no-littering-expand-var-file-name "backup/")))))
+  (:option custom-file (expand-file-name "etc/settings.el" user-emacs-directory)
+           auto-save-file-name-transforms `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))
+           backup-directory-alist `(("\\`/tmp/" . nil)
+                                    ("\\`/dev/shm/" . nil)
+                                    ("." . ,(no-littering-expand-var-file-name "backup/")))))
+
+(setup files
+  (:option backup-by-copying t
+           delete-old-versions t
+           version-control t
+           kept-new-versions 6
+           kept-old-versions 3
+           require-final-newline t))
 
 (setup (:package gcmh)
   (:hook-into after-init-hook)
-  (:set gcmh-verbose init-file-debug
-        gcmh-high-cons-threshold (* 128 1024 1024)))
+  (:option gcmh-verbose init-file-debug
+           gcmh-high-cons-threshold (* 128 1024 1024)))
 
 (setup autorevert
-  (:set auto-revert-avoid-polling t
-        global-auto-revert-non-file-buffers t
-        auto-revert-verbose nil)
+  (:option auto-revert-avoid-polling t
+           global-auto-revert-non-file-buffers t
+           auto-revert-verbose nil)
   (:with-mode global-auto-revert-mode
     (:hook-into after-init-hook)))
 
 (setup recentf
-  (:set rencentf-max-saved-items 1000)
+  (:option rencentf-max-saved-items 1000)
   (:hook-into on-first-file-hook))
 
 (setup savehist
@@ -36,53 +44,53 @@
 
 (setup (:package modus-themes)
   (:require modus-themes)
-  (:set modus-themes-italic-constructs t
-        modus-themes-bold-constructs t
-        modus-themes-prompts '(background)
-        modus-themes-mixed-fonts nil
-        modus-themes-org-blocks 'gray-background
-        modus-themes-headings '((0 . (2.0))
-                                (1 . (rainbow background overline 1.5))
-                                (2 . (background overline 1.4))
-                                (3 . (background overline 1.3))
-                                (4 . (background overline 1.2))
-                                (5 . (overline 1.2))
-                                (t . (no-bold 1.1)))
-        modus-themes-common-palette-overrides
-        `((border-mode-line-active unspecified)
-          (border-mode-line-inactive unspecified)
-          ,@modus-themes-preset-overrides-faint
-          (builtin magenta)
-          (comment fg-dim)
-          (constant magenta-cooler)
-          (docstring magenta-faint)
-          (docmarkup green-faint)
-          (fnname magenta-warmer)
-          (keyword cyan)
-          (preprocessor cyan-cooler)
-          (string red-cooler)
-          (type magenta-cooler)
-          (variable blue-warmer)
-          (rx-construct magenta-warmer)
-          (rx-backslash blue-cooler)))
+  (:option modus-themes-italic-constructs t
+           modus-themes-bold-constructs t
+           modus-themes-prompts '(background)
+           modus-themes-mixed-fonts nil
+           modus-themes-org-blocks 'gray-background
+           modus-themes-headings '((0 . (2.0))
+                                   (1 . (rainbow background overline 1.5))
+                                   (2 . (background overline 1.4))
+                                   (3 . (background overline 1.3))
+                                   (4 . (background overline 1.2))
+                                   (5 . (overline 1.2))
+                                   (t . (no-bold 1.1)))
+           modus-themes-common-palette-overrides
+           `((border-mode-line-active unspecified)
+             (border-mode-line-inactive unspecified)
+             ,@modus-themes-preset-overrides-faint
+             (builtin magenta)
+             (comment fg-dim)
+             (constant magenta-cooler)
+             (docstring magenta-faint)
+             (docmarkup green-faint)
+             (fnname magenta-warmer)
+             (keyword cyan)
+             (preprocessor cyan-cooler)
+             (string red-cooler)
+             (type magenta-cooler)
+             (variable blue-warmer)
+             (rx-construct magenta-warmer)
+             (rx-backslash blue-cooler)))
 
   (load-theme 'modus-operandi-tinted :no-confirm))
 
 (setup (:package ef-themes)
-  (:set ef-themes-variable-pitch-ui t
-        ef-themes-mixed-fonts nil ;t
-        ef-themes-headings ; read the manual's entry of the doc string
-        '((0 . (variable-pitch light 1.9))
-          (1 . (variable-pitch light 1.8))
-          (2 . (variable-pitch regular 1.7))
-          (3 . (variable-pitch regular 1.6))
-          (4 . (variable-pitch regular 1.5))
-          (5 . (variable-pitch 1.4)) ; absence of weight means `bold'
-          (6 . (variable-pitch 1.3))
-          (7 . (variable-pitch 1.2))
-          (agenda-date . (semilight 1.5))
-          (agenda-structure . (variable-pitch light 1.9))
-          (t . (variable-pitch 1.1)))))
+  (:option ef-themes-variable-pitch-ui t
+           ef-themes-mixed-fonts nil ;t
+           ef-themes-headings ; read the manual's entry of the doc string
+           '((0 . (variable-pitch light 1.9))
+             (1 . (variable-pitch light 1.8))
+             (2 . (variable-pitch regular 1.7))
+             (3 . (variable-pitch regular 1.6))
+             (4 . (variable-pitch regular 1.5))
+             (5 . (variable-pitch 1.4)) ; absence of weight means `bold'
+             (6 . (variable-pitch 1.3))
+             (7 . (variable-pitch 1.2))
+             (agenda-date . (semilight 1.5))
+             (agenda-structure . (variable-pitch light 1.9))
+             (t . (variable-pitch 1.1)))))
 
 (setup (:package stimmung-themes)
   (let* ((theme-path (locate-library "stimmung-themes"))
@@ -106,8 +114,8 @@
     :global-prefix "C-SPC"))
 
 (setup whitespace
-  (:set whitespace-style
-        '(face trailing missing-newline-at-eof tab-mark))
+  (:option whitespace-style
+           '(face trailing missing-newline-at-eof tab-mark))
   (:hook-into prog-mode))
 
 ;; Use font from Gsettings from /org/gnome/desktop/interface/
@@ -144,32 +152,32 @@
   (setq use-short-answers t))
 
 (setup mouse
-  (:set
+  (:option
    ;; paste at keyboard cursor instead of mouse pointer location
    mouse-yank-at-point t))
 
 (setup indent
-  (:set indent-tabs-mode nil))
+  (:option indent-tabs-mode nil))
 
 (setup (:package on)
   (:require on))
 
 (setup (:package undo-fu)
-  (:set undo-limit (* 400 1024)
-        undo-tree-strong-limit (* 3 1024 1024)
-        undo-outer-limit (* 48 1024 1024)))
+  (:option undo-limit (* 400 1024)
+           undo-tree-strong-limit (* 3 1024 1024)
+           undo-outer-limit (* 48 1024 1024)))
 
 (setup (:package undo-fu-session)
   (:nixpkgs zstd)
   (:with-mode global-undo-fu-session-mode
     (:hook-into undo-fu-mode))
-  (:set undo-fu-session-incompatible-files '("\\.gpg$" "/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'")
-        undo-fu-session-compression 'zst))
+  (:option undo-fu-session-incompatible-files '("\\.gpg$" "/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'")
+           undo-fu-session-compression 'zst))
 
 (setup (:package vundo)
   (:when-loaded
-    (:set vundo-glyph-alist vundo-unicode-symbols
-          vundo-compact-display t)
+    (:option vundo-glyph-alist vundo-unicode-symbols
+             vundo-compact-display t)
     (set-face-attribute 'vundo-default nil :family "Fira Mono")))
 
 (setup (:package which-key)
@@ -177,7 +185,7 @@
 
 (setup (:package evil evil-collection)
   (:hook-into after-init-hook)
-  (:set
+  (:option
    ;; Will be handled by evil-collections
    evil-want-keybinding nil
    evil-want-C-w-delete t
@@ -228,14 +236,14 @@
 (setup (:package vertico vertico-posframe)
   (:with-mode (vertico-mode vertico-posframe-mode vertico-multiform-mode)
     (:hook-into on-first-input-hook))
-  (:set vertico-resize nil
-        vertico-posframe-poshandler #'posframe-poshandler-frame-top-center
-        vertico-multiform-commands
-        '((consult-line
-           posframe
-           (vertico-count . 20)
-           (t
-            posframe))))
+  (:option vertico-resize nil
+           vertico-posframe-poshandler #'posframe-poshandler-frame-top-center
+           vertico-multiform-commands
+           '((consult-line
+              posframe
+              (vertico-count . 20)
+              (t
+               posframe))))
   (defun vl/no-hscroll-in-minibuffer ()
     (setq-local auto-hscroll-mode nil))
   (:with-function vl/no-hscroll-in-minibuffer
@@ -249,7 +257,7 @@
   (:hook-into on-first-input-hook))
 
 (setup (:package orderless)
-  (:set completion-styles '(orderless basic))
+  (:option completion-styles '(orderless basic))
   ;; basic completion style needs to be tried first (not as a
   ;; fallback) for TRAMP hostname completion to work. In
   ;; addition, the partial-completion style allows you to use
@@ -258,9 +266,9 @@
   completion-category-overrides '((file (styles basic partial-completion))))
 
 
-(setup (:package consult consult-dir consult-eglot consult-project-extra)
-  (:set xref-show-xrefs-function #'consult-xref
-        xref-show-definitions-function #'consult-xref)
+(setup (:package consult consult-dir consult-project-extra)
+  (:option xref-show-xrefs-function #'consult-xref
+           xref-show-definitions-function #'consult-xref)
   (general-leader
     "f" #'consult-buffer
     "s" #'consult-imenu
@@ -280,7 +288,7 @@
 
 (setup xref
   (:when-loaded
-    (:set xref-prompt-for-identifier (append xref-prompt-for-identifier (list #'xref-find-references)))))
+    (:option xref-prompt-for-identifier (append xref-prompt-for-identifier (list #'xref-find-references)))))
 
 (setup (:package embark embark-consult))
 
@@ -291,11 +299,12 @@
     (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter)))
 
 (setup emacs
+  (:global [remap kill-buffer] #'kill-current-buffer)
   ;; TAB cycle if there are only few candidates
-  (:set completion-cycle-threshold 3
-        ;; Enable indentation+completion using the TAB key.
-        ;; `completion-at-point' is often bound to M-TAB.
-        tab-always-indent t))
+  (:option completion-cycle-threshold 3
+           ;; Enable indentation+completion using the TAB key.
+           ;; `completion-at-point' is often bound to M-TAB.
+           tab-always-indent t))
 
 (setup (:package envrc)
   (:with-mode envrc-global-mode
@@ -318,55 +327,86 @@
 
   (advice-add #'envrc--update :around #'vl/envrc--debounce-add-extra-path-a))
 
-;; (setup (:package lsp-mode)
-;;   (:with-function lsp-enable-which-key-integration
-;;     (:hook-into lsp-mode-hook))
-;;   (:set read-process-output-max (* 4 1024 1024)
-;;         lsp-enable-suggest-server-download nil
-;;         lsp-inlay-hint-enable t
-;;         lsp-keep-workspace-alive nil
-;;         lsp-response-timeout 30
-;;         lsp-diagnostics-provider :flycheck
-;;         lsp-headerline-breadcrumb-enable nil
-;;         lsp-semantic-tokens-enable t
-;;         lsp-file-watch-threshold 4000
-;;         lsp-keymap-prefix "C-C l")
-;;   (general-def '(motion normal) lsp-mode-map
-;;     "gd" #'xref-find-definitions
-;;     "gr" #'xref-find-references))
+;; (setup eglot
+;;   (:option eglot-extend-to-xref t)
+;;   (:with-mode eglot-inlay-hints-mode
+;;     (:hook-into eglot-managed-mode-hook))
+;;   (:when-loaded
+;;     (:option
+;;      (prepend eglot-server-programs)
+;;      '(rustic-mode .
+;;                    ("rust-analyzer"
+;;                     :initializationOptions
+;;                     (:checkOnSave (:command "clippy")))))))
 
-(setup eglot
-  (:set eglot-extend-to-xref t)
-  ;; (:with-mode eglot-inlay-hints-mode
-  ;;   (:hook-into eglot-managed-mode-hook))
-  (:when-loaded
-    (add-to-list 'eglot-server-programs '(nix-mode . ("nil")))
-    (add-to-list 'eglot-server-programs
-                 '(rustic-mode .
-                               ("rust-analyzer"
-                                :initializationOptions
-                                (:checkOnSave (:command "clippy"))))))
-  (cl-defun eglot--languageId (&optional (server (eglot--current-server-or-lose)))
-    "Compute LSP \\='languageId\\=' string for current buffer.
-Doubles as a predicate telling if SERVER can manage the current
-buffer."
-    (or (cl-loop for (mode . languageid) in
-                 (eglot--languages server)
-                 when (provided-mode-derived-p major-mode mode)
-                 return languageid)
-        "Unknown")))
+;; (setup-define :lsp
+;;   (lambda ()
+;;     `(:hook eglot-ensure))
+;;   :documentation "Configure LSP for given mode.")
+
+
+
+(setup (:package lsp-mode)
+  (:with-function lsp-enable-which-key-integration
+    (:hook-into lsp-mode-hook))
+  (:with-function lsp-deferred
+    (:hook-into python-base-mode))
+  (:option read-process-output-max (* 4 1024 1024)
+           lsp-enable-suggest-server-download nil
+           lsp-inlay-hint-enable t
+           lsp-keep-workspace-alive nil
+           lsp-response-timeout 30
+           lsp-diagnostics-provider :flycheck
+           lsp-headerline-breadcrumb-enable nil
+           lsp-semantic-tokens-enable t
+           lsp-file-watch-threshold 4000
+           lsp-keymap-prefix "C-C l")
+  (general-def '(motion normal) lsp-mode-map
+    "gd" #'xref-find-definitions
+    "gr" #'xref-find-references))
+
+(setup-define :lsp
+  (lambda ()
+    `(:hook lsp-deferred))
+  :documentation "Configure LSP for given mode.")
+
+(defun lsp-booster--json-parse-bufffer-a (old-fn &rest args)
+  "Try to parse bytecode instead of json."
+  (or
+   (when (equal (following-char) ?#)
+     (let ((bytecode (read (current-buffer))))
+       (when (byte-code-function-p bytecode)
+         (funcall bytecode))))
+   (apply old-fn args)))
+
+(advice-add 'json-parse-buffer :around #'lsp-booster--json-parse-bufffer-a)
+
+(defun lsp-booster--resolve-final-command-a (old-fn cmd &optional test?)
+  "Prepend emacs-lsp-booster command to lsp CMD."
+  (let ((orig-result (funcall old-fn cmd test?)))
+    (if (and (not test?)                             ;; for check lsp-server-present?
+             (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
+             lsp-use-plists
+             (not (functionp 'json-rpc-connection))  ;; native json-rpc
+             (executable-find "emacs-lsp-booster"))
+        (progn
+          (message "Using emacs-lsp-booster for %s!" orig-result)
+          (cons "emacs-lsp-booster" orig-result))
+      orig-result)))
+
+(advice-add 'lsp-resolve-final-command :around #'lsp-booster--resolve-final-command-a)
 
 (setup (:package yasnippet)
   (:with-mode yas-global-mode
     (:hook-into on-first-buffer-hook)))
 
-;; (setup (:package flycheck))
+(setup (:package flycheck))
 ;; (setup (:package flycheck-popup-tip)
 ;;   (with-eval-after-load 'evil
 ;;     (add-hook 'evil-insert-state-entry-hook #'flycheck-popup-tip-delete-popup)
 ;;     (add-hook 'evil-replace-state-entry-hook #'flycheck-popup-tip-delete-popup)))
 ;; (setup (:package flycheck-posframe)
-;;   (:set flycheck-posframe-warning-prefix "! "
+;;   (:option flycheck-posframe-warning-prefix "! "
 ;;         flycheck-posframe-info-prefix "··· "
 ;;         flycheck-posframe-error-prefix "X ")
 ;;   (with-eval-after-load 'evil
@@ -375,20 +415,20 @@ buffer."
 ;;     (add-hook 'flycheck-posframe-inhibit-functions #'evil-insert-state-p
 ;;               (add-hook 'flycheck-posframe-inhibit-functions #'evil-replace-state-p))))
 
-;; (setup (:package lsp-ui)
-;;   (:set lsp-uis-sideline-show-diagnostics nil))
+(setup (:package lsp-ui)
+  (:option lsp-uis-sideline-show-diagnostics nil))
 
-(setup flymake
-  (:package flymake-popon)
-  (:hook-into prog-mode-hook)
-  (:with-mode flymake-popon-mode
-    (:hook-into flymake-mode-hook))
-  (:set flymake-popon-method 'posframe))
+;; (setup flymake
+;;   (:package flymake-popon)
+;;   (:hook-into prog-mode-hook)
+;;   (:with-mode flymake-popon-mode
+;;     (:hook-into flymake-mode-hook))
+;;   (:option flymake-popon-method 'posframe))
 
 ;; (setup (:package lsp-bridge)
 ;;   (:with-mode global-lsp-bridge-mode
 ;;     (:hook-into after-init-hook))
-;;   (:set lsp-bridge-enable-hover-diagnostic t)
+;;   (:option lsp-bridge-enable-hover-diagnostic t)
 ;;   (general-def 'motion lsp-bridge-mode-map
 ;;     "gd" #'lsp-bridge-find-def
 ;;     "gr" #'lsp-bridge-find-references))
@@ -398,14 +438,6 @@ buffer."
   (:with-mode global-treesit-auto-mode
     (:hook-into after-init-hook)))
 
-(setup (:package nix-mode)
-  (:nixpkgs ("nil" nixpkgs-fmt))
-  (:hook #'eglot-ensure))
-
-(setup python-base-mode
-  (:nixpkgs pyright)
-  (:hook #'eglot-ensure))
-
 (setup elisp-mode (:package highlight-quoted rainbow-delimiters)
        (:with-mode (outline-minor-mode rainbow-delimiters-mode highlight-quoted-mode)
          (:hook-into emacs-lisp-mode-hook)))
@@ -413,7 +445,7 @@ buffer."
 (setup (:package jinx)
   (:with-mode global-jinx-mode
     (:hook-into on-first-buffer-hook))
-  (:set jinx-languages "en_US hu_HU"))
+  (:option jinx-languages "en_US hu_HU"))
 
 (setup (:package apheleia)
   (:with-mode apheleia-global-mode
@@ -429,27 +461,61 @@ buffer."
     (:hook-into dired-mode-hook)))
 
 (setup (:package magit)
-  (:set magit-display-buffer-function #'magit-display-buffer-fullframe-status-topleft-v1))
+  (:option magit-prefer-remote-upstream t
+           magit-save-repository-buffers nil
+           magit-diff-refine-hunk t
+           magit-diff-refine-hunk t
+           magit-bury-buffer-function #'magit-restore-window-configuration
+           magit-display-buffer-function #'magit-display-buffer-fullframe-status-topleft-v1))
 
+
+(setup (:package nix-mode)
+  (:lsp)
+  (:nixpkgs ("nil" nixpkgs-fmt))
+  (:smartparens
+   (sp-local-pair
+    "let" "in"
+    :post-handlers '(("||\n[i]" "RET"))
+    :unless '(sp-point-before-word-p sp-point-before-same-p))
+
+   (sp-local-pair
+    "''" "''"
+    :post-handlers '(("||\n[i]" "RET"))
+    :unless '(sp-point-before-word-p sp-point-before-same-p))
+
+   (sp-local-pair
+    "'" nil
+    :actions nil)
+
+   (sp-local-pair
+    "${" "}"
+    :unless '(sp-point-before-word-p sp-point-before-same-p))))
+
+(setup python-base-mode
+  (:package lsp-pyright)
+  (:when-loaded
+    (:require lsp-pyright))
+  (:lsp)
+  (:nixpkgs pyright))
 (setup (:package yaml-mode))
 
 (setup (:package rustic)
+  (:lsp)
   (:nixpkgs rust-analyzer)
-  (:set rustic-lsp-client nil)
-  (:hook #'eglot-ensure)
+  (:option rustic-lsp-client nil)
   (:file-match "\\.rs$"))
 
 (setup (:package tuareg dune utop))
 
 (setup (:package fsharp-mode)
-  (:nixpkgs fsautocomplete)
-  (:hook #'eglot-ensure))
+  (:lsp)
+  (:nixpkgs fsautocomplete))
 
 (setup (:package explain-pause-mode))
 
 (setup (:package smartparens)
-  (:set sp-navigate-skip-match nil
-        sp-navigate-consider-sgml-tags nil)
+  (:option sp-navigate-skip-match nil
+           sp-navigate-consider-sgml-tags nil)
   (:with-mode smartparens-global-mode
     (:hook-into on-first-buffer-hook))
   (:when-loaded
@@ -482,41 +548,6 @@ buffer."
     (sp-local-pair '(emacs-lisp-mode org-mode markdown-mode gfm-mode)
                    "[" nil :post-handlers '(:rem ("| " "SPC")))
 
-    (defun vl/sp-point-followed-by-brace-p (_id action _context)
-      (when (eq action 'insert)
-        (sp--looking-at-p ")\\|]\\|}\\|\"\\|\'")))
-
-    (sp-with-modes '(nix-mode)
-      (sp-local-pair
-       "let" "in"
-       :post-handlers '(("||\n[i]" "RET"))
-       :unless '(sp-point-before-word-p sp-point-before-same-p))
-
-      (sp-local-pair
-       "''" "''"
-       :post-handlers '(("||\n[i]" "RET"))
-       :unless '(sp-point-before-word-p sp-point-before-same-p))
-
-      (sp-local-pair
-       "'" nil
-       :actions nil)
-
-      (sp-local-pair
-       "{" "};"
-       :post-handlers '(("||\n[i]" "RET")
-                        ("| " "SPC"))
-       :unless '(sp-point-before-word-p sp-point-before-same-p vl/sp-point-followed-by-brace-p))
-
-      (sp-local-pair
-       "${" "}"
-       :unless '(sp-point-before-word-p sp-point-before-same-p))
-
-      (sp-local-pair
-       "[" "];"
-       :post-handlers '(("||\n[i]" "RET")
-                        ("| " "SPC"))
-       :unless '(sp-point-before-word-p sp-point-before-same-p)))
-
     ;; Reasonable default pairs for HTML-style comments
     (sp-local-pair (append sp--html-modes '(markdown-mode gfm-mode))
                    "<!--" "-->"
@@ -529,94 +560,13 @@ buffer."
                        "\\(?:\\.[^/\\]*\\)?\\'")))
 
 (setup (:package julia-mode eglot-jl)
+  (:lsp)
   (:when-loaded
     (:require eglot-jl)
-    (eglot-jl-init))
-  (:hook #'eglot-ensure))
+    (eglot-jl-init)))
 
 (setup (:package julia-repl)
   (:hook-into julia-mode-hook))
-
-;; (setup (:package lsp-julia)
-;;   (:set lsp-julia-package-dir (expand-file-name "lsp-julia" no-littering-var-directory))
-;;   (:when-loaded
-;;     (let ((lsp-orig-path (expand-file-name "Project.toml" (expand-file-name "languageserver" lsp-julia--self-path))))
-;;       (unless (file-exists-p lsp-julia-package-dir)
-;;         (make-directory lsp-julia-package-dir))
-;;       (f-write (f-read lsp-orig-path) 'utf-8 (expand-file-name "Project.toml" lsp-julia-package-dir)))))
-
-;; (setup (:package tabspaces)
-;;   (:hook-into on-first-buffer-hook)
-;;   (:hook #'+consult-tabspaces-setup)
-;;   (:set
-;;    tabspaces-use-filtered-buffers-as-default t
-;;    tabspaces-initialize-project-with-todo nil
-;;    tabspaces-default-tab "*default*"
-;;    tabspaces-include-buffers '("*scratch*")
-;;    tabspaces-session t)
-;;   (general-leader :infix "q"
-;;     "t" #'tabspaces-save-session
-;;     "T" #'tabspaces-restore-session
-;;     "p" #'tabspaces-save-current-project-session)
-;;   (general-leader :infix "TAB"
-;;     "TAB" '(tabspaces-switch-or-create-workspace :w "Switch or create")
-;;     "o" '(tabspaces-open-or-create-project-and-workspace :wk "Open or create project")
-;;     "f" '(tabspaces-project-switch-project-open-file :wk "Switch project & open file")
-;;     "d" #'tabspaces-close-workspace
-;;     "b" #'tabspaces-switch-to-buffer
-;;     "t" #'tabspaces-switch-buffer-and-tab
-;;     "C" #'tabspaces-clear-buffers
-;;     "r" #'tabspaces-remove-current-buffer
-;;     "R" #'tabspaces-remove-selected-buffer
-;;     "k" #'(tabspaces-kill-buffers-close-workspace :wk "Kill buffers & close WS"))
-;;   (:when-loaded
-;;     ;; Rename the first tab to `tabspaces-default-tab'
-;;     (tab-bar-rename-tab tabspaces-default-tab)
-;;     ;; Ensure reading project list
-;;     (require 'project)
-;;     (project--ensure-read-project-list))
-
-;;   (defun +consult-tabspaces-setup ()
-;;     "Deactivate isolated buffers when not using tabspaces."
-;;     (require 'consult)
-;;     (cond (tabspaces-mode
-;;            ;; hide full buffer list (still available with "b")
-;;            (consult-customize consult--source-buffer :hidden t :default nil)
-;;            (add-to-list 'consult-buffer-sources '+consult--source-workspace))
-;;           (t
-;;            ;; reset consult-buffer to show all buffers
-;;            (consult-customize consult--source-buffer :hidden nil :default t)
-;;            (setq consult-buffer-sources (remove #'+consult--source-workspace consult-buffer-sources)))))
-
-;;   (with-eval-after-load 'consult
-;;     ;; Hide full buffer list (still available with "b" prefix)
-;;     (consult-customize consult--source-buffer :hidden t :default nil)
-;;     ;; Set consult-workspace buffer list
-;;     (defvar +consult--source-workspace
-;;       (list :name "Workspace Buffers"
-;;             :narrow   '(?w . "Workspace")
-;;             :history  'buffer-name-history
-;;             :category 'buffer
-;;             :state    #'consult--buffer-state
-;;             :default  t
-;;             :items
-;;             (lambda ()
-;;               (consult--buffer-query
-;;                :predicate #'tabspaces--local-buffer-p
-;;                :sort      'visibility
-;;                :as        #'buffer-name))))
-
-;;     (add-to-list 'consult-buffer-sources '+consult--source-workspace))
-
-;;   ;; Switch to the scratch buffer after creating a new workspace
-;;   (advice-add
-;;    'tabspaces-switch-or-create-workspace :around
-;;    (defun +tabspaces--switch-to-scratch-after-create-a (origfn &rest workspace)
-;;      (let ((before-list (tabspaces--list-tabspaces)))
-;;        (apply origfn workspace)
-;;        ;; Created a new empty workspace
-;;        (when-let ((new-ws (cl-set-difference (tabspaces--list-tabspaces) before-list :test #'string=)))
-;;          (+scratch-open-buffer nil nil 'same-window))))))
 
 (setup (:package bufferlo)
   (:hook-into on-first-input-hook)
@@ -653,11 +603,3 @@ buffer."
 
     (consult-customize consult--source-buffer :hidden t :default nil)))
 
-;;; binder
-
-;;(load "/home/vlaci/devel/git/git.sr.ht/vlaci/emacs-config/emacs.d/binder.el")
-
-
-;; (bind keymap
-;;   (:keymap my-map
-;;   (:call (message "i"))))

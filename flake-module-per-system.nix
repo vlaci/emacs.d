@@ -5,6 +5,15 @@
 let
   inherit (lib) mkOption types;
   cfg = config.vl-emacs;
+  emacs-lsp-booster = pkgs.rustPlatform.buildRustPackage rec {
+    pname = "emacs-lsp-booster";
+    version = "0.1.0";
+    src = inputs.emacs-lsp-booster;
+    cargoLock = {
+      lockFile = "${src}/Cargo.lock";
+    };
+    doCheck = false;
+  };
   self =
     {
       _file = ./flake-module.nix;
@@ -67,12 +76,13 @@ let
                     let
                       dicts = with pkgs.hunspellDicts; [ hu-hu en-us-large ];
                       dictSearchPath = lib.makeSearchPath "share/hunspell" dicts;
+                      binaries = (map (name: pkgs.${name}) detectedPackages.nixPackages) ++ [ emacs-lsp-booster ];
                     in
                     ''
                       ${super.buildCommand}
                       wrapProgram $out/bin/emacs \
                                   --append-flags "--init-directory ${toString cfg.initDirectory}" \
-                                  --suffix PATH : ${with lib; pipe detectedPackages.nixPackages [(map (name: pkgs.${name})) makeBinPath escapeShellArg]} \
+                                  --suffix PATH : ${with lib; pipe binaries [ makeBinPath escapeShellArg]} \
                                   --prefix DICPATH : ${lib.escapeShellArg dictSearchPath}
                     '';
                 });

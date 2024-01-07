@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "emacs-lsp-booster": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1704552448,
+        "narHash": "sha256-V5BlLw/BgLtAnLvc67J2l1AdqWE/iIUsBhjTrvO9ssU=",
+        "owner": "blahgeek",
+        "repo": "emacs-lsp-booster",
+        "rev": "d138e0183dffbf6c235cfb3eab63d91a2ab46f93",
+        "type": "github"
+      },
+      "original": {
+        "owner": "blahgeek",
+        "repo": "emacs-lsp-booster",
+        "type": "github"
+      }
+    },
     "emacs-overlay": {
       "inputs": {
         "flake-utils": "flake-utils",
@@ -85,22 +101,6 @@
       "original": {
         "owner": "talyz",
         "repo": "fromElisp",
-        "type": "github"
-      }
-    },
-    "lsp-bridge": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1703296596,
-        "narHash": "sha256-mpnYq8ylDsTYmmKzdt0D1IJXykwhFZ6ksxIcZM1o90s=",
-        "owner": "manateelazycat",
-        "repo": "lsp-bridge",
-        "rev": "1992ae27a196ff26e51646bd20053f818853142b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "manateelazycat",
-        "repo": "lsp-bridge",
         "type": "github"
       }
     },
@@ -203,11 +203,11 @@
     },
     "root": {
       "inputs": {
+        "emacs-lsp-booster": "emacs-lsp-booster",
         "emacs-overlay": "emacs-overlay",
         "explain-pause-mode": "explain-pause-mode",
         "flake-parts": "flake-parts",
         "fromElisp": "fromElisp",
-        "lsp-bridge": "lsp-bridge",
         "nix-filter": "nix-filter",
         "nixpkgs": "nixpkgs_2",
         "on": "on",
