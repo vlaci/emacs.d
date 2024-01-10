@@ -370,6 +370,8 @@
     `(:hook lsp-deferred))
   :documentation "Configure LSP for given mode.")
 
+(setup (:package consult-lsp))
+
 (defun lsp-booster--json-parse-bufffer-a (old-fn &rest args)
   "Try to parse bytecode instead of json."
   (or
@@ -466,8 +468,29 @@
            magit-diff-refine-hunk t
            magit-diff-refine-hunk t
            magit-bury-buffer-function #'magit-restore-window-configuration
-           magit-display-buffer-function #'magit-display-buffer-fullframe-status-topleft-v1))
+           magit-display-buffer-function #'magit-display-buffer-fullframe-status-topleft-v1)
 
+  (:when-loaded
+    (transient-append-suffix 'magit-pull "-r"
+      '("-a" "Autostash" "--autostash")))
+  (:with-feature magit-commit
+    (:when-loaded
+      (transient-replace-suffix 'magit-commit 'magit-commit-autofixup
+        '("x" "Absorb changes" magit-commit-absorb))
+      (setq transient-levels '((magit-commit (magit-commit-absorb . 1))))))
+
+  (:with-feature project
+    (:when-loaded
+      (define-key project-prefix-map "m" #'magit-project-status)
+      (add-to-list 'project-switch-commands '(magit-project-status "Magit") t)))
+
+  (:with-feature smerge-mode
+    (:when-loaded
+      (map-keymap
+       (lambda (_key cmd)
+         (when (symbolp cmd)
+           (put cmd 'repeat-map 'smerge-basic-map)))
+       smerge-basic-map))))
 
 (setup (:package nix-mode)
   (:lsp)
@@ -602,4 +625,3 @@
     (add-to-list 'consult-buffer-sources 'my-consult--source-local-buffer)
 
     (consult-customize consult--source-buffer :hidden t :default nil)))
-
